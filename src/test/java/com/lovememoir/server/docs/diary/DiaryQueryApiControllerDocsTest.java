@@ -1,6 +1,6 @@
 package com.lovememoir.server.docs.diary;
 
-import com.lovememoir.server.api.controller.DiaryQueryApiController;
+import com.lovememoir.server.api.controller.diary.DiaryQueryApiController;
 import com.lovememoir.server.docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,11 +1,11 @@
-package com.lovememoir.server.api.controller;
+package com.lovememoir.server.api.controller.diary;
 
 import com.lovememoir.server.api.ApiResponse;
-import com.lovememoir.server.api.controller.request.DiaryCreateRequest;
-import com.lovememoir.server.api.controller.request.DiaryModifyRequest;
-import com.lovememoir.server.api.controller.response.DiaryCreateResponse;
-import com.lovememoir.server.api.controller.response.DiaryModifyResponse;
-import com.lovememoir.server.api.controller.response.DiaryRemoveResponse;
+import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
+import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
+import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
+import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
+import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

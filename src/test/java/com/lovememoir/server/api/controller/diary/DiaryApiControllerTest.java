@@ -1,8 +1,8 @@
-package com.lovememoir.server.api.controller;
+package com.lovememoir.server.api.controller.diary;
 
 import com.lovememoir.server.ControllerTestSupport;
-import com.lovememoir.server.api.controller.request.DiaryCreateRequest;
-import com.lovememoir.server.api.controller.request.DiaryModifyRequest;
+import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
+import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;

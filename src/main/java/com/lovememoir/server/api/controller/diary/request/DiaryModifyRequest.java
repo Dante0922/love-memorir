@@ -1,4 +1,4 @@
-package com.lovememoir.server.api.controller.request;
+package com.lovememoir.server.api.controller.diary.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
