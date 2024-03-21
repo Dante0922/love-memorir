@@ -15,5 +15,6 @@ include::overview.adoc[]
 == 일기장 API
 
 include::api/diary/create-diary.adoc[]
+include::api/diary/search-diaries.adoc[]
 include::api/diary/modify-diary.adoc[]
 include::api/diary/remove-diary.adoc[]
