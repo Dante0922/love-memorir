@@ -1,7 +1,6 @@
 package com.lovememoir.server.api.controller.diarypage;
 
 import com.lovememoir.server.ControllerTestSupport;
-import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageCreateRequest;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageModifyRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +10,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 
 import static com.lovememoir.server.common.message.ValidationMessage.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -206,6 +204,19 @@ class DiaryPageApiControllerTest extends ControllerTestSupport {
                 patch(BASE_URL + "/{diaryPageId}", 1L, 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
+
+    @DisplayName("일기를 삭제한다.")
+    @Test
+    void removeDiaryPage() throws Exception {
+        //given
+        //when //then
+        mockMvc.perform(
+                delete(BASE_URL + "/{diaryPageId}", 1L, 2L)
                     .with(csrf())
             )
             .andDo(print())

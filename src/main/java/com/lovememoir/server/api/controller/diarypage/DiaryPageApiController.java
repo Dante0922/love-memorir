@@ -5,6 +5,7 @@ import com.lovememoir.server.api.controller.diarypage.request.DiaryPageCreateReq
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageModifyRequest;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
+import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,18 @@ public class DiaryPageApiController {
             .title("햇살미소 뿜뿜하는 루이후이")
             .contentLength("루이는 판생이 즐거운 미소천사 해피판다!".length())
             .diaryDate(LocalDate.of(2024, 3, 3))
+            .build();
+        return ApiResponse.ok(response);
+    }
+
+    @DeleteMapping("/{diaryPageId}")
+    public ApiResponse<DiaryPageRemoveResponse> removeDiaryPage(
+        @PathVariable Long diaryId,
+        @PathVariable Long diaryPageId
+    ) {
+        DiaryPageRemoveResponse response = DiaryPageRemoveResponse.builder()
+            .diaryPageId(2L)
+            .title("엄마 음식 훔쳐간 후이바오")
             .build();
         return ApiResponse.ok(response);
     }
