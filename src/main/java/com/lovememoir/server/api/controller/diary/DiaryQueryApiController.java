@@ -1,4 +1,4 @@
-package com.lovememoir.server.api.controller;
+package com.lovememoir.server.api.controller.diary;
 
 import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.api.ListResponse;
