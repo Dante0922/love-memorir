@@ -1,0 +1,13 @@
+[[search-diary-page]]
+=== 일기 목록 조회 API
+
+==== HTTP Request
+
+include::{snippets}/search-diary-page/http-request.adoc[]
+include::{snippets}/search-diary-page/request-headers.adoc[]
+include::{snippets}/search-diary-page/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/search-diary-page/http-response.adoc[]
+include::{snippets}/search-diary-page/response-fields.adoc[]

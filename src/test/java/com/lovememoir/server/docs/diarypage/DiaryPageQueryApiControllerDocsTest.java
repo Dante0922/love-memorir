@@ -80,4 +80,49 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
                 )
             ));
     }
+
+    @DisplayName("일기 상세 조회 API")
+    @Test
+    void searchDiaryPage() throws Exception {
+        mockMvc.perform(
+                get(BASE_URL + "/{diaryPageId}", 1L, 1L)
+                    .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("search-diary-page",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION)
+                        .description("회원 인증 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("diaryId")
+                        .description("일기장 식별키"),
+                    parameterWithName("diaryPageId")
+                        .description("일기 식별키")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.diaryPageId").type(JsonFieldType.NUMBER)
+                        .description("일기 페이지 식별키"),
+                    fieldWithPath("data.pageTitle").type(JsonFieldType.STRING)
+                        .description("일기 페이지 제목"),
+                    fieldWithPath("data.pageContent").type(JsonFieldType.STRING)
+                        .description("일기 페이지 내용"),
+                    fieldWithPath("data.diaryDate").type(JsonFieldType.ARRAY)
+                        .description("일기 페이지 일자"),
+                    fieldWithPath("data.dateTimeOfCreation").type(JsonFieldType.ARRAY)
+                        .description("일기 페이지 작성 일시")
+                )
+            ));
+    }
 }
