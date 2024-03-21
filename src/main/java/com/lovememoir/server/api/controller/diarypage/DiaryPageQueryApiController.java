@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.lovememoir.server.common.constant.GlobalConstant.PAGE_SIZE;
+
 /**
  * Diary Page Query Api Controller
  *
@@ -38,7 +40,7 @@ public class DiaryPageQueryApiController {
             .diaryPageId(1L)
             .pageTitle("후쪽이 후이바오")
             .build();
-        PageRequest pageRequest = PageRequest.of(0, 10);
+        PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
         SliceResponse<DiaryPageSearchResponse> response = SliceResponse.of(List.of(response3, response2, response1), pageRequest, false);
         return ApiResponse.ok(response);
     }

@@ -3,6 +3,7 @@ package com.lovememoir.server.api.controller.diarypage;
 import com.lovememoir.server.ControllerTestSupport;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageCreateRequest;
+import com.lovememoir.server.api.controller.diarypage.request.DiaryPageModifyRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -10,6 +11,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 
 import static com.lovememoir.server.common.message.ValidationMessage.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -113,5 +115,100 @@ class DiaryPageApiControllerTest extends ControllerTestSupport {
             )
             .andDo(print())
             .andExpect(status().isCreated());
+    }
+
+    @DisplayName("일기를 수정할 때 제목은 필수값이다.")
+    @Test
+    void modifyDiaryPageWithoutTitle() throws Exception {
+        //given
+        DiaryPageModifyRequest request = DiaryPageModifyRequest.builder()
+            .title(" ")
+            .content("루이는 판생이 즐거운 미소천사 해피판다!")
+            .diaryDate(LocalDate.of(2024, 3, 3))
+            .build();
+
+        //when //then
+        mockMvc.perform(
+                patch(BASE_URL + "/{diaryPageId}", 1L, 1L)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("$.message").value(NOT_BLANK_DIARY_PAGE_TITLE))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @DisplayName("일기를 수정할 때 내용은 필수값이다.")
+    @Test
+    void modifyDiaryPageWithoutContent() throws Exception {
+        //given
+        DiaryPageModifyRequest request = DiaryPageModifyRequest.builder()
+            .title("햇살미소 뿜뿜하는 루이후이")
+            .content(" ")
+            .diaryDate(LocalDate.of(2024, 3, 3))
+            .build();
+
+        //when //then
+        mockMvc.perform(
+                patch(BASE_URL + "/{diaryPageId}", 1L, 1L)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("$.message").value(NOT_BLANK_DIARY_PAGE_CONTENT))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @DisplayName("일기를 수정할 때 일자는 필수값이다.")
+    @Test
+    void modifyDiaryPageWithoutDiaryDate() throws Exception {
+        //given
+        DiaryPageModifyRequest request = DiaryPageModifyRequest.builder()
+            .title("햇살미소 뿜뿜하는 루이후이")
+            .content("루이는 판생이 즐거운 미소천사 해피판다!")
+            .build();
+
+        //when //then
+        mockMvc.perform(
+                patch(BASE_URL + "/{diaryPageId}", 1L, 1L)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("$.message").value(NOT_BLANK_DIARY_PAGE_DATE))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @DisplayName("일기를 수정한다.")
+    @Test
+    void modifyDiaryPage() throws Exception {
+        //given
+        DiaryPageModifyRequest request = DiaryPageModifyRequest.builder()
+            .title("햇살미소 뿜뿜하는 루이후이")
+            .content("루이는 판생이 즐거운 미소천사 해피판다!")
+            .diaryDate(LocalDate.of(2024, 3, 3))
+            .build();
+
+        //when //then
+        mockMvc.perform(
+                patch(BASE_URL + "/{diaryPageId}", 1L, 1L)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isOk());
     }
 }

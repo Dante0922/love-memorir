@@ -24,3 +24,4 @@ include::api/diary/remove-diary.adoc[]
 
 include::api/diarypage/create-diary-page.adoc[]
 include::api/diarypage/search-diary-pages.adoc[]
+include::api/diarypage/modify-diary-page.adoc[]
