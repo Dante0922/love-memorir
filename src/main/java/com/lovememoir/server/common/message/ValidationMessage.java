@@ -1,5 +1,10 @@
 package com.lovememoir.server.common.message;
 
+/**
+ * Request Date Validation Message
+ *
+ * @author dong82
+ */
 public abstract class ValidationMessage {
 
     public static final String NOT_BLANK_DIARY_TITLE = "파트너 닉네임을 입력하세요.";

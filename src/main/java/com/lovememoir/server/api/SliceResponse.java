@@ -7,6 +7,12 @@ import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
 
+/**
+ * Slice Response 공통 스팩
+ *
+ * @param <T> 데이터 타입
+ * @author dong82
+ */
 @Getter
 public class SliceResponse<T> {
 
