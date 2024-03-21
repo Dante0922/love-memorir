@@ -1,0 +1,13 @@
+[[create-diary]]
+=== 신규 일기장 등록 API
+
+==== HTTP Request
+
+include::{snippets}/create-diary/http-request.adoc[]
+include::{snippets}/create-diary/request-headers.adoc[]
+include::{snippets}/create-diary/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/create-diary/http-response.adoc[]
+include::{snippets}/create-diary/response-fields.adoc[]

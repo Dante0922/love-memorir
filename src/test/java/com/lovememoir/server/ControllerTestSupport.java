@@ -1,0 +1,23 @@
+package com.lovememoir.server;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+/**
+ * Controller Test Code 컨텍스트 캐싱
+ *
+ * @author dong82
+ */
+@WithMockUser
+@WebMvcTest
+public abstract class ControllerTestSupport {
+
+    @Autowired
+    protected MockMvc mockMvc;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
+}

@@ -1,0 +1,14 @@
+[[modify-diary]]
+=== 일기장 정보 수정 API
+
+==== HTTP Request
+
+include::{snippets}/modify-diary/http-request.adoc[]
+include::{snippets}/modify-diary/request-headers.adoc[]
+include::{snippets}/modify-diary/path-parameters.adoc[]
+include::{snippets}/modify-diary/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/modify-diary/http-response.adoc[]
+include::{snippets}/modify-diary/response-fields.adoc[]

@@ -1,0 +1,13 @@
+[[remove-diary]]
+=== 일기장 삭제 API
+
+==== HTTP Request
+
+include::{snippets}/remove-diary/http-request.adoc[]
+include::{snippets}/remove-diary/request-headers.adoc[]
+include::{snippets}/remove-diary/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/remove-diary/http-response.adoc[]
+include::{snippets}/remove-diary/response-fields.adoc[]
