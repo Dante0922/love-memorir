@@ -10,3 +10,8 @@ endif::[]
 :sectlinks:
 
 include::overview.adoc[]
+
+[[Diary-API]]
+== 일기장 API
+
+include::api/diary/create-diary.adoc[]
