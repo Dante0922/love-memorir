@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Diary Query Api Controller
+ *
+ * @author dong82
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/diaries")

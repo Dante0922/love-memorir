@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Diary Command Api Controller
+ *
+ * @author dong82
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/diaries")
