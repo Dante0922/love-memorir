@@ -16,3 +16,4 @@ include::overview.adoc[]
 
 include::api/diary/create-diary.adoc[]
 include::api/diary/modify-diary.adoc[]
+include::api/diary/remove-diary.adoc[]

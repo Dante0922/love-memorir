@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_BLANK_DIARY_TITLE;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -96,6 +95,19 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         mockMvc.perform(
                 patch(BASE_URL + "/{diaryId}", 1L)
                     .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
+
+    @DisplayName("일기장을 삭제한다.")
+    @Test
+    void removeDiary() throws Exception {
+        //given //when //then
+        mockMvc.perform(
+                delete(BASE_URL + "/{diaryId}", 1L)
                     .contentType(MediaType.APPLICATION_JSON)
                     .with(csrf())
             )

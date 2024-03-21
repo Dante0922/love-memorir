@@ -5,6 +5,7 @@ import com.lovememoir.server.api.controller.request.DiaryCreateRequest;
 import com.lovememoir.server.api.controller.request.DiaryModifyRequest;
 import com.lovememoir.server.api.controller.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.response.DiaryModifyResponse;
+import com.lovememoir.server.api.controller.response.DiaryRemoveResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,16 @@ public class DiaryApiController {
         DiaryModifyResponse response = DiaryModifyResponse.builder()
             .diaryId(1L)
             .title("루이바오")
+            .build();
+
+        return ApiResponse.ok(response);
+    }
+
+    @DeleteMapping("/{diaryId}")
+    public ApiResponse<DiaryRemoveResponse> removeDiary(@PathVariable Long diaryId) {
+        DiaryRemoveResponse response = DiaryRemoveResponse.builder()
+            .diaryId(1L)
+            .title("후이바오")
             .build();
 
         return ApiResponse.ok(response);

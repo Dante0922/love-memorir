@@ -13,8 +13,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -121,6 +120,44 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                         .description("수정된 일기장 식별키"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING)
                         .description("수정된 일기장 제목")
+                )
+            ));
+    }
+
+    @DisplayName("일기장 삭제 API")
+    @Test
+    void removeDiary() throws Exception {
+        mockMvc.perform(
+                delete(BASE_URL + "/{diaryId}", 1L)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("remove-diary",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION)
+                        .description("회원 인증 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("diaryId")
+                        .description("일기장 식별키")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.diaryId").type(JsonFieldType.NUMBER)
+                        .description("삭제된 일기장 식별키"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING)
+                        .description("삭제된 일기장 제목")
                 )
             ));
     }
