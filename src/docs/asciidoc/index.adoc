@@ -11,6 +11,11 @@ endif::[]
 
 include::overview.adoc[]
 
+[[Member-API]]
+== 멤버 API
+
+include::api/member/create-member.adoc[]
+
 [[Diary-API]]
 == 일기장 API
 
