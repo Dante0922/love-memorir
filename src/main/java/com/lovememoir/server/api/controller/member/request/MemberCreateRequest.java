@@ -17,15 +17,14 @@ public class MemberCreateRequest {
 
     @NotBlank(message = NOT_BLANK_MEMBER_NICKNAME)
     private String nickname;
-    @NotNull(message = NOT_NULL_MEMBER_ID)
+    @NotNull(message = NOT_NULL_MEMBER_GENDER)
     private Gender gender;
     @NotBlank(message = NOT_BLANK_MEMBER_BIRTH)
     private String birth;
 
 
     @Builder
-    private
-    MemberCreateRequest(String nickname, Gender gender, String birth) {
+    private MemberCreateRequest(String nickname, Gender gender, String birth) {
         this.nickname = nickname;
         this.gender = gender;
         this.birth = birth;
