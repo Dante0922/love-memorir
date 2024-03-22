@@ -15,6 +15,7 @@ include::overview.adoc[]
 == 멤버 API
 
 include::api/member/create-member.adoc[]
+include::api/member/modify-member.adoc[]
 
 [[Diary-API]]
 == 일기장 API

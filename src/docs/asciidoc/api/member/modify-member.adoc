@@ -1,0 +1,13 @@
+[[create-member]]
+=== 멤버 정보 수정 API
+
+==== HTTP Request
+
+include::{snippets}/modify-member/http-request.adoc[]
+include::{snippets}/modify-member/request-headers.adoc[]
+include::{snippets}/modify-member/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/modify-member/http-response.adoc[]
+include::{snippets}/modify-member/response-fields.adoc[]

@@ -2,7 +2,9 @@ package com.lovememoir.server.api.controller.member;
 
 import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.api.controller.member.request.MemberCreateRequest;
+import com.lovememoir.server.api.controller.member.request.MemberModifyRequest;
 import com.lovememoir.server.api.controller.member.response.MemberCreateResponse;
+import com.lovememoir.server.api.controller.member.response.MemberModifyResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,5 +24,16 @@ public class MemberApiController {
                 .build();
         return ApiResponse.created(response);
     }
+    @PatchMapping("/{memberId}")
+    public ApiResponse<MemberModifyResponse> modifyMember(@Valid @RequestBody MemberModifyRequest request) {
+        MemberModifyResponse response = MemberModifyResponse.builder()
+                .memberId(request.getMemberId())
+                .nickname(request.getNickname())
+                .birth(request.getBirth())
+                .gender(request.getGender())
+                .build();
+        return ApiResponse.ok(response);
+    }
+
 
 }
