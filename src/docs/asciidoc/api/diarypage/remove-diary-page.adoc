@@ -1,0 +1,13 @@
+[[remove-diary-page]]
+=== 신규 일기 등록 API
+
+==== HTTP Request
+
+include::{snippets}/remove-diary-page/http-request.adoc[]
+include::{snippets}/remove-diary-page/request-headers.adoc[]
+include::{snippets}/remove-diary-page/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/remove-diary-page/http-response.adoc[]
+include::{snippets}/remove-diary-page/response-fields.adoc[]
