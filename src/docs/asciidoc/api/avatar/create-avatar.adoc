@@ -1,0 +1,13 @@
+[[create-Avatar]]
+=== 신규 멤버 가입 API
+
+==== HTTP Request
+
+include::{snippets}/create-Avatar/http-request.adoc[]
+include::{snippets}/create-Avatar/request-headers.adoc[]
+include::{snippets}/create-Avatar/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/create-Avatar/http-response.adoc[]
+include::{snippets}/create-Avatar/response-fields.adoc[]
