@@ -18,3 +18,12 @@ include::api/diary/create-diary.adoc[]
 include::api/diary/search-diaries.adoc[]
 include::api/diary/modify-diary.adoc[]
 include::api/diary/remove-diary.adoc[]
+
+[[Diary-Page-API]]
+== 일기 API
+
+include::api/diarypage/create-diary-page.adoc[]
+include::api/diarypage/search-diary-pages.adoc[]
+include::api/diarypage/search-diary-page.adoc[]
+include::api/diarypage/modify-diary-page.adoc[]
+include::api/diarypage/remove-diary-page.adoc[]
