@@ -1,0 +1,13 @@
+[[modify-member]]
+=== 아바타 정보 수정 API
+
+==== HTTP Request
+
+include::{snippets}/modify-avatar/http-request.adoc[]
+include::{snippets}/modify-avatar/request-headers.adoc[]
+include::{snippets}/modify-avatar/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/modify-avatar/http-response.adoc[]
+include::{snippets}/modify-avatar/response-fields.adoc[]

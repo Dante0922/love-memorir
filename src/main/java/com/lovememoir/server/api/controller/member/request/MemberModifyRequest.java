@@ -17,7 +17,7 @@ public class MemberModifyRequest {
     private Long memberId;
     @NotBlank(message = NOT_BLANK_MEMBER_NICKNAME)
     private String nickname;
-    @NotNull(message = NOT_BLANK_MEMBER_GENDER)
+    @NotNull(message = NOT_NULL_MEMBER_GENDER)
     private Gender gender;
     @NotBlank(message = NOT_BLANK_MEMBER_BIRTH)
     private String birth;

@@ -18,6 +18,15 @@ include::api/member/create-member.adoc[]
 include::api/member/modify-member.adoc[]
 include::api/member/remove-member.adoc[]
 
+[[Avatar-API]]
+== 아바타 API
+
+include::api/avatar/create-avatar.adoc[]
+include::api/avatar/modify-avatar.adoc[]
+include::api/avatar/refresh-avatar.adoc[]
+include::api/avatar/search-avatar.adoc[]
+
+
 [[Diary-API]]
 == 일기장 API
 

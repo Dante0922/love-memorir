@@ -1,0 +1,13 @@
+[[create-Avatar]]
+=== 신규 아바타 생성 API
+
+==== HTTP Request
+
+include::{snippets}/create-avatar/http-request.adoc[]
+include::{snippets}/create-avatar/request-headers.adoc[]
+include::{snippets}/create-avatar/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/create-avatar/http-response.adoc[]
+include::{snippets}/create-avatar/response-fields.adoc[]

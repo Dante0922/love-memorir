@@ -1,0 +1,12 @@
+[[refresh-member]]
+=== 아바타 질문/행동 갱신 API
+
+==== HTTP Request
+
+include::{snippets}/refresh-avatar/http-request.adoc[]
+include::{snippets}/refresh-avatar/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/refresh-avatar/http-response.adoc[]
+include::{snippets}/refresh-avatar/response-fields.adoc[]

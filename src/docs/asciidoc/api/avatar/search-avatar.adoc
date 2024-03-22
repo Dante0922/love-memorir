@@ -1,0 +1,12 @@
+[[search-member]]
+=== 아바타 조회 API
+
+==== HTTP Request
+
+include::{snippets}/search-avatar/http-request.adoc[]
+include::{snippets}/search-avatar/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/search-avatar/http-response.adoc[]
+include::{snippets}/search-avatar/response-fields.adoc[]
