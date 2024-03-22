@@ -11,8 +11,7 @@ import org.springframework.http.MediaType;
 
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_BLANK_MEMBER_NICKNAME;
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_MEMBER_ID;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -110,5 +109,18 @@ class MemberApiControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value(NOT_NULL_MEMBER_ID))
                 .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @Test
+    @DisplayName("멤버를 삭제한다")
+    void removeMember() throws Exception {
+        //given //when //then
+        mockMvc.perform(
+                        delete(BASE_URL + "/{memberId}", 1L)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }

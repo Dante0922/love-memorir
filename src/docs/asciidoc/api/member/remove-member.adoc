@@ -1,0 +1,13 @@
+[[create-member]]
+=== 멤버 탈퇴 API
+
+==== HTTP Request
+
+include::{snippets}/remove-member/http-request.adoc[]
+include::{snippets}/remove-member/request-headers.adoc[]
+include::{snippets}/remove-member/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/remove-member/http-response.adoc[]
+include::{snippets}/remove-member/response-fields.adoc[]

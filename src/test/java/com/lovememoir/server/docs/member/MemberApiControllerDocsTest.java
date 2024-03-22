@@ -14,12 +14,13 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -134,6 +135,44 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
                                         .description("멤버 수정 성별 (M 또는 F)"),
                                 fieldWithPath("data.birth").type(JsonFieldType.STRING)
                                         .description("멤버 수정 생년월일")
+                        )
+                ));
+    }
+
+    @DisplayName("멤버 탈퇴 API")
+    @Test
+    void removeMember() throws Exception {
+        mockMvc.perform(
+                        delete(BASE_URL + "/{memberId}", 1L)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("remove-member",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION)
+                                        .description("회원 인증 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("memberId")
+                                        .description("멤버 식별키")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("status").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
+                                        .description("삭제 멤버 식별키"),
+                                fieldWithPath("data.nickname").type(JsonFieldType.STRING)
+                                        .description("삭제 멤버 닉네임")
                         )
                 ));
     }
