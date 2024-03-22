@@ -1,4 +1,4 @@
-[[create-member]]
+[[remove-member]]
 === 멤버 탈퇴 API
 
 ==== HTTP Request

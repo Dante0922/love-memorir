@@ -1,22 +1,17 @@
-package com.lovememoir.server.api.controller.member.response;
+package com.lovememoir.server.api.controller.avatar.response;
 
-import com.lovememoir.server.domain.member.Gender;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class MemberModifyResponse {
+public class AvatarModifyResponse {
 
-    private final Long memberId;
-    private final String nickname;
-    private final Gender gender;
-    private final String birth;
+    private final int avatarType;
+    private final int growthStage;
 
     @Builder
-    private MemberModifyResponse(Long memberId, String nickname, Gender gender, String birth) {
-        this.memberId = memberId;
-        this.nickname = nickname;
-        this.gender = gender;
-        this.birth = birth;
+    private AvatarModifyResponse(int avatarType, int growthStage) {
+        this.avatarType = avatarType;
+        this.growthStage = growthStage;
     }
 }

@@ -1,4 +1,4 @@
-[[create-member]]
+[[modify-member]]
 === 멤버 정보 수정 API
 
 ==== HTTP Request

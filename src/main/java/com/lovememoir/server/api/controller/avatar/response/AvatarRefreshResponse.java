@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class AvatarModifyResponse {
+public class AvatarRefreshResponse {
 
-    private final int avatarType;
-    private final int growthStage;
+    private final int behavior;
+    private final String question;
 
     @Builder
-    private AvatarModifyResponse(int avatarType, int growthStage) {
-        this.avatarType = avatarType;
-        this.growthStage = growthStage;
+    private AvatarRefreshResponse(int behavior, String question) {
+        this.behavior = behavior;
+        this.question = question;
     }
 }
