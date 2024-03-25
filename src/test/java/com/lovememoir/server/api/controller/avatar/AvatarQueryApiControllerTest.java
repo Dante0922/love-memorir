@@ -19,7 +19,7 @@ class AvatarQueryApiControllerTest extends ControllerTestSupport {
     void searchAvatar() throws Exception {
         //given //when //then
         mockMvc.perform(
-                get(BASE_URL + "/{memberId}", 1L)
+                get(BASE_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .with(csrf())
             )
