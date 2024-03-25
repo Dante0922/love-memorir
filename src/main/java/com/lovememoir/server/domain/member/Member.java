@@ -1,5 +1,6 @@
 package com.lovememoir.server.domain.member;
 
+import com.lovememoir.server.domain.BaseTimeEntity;
 import com.lovememoir.server.domain.avatar.Avatar;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,29 +12,30 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
-    @Column(nullable = false, length = 36)
+    @Column(unique = true, nullable = false, length = 36, columnDefinition = "char(36)")
     private String memberKey;
 
     @Column(nullable = false, length = 8)
     private String nickname;
 
-    @Column(nullable = false, length = 1)
-    private String gender; // TODO Enum 으로 변경?
+    @Column(nullable = false, updatable = false, length = 1, columnDefinition = "char(1)")
+    private Gender gender;
 
-    @Column(nullable = false, length = 8)
+    @Column(nullable = false, length = 10, columnDefinition = "char(10)")
     private String birth;
 
     @Column(nullable = false, length = 5)
-    private String role;
+    private Role role;
 
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "avatar_id")
     private Avatar avatar;
 
     //TODO diary, term 속성 추가
@@ -41,7 +43,7 @@ public class Member {
 //    private List<Diary> diaries;
 
     @Builder
-    public Member(String memberKey, String nickname, String gender, String birth, String role) {
+    private Member(String memberKey, String nickname, Gender gender, String birth, Role role) {
         this.memberKey = memberKey;
         this.nickname = nickname;
         this.gender = gender;
