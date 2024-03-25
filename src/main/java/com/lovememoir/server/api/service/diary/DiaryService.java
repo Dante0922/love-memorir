@@ -1,7 +1,10 @@
 package com.lovememoir.server.api.service.diary;
 
+import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
+import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest;
+import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.member.Member;
@@ -40,6 +43,10 @@ public class DiaryService {
         final Diary savedDiary = saveDiary(title, relationshipStartedDate, member);
 
         return DiaryCreateResponse.of(savedDiary);
+    }
+
+    public DiaryModifyResponse modifyDiary(final String memberKey, final Long diaryId, final LocalDateTime currentDateTime, DiaryModifyServiceRequest request) {
+        return null;
     }
 
     private Member getMember(final String memberKey) {

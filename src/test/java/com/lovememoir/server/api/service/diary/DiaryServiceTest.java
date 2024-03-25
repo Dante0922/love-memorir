@@ -2,7 +2,10 @@ package com.lovememoir.server.api.service.diary;
 
 import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
+import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest;
+import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
+import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.member.Gender;
@@ -20,6 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.lovememoir.server.common.message.ExceptionMessage.MAXIMUM_DIARY_COUNT;
+import static com.lovememoir.server.common.message.ExceptionMessage.NO_AUTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -86,6 +90,57 @@ class DiaryServiceTest extends IntegrationTestSupport {
             .hasFieldOrPropertyWithValue("isFixed", false)
             .hasFieldOrPropertyWithValue("title", "러바오와의 연애 기록")
             .hasFieldOrPropertyWithValue("relationshipStartedDate", LocalDate.of(2016, 3, 3))
+            .hasFieldOrPropertyWithValue("pageCount", 0);
+    }
+
+    @DisplayName("일기장 수정시 본인의 일기장이 아니라면 예외가 발생한다.")
+    @Test
+    void modifyDiaryWithoutAuth() {
+        //given
+        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 1, 0, 0);
+
+        Member member = createMember();
+        Diary diary = createDiary(member);
+
+        Member otherMember = createMember();
+
+        DiaryModifyServiceRequest request = DiaryModifyServiceRequest.builder()
+            .title("루이바오")
+            .relationshipStartedDate(LocalDate.of(2023, 7, 7))
+            .build();
+
+        //when //then
+        assertThatThrownBy(() -> diaryService.modifyDiary(otherMember.getMemberKey(), diary.getId(), currentDateTime, request))
+            .isInstanceOf(AuthException.class)
+            .hasMessage(NO_AUTH);
+    }
+
+    @DisplayName("회원 고유키와 일기장 정보를 입력 받아 일기장을 수정한다.")
+    @Test
+    void modifyDiary() {
+        //given
+        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 1, 0, 0);
+
+        Member member = createMember();
+        Diary diary = createDiary(member);
+
+        DiaryModifyServiceRequest request = DiaryModifyServiceRequest.builder()
+            .title("루이바오")
+            .relationshipStartedDate(LocalDate.of(2023, 7, 7))
+            .build();
+
+        //when
+        DiaryModifyResponse response = diaryService.modifyDiary(member.getMemberKey(), diary.getId(), currentDateTime, request);
+
+        //then
+        assertThat(response).isNotNull();
+
+        Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
+        assertThat(findDiary).isPresent();
+        assertThat(findDiary.get())
+            .hasFieldOrPropertyWithValue("isFixed", false)
+            .hasFieldOrPropertyWithValue("title", "루이바오와의 연애 기록")
+            .hasFieldOrPropertyWithValue("relationshipStartedDate", LocalDate.of(2023, 7, 7))
             .hasFieldOrPropertyWithValue("pageCount", 0);
     }
 
