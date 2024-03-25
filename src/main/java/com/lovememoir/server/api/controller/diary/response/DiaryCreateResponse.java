@@ -1,5 +1,6 @@
 package com.lovememoir.server.api.controller.diary.response;
 
+import com.lovememoir.server.domain.diary.Diary;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,5 +18,13 @@ public class DiaryCreateResponse {
         this.diaryId = diaryId;
         this.title = title;
         this.createdDateTime = createdDateTime;
+    }
+
+    public static DiaryCreateResponse of(Diary diary) {
+        return DiaryCreateResponse.builder()
+            .diaryId(diary.getId())
+            .title(diary.getTitle())
+            .createdDateTime(diary.getCreatedDateTime())
+            .build();
     }
 }

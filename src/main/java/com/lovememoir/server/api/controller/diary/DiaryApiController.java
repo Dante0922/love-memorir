@@ -6,12 +6,14 @@ import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
+import com.lovememoir.server.api.service.diary.DiaryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Diary Command Api Controller
@@ -23,14 +25,17 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/v1/diaries")
 public class DiaryApiController {
 
+    private final DiaryService diaryService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<DiaryCreateResponse> createDiary(@Valid @RequestBody DiaryCreateRequest request) {
-        DiaryCreateResponse response = DiaryCreateResponse.builder()
-            .diaryId(1L)
-            .title("푸바오")
-            .createdDateTime(LocalDateTime.of(2024, 1, 1, 0, 0))
-            .build();
+        //TODO: 2024-03-26 00:53 dong82 회원 정보 토큰 추출
+        String memberKey = UUID.randomUUID().toString();
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        DiaryCreateResponse response = diaryService.createDiary(memberKey, currentDateTime, request.toServiceRequest());
 
         return ApiResponse.created(response);
     }

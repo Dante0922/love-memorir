@@ -3,13 +3,23 @@ package com.lovememoir.server.docs.diary;
 import com.lovememoir.server.api.controller.diary.DiaryApiController;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
+import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
+import com.lovememoir.server.api.service.diary.DiaryService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -26,10 +36,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DiaryApiControllerDocsTest extends RestDocsSupport {
 
     private static final String BASE_URL = "/api/v1/diaries";
+    private final DiaryService diaryService = mock(DiaryService.class);
 
     @Override
     protected Object initController() {
-        return new DiaryApiController();
+        return new DiaryApiController(diaryService);
     }
 
     @DisplayName("신규 일기장 등록 API")
@@ -37,7 +48,17 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
     void createDiary() throws Exception {
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title("푸바오")
+            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
+
+        DiaryCreateResponse response = DiaryCreateResponse.builder()
+            .diaryId(1L)
+            .title("푸바오와의 연애 기록")
+            .createdDateTime(LocalDateTime.of(2024, 3, 1, 0, 0))
+            .build();
+
+        given(diaryService.createDiary(anyString(), any(), any()))
+            .willReturn(response);
 
         mockMvc.perform(
                 post(BASE_URL)
@@ -56,7 +77,9 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                 ),
                 requestFields(
                     fieldWithPath("title").type(JsonFieldType.STRING)
-                        .description("신규 일기장 제목")
+                        .description("신규 일기장 제목"),
+                    fieldWithPath("relationshipStartedDate").type(JsonFieldType.ARRAY)
+                        .description("신규 일기장 연애 시작일")
                 ),
                 responseFields(
                     fieldWithPath("code").type(JsonFieldType.NUMBER)
