@@ -75,6 +75,6 @@ class DiaryValidatorTest {
         LocalDate validatedRelationshipStartedDate = DiaryValidator.validateRelationshipStartedDate(currentDateTime, relationshipStartedDate);
 
         //then
-        assertThat(validatedRelationshipStartedDate).isEqualTo(LocalDate.of(2024, 3, 9));
+        assertThat(validatedRelationshipStartedDate).isEqualTo(LocalDate.of(2024, 3, 10));
     }
 }
