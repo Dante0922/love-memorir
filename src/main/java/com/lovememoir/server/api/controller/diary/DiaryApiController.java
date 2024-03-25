@@ -45,10 +45,12 @@ public class DiaryApiController {
         @PathVariable Long diaryId,
         @Valid @RequestBody DiaryModifyRequest request
     ) {
-        DiaryModifyResponse response = DiaryModifyResponse.builder()
-            .diaryId(1L)
-            .title("루이바오")
-            .build();
+        //TODO: 2024-03-26 02:19 dong82 회원 정보 토큰 추출
+        String memberKey = UUID.randomUUID().toString();
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        DiaryModifyResponse response = diaryService.modifyDiary(memberKey, diaryId, currentDateTime, request.toServiceRequest());
 
         return ApiResponse.ok(response);
     }
