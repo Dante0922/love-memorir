@@ -36,43 +36,37 @@ public class AvatarQueryApiControllerDocsTest extends RestDocsSupport {
     @Test
     void searchAvatar() throws Exception {
         mockMvc.perform(
-                        get(BASE_URL + "/{memberId}", 1L)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+                get(BASE_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("search-avatar",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION)
+                        .description("회원 인증 토큰")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.avatarType").type(JsonFieldType.NUMBER)
+                        .description("아바타 타입"),
+                    fieldWithPath("data.growthStage").type(JsonFieldType.NUMBER)
+                        .description("아바타 성장등급"),
+                    fieldWithPath("data.behavior").type(JsonFieldType.NUMBER)
+                        .description("아바타 행동"),
+                    fieldWithPath("data.question").type(JsonFieldType.STRING)
+                        .description("아바타 질문")
                 )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("search-avatar",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION)
-                                        .description("회원 인증 토큰")
-                        ),
-                        pathParameters(
-                                parameterWithName("memberId")
-                                        .description("멤버 식별키")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER)
-                                        .description("코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING)
-                                        .description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING)
-                                        .description("메시지"),
-                                fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                        .description("응답 데이터"),
-                                fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
-                                        .description("아바타 식별키"),
-                                fieldWithPath("data.avatarType").type(JsonFieldType.NUMBER)
-                                        .description("아바타 타입"),
-                                fieldWithPath("data.growthStage").type(JsonFieldType.NUMBER)
-                                        .description("아바타 성장등급"),
-                                fieldWithPath("data.behavior").type(JsonFieldType.NUMBER)
-                                        .description("아바타 행동"),
-                                fieldWithPath("data.question").type(JsonFieldType.STRING)
-                                        .description("아바타 질문")
-                        )
-                ));
+            ));
     }
 }

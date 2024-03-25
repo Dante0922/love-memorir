@@ -18,13 +18,13 @@ public class MemberModifyRequest {
     @NotBlank(message = NOT_BLANK_MEMBER_NICKNAME)
     private String nickname;
     @NotNull(message = NOT_NULL_MEMBER_GENDER)
-    private Gender gender;
+    private String gender;
     @NotBlank(message = NOT_BLANK_MEMBER_BIRTH)
     private String birth;
 
 
     @Builder
-    private MemberModifyRequest(Long memberId, String nickname, Gender gender, String birth) {
+    private MemberModifyRequest(Long memberId, String nickname, String gender, String birth) {
         this.memberId = memberId;
         this.nickname = nickname;
         this.gender = gender;

@@ -7,13 +7,13 @@ import lombok.Getter;
 @Getter
 public class MemberRemoveResponse {
 
-    private final Long memberId;
+    private final String memberKey;
     private final String nickname;
 
 
     @Builder
-    private MemberRemoveResponse(Long memberId, String nickname) {
-        this.memberId = memberId;
+    private MemberRemoveResponse(String memberKey, String nickname) {
+        this.memberKey = memberKey;
         this.nickname = nickname;
     }
 }

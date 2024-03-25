@@ -6,12 +6,10 @@ import lombok.Getter;
 @Getter
 public class AvatarCreateResponse {
 
-    private final Long memberId;
     private final int avatarType;
 
     @Builder
-    private AvatarCreateResponse(Long memberId, int avatarType) {
-        this.memberId = memberId;
+    private AvatarCreateResponse(int avatarType) {
         this.avatarType = avatarType;
     }
 }

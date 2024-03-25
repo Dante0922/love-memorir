@@ -25,7 +25,7 @@ class AvatarApiControllerTest extends ControllerTestSupport {
                 .build();
         //when //then
         mockMvc.perform(
-                        post(BASE_URL + "/{memberId}", 1L)
+                        post(BASE_URL)
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf())
@@ -44,7 +44,7 @@ class AvatarApiControllerTest extends ControllerTestSupport {
                 .build();
         //when //then
         mockMvc.perform(
-                        patch(BASE_URL + "/{memberId}", 1L)
+                        patch(BASE_URL)
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf())
@@ -63,7 +63,7 @@ class AvatarApiControllerTest extends ControllerTestSupport {
                 .build();
         //when //then
         mockMvc.perform(
-                        get(BASE_URL + "/{memberId}/refresh", 1L)
+                        get(BASE_URL + "/refresh")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf())

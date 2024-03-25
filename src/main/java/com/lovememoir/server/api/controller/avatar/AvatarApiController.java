@@ -16,18 +16,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/avatars")
 public class AvatarApiController {
 
-    @PostMapping("/{memberId}")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<AvatarCreateResponse> createAvatar(@PathVariable Long memberId, @Valid @RequestBody AvatarCreateRequest request) {
+    public ApiResponse<AvatarCreateResponse> createAvatar(@Valid @RequestBody AvatarCreateRequest request) {
         AvatarCreateResponse response = AvatarCreateResponse.builder()
-                .memberId(memberId)
                 .avatarType(1)
                 .build();
         return ApiResponse.created(response);
     }
 
-    @PatchMapping("/{memberId}")
-    public ApiResponse<AvatarModifyResponse> modifyAvatar(@PathVariable Long memberId, @Valid @RequestBody AvatarModifyRequest request) {
+    @PatchMapping()
+    public ApiResponse<AvatarModifyResponse> modifyAvatar(@Valid @RequestBody AvatarModifyRequest request) {
         AvatarModifyResponse response = AvatarModifyResponse.builder()
                 .avatarType(1)
                 .growthStage(1)
@@ -35,8 +34,8 @@ public class AvatarApiController {
         return ApiResponse.ok(response);
     }
 
-    @GetMapping("/{memberId}/refresh")
-    public ApiResponse<AvatarRefreshResponse> refreshAvatar(@PathVariable Long memberId) {
+    @GetMapping("/refresh")
+    public ApiResponse<AvatarRefreshResponse> refreshAvatar() {
         AvatarRefreshResponse response = AvatarRefreshResponse.builder()
                 .behavior(2)
                 .question("오늘은 무슨 일이 있었나요?")

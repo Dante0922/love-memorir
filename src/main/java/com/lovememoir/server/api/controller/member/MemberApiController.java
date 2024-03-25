@@ -20,27 +20,27 @@ public class MemberApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<MemberCreateResponse> createMember(@Valid @RequestBody MemberCreateRequest request) {
         MemberCreateResponse response = MemberCreateResponse.builder()
-                .memberId(1L)
+                .memberKey("hello")
                 .nickname(request.getNickname())
                 .build();
         return ApiResponse.created(response);
     }
 
-    @PatchMapping("/{memberId}")
-    public ApiResponse<MemberModifyResponse> modifyMember(@PathVariable Long memberId, @Valid @RequestBody MemberModifyRequest request) {
+    @PatchMapping()
+    public ApiResponse<MemberModifyResponse> modifyMember(@Valid @RequestBody MemberModifyRequest request) {
         MemberModifyResponse response = MemberModifyResponse.builder()
-                .memberId(request.getMemberId())
+                .memberKey("hello")
                 .nickname(request.getNickname())
                 .birth(request.getBirth())
-                .gender(request.getGender())
+                .gender("F")
                 .build();
         return ApiResponse.ok(response);
     }
 
-    @DeleteMapping("/{memberId}")
-    public ApiResponse<MemberRemoveResponse> removeMember(@PathVariable Long memberId) {
+    @DeleteMapping()
+    public ApiResponse<MemberRemoveResponse> removeMember() {
         MemberRemoveResponse response = MemberRemoveResponse.builder()
-                .memberId(memberId)
+                .memberKey("hello")
                 .nickname("잘가세요")
                 .build();
         return ApiResponse.ok(response);

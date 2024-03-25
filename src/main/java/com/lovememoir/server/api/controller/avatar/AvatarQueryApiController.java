@@ -13,10 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/avatars")
 public class AvatarQueryApiController {
 
-    @GetMapping("/{memberId}")
-    public ApiResponse<AvatarResponse> searchAvatar(@PathVariable Long memberId) {
+    @GetMapping()
+    public ApiResponse<AvatarResponse> searchAvatar() {
         AvatarResponse response = AvatarResponse.builder()
-                .memberId(memberId)
                 .avatarType(1)
                 .growthStage(1)
                 .behavior(2)

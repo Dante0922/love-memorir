@@ -3,12 +3,9 @@ spring:
     name: server
   datasource:
     driver-class-name: org.h2.Driver
-#    url: ${datasource.url}  # IntelliJ 데이터소스 사용법 체크
-#    username: ${datasource.username}
-#    password: ${datasource.password}
-    url: jdbc:h2:mem:testdb;NON_KEYWORDS=USER
-    username: sa
-    password:
+    url: ${datasource.url}
+    username: ${datasource.username}
+    password: ${datasource.password}
   h2:
     console:
       enabled: true

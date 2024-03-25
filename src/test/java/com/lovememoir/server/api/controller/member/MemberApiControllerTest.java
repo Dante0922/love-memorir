@@ -28,7 +28,7 @@ class MemberApiControllerTest extends ControllerTestSupport {
         MemberCreateRequest request = MemberCreateRequest.builder()
                 .nickname("연해말")
                 .birth("1990-01-01")
-                .gender(Gender.F)
+                .gender("F")
                 .build();
         //when //then
         mockMvc.perform(
@@ -49,7 +49,7 @@ class MemberApiControllerTest extends ControllerTestSupport {
         MemberCreateRequest request = MemberCreateRequest.builder()
                 .nickname(" ")
                 .birth("1990-01-01")
-                .gender(Gender.F)
+                .gender("F")
                 .build();
         //when //then
         mockMvc.perform(
@@ -74,11 +74,11 @@ class MemberApiControllerTest extends ControllerTestSupport {
                 .memberId(1L)
                 .nickname("hello")
                 .birth("1990-01-01")
-                .gender(Gender.M)
+                .gender("M")
                 .build();
         //when //then
         mockMvc.perform(
-                        patch(BASE_URL + "/{memberId}", 1L)
+                        patch(BASE_URL)
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf())
@@ -94,11 +94,11 @@ class MemberApiControllerTest extends ControllerTestSupport {
         MemberModifyRequest request = MemberModifyRequest.builder()
                 .nickname("hello")
                 .birth("1990-01-01")
-                .gender(Gender.M)
+                .gender("M")
                 .build();
         //when //then
         mockMvc.perform(
-                        patch(BASE_URL + "/{memberId}", 1L)
+                        patch(BASE_URL)
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf())
@@ -116,7 +116,7 @@ class MemberApiControllerTest extends ControllerTestSupport {
     void removeMember() throws Exception {
         //given //when //then
         mockMvc.perform(
-                        delete(BASE_URL + "/{memberId}", 1L)
+                        delete(BASE_URL)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf())
                 )

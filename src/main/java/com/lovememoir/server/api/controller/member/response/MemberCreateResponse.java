@@ -6,12 +6,12 @@ import lombok.Getter;
 @Getter
 public class MemberCreateResponse {
 
-    private final Long memberId;
+    private final String memberKey;
     private final String nickname;
 
     @Builder
-    private MemberCreateResponse(Long memberId, String nickname) {
-        this.memberId = memberId;
+    private MemberCreateResponse(String memberKey, String nickname) {
+        this.memberKey = memberKey;
         this.nickname = nickname;
     }
 }
