@@ -23,7 +23,7 @@ public class Diary extends BaseTimeEntity {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isFixed;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 15)
     private String title;
 
     private LocalDate relationshipStartedDate;
