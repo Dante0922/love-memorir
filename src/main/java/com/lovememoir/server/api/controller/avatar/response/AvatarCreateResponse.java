@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class AvatarCreateResponse {
 
-    private final int avatarType;
+    private final String avatarType;
 
     @Builder
-    private AvatarCreateResponse(int avatarType) {
+    private AvatarCreateResponse(String avatarType) {
         this.avatarType = avatarType;
     }
 }

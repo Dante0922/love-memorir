@@ -20,7 +20,7 @@ public class AvatarApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<AvatarCreateResponse> createAvatar(@Valid @RequestBody AvatarCreateRequest request) {
         AvatarCreateResponse response = AvatarCreateResponse.builder()
-                .avatarType(1)
+                .avatarType("G5")
                 .build();
         return ApiResponse.created(response);
     }
@@ -28,8 +28,8 @@ public class AvatarApiController {
     @PatchMapping()
     public ApiResponse<AvatarModifyResponse> modifyAvatar(@Valid @RequestBody AvatarModifyRequest request) {
         AvatarModifyResponse response = AvatarModifyResponse.builder()
-                .avatarType(1)
-                .growthStage(1)
+                .avatarType("D2")
+                .growthStage("C2")
                 .build();
         return ApiResponse.ok(response);
     }
@@ -37,7 +37,7 @@ public class AvatarApiController {
     @GetMapping("/refresh")
     public ApiResponse<AvatarRefreshResponse> refreshAvatar() {
         AvatarRefreshResponse response = AvatarRefreshResponse.builder()
-                .behavior(2)
+                .behavior("H2")
                 .question("오늘은 무슨 일이 있었나요?")
                 .build();
         return ApiResponse.ok(response);

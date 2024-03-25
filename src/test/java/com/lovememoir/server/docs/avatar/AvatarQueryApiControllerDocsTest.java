@@ -58,11 +58,11 @@ public class AvatarQueryApiControllerDocsTest extends RestDocsSupport {
                         .description("메시지"),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.avatarType").type(JsonFieldType.NUMBER)
+                    fieldWithPath("data.avatarType").type(JsonFieldType.STRING)
                         .description("아바타 타입"),
-                    fieldWithPath("data.growthStage").type(JsonFieldType.NUMBER)
+                    fieldWithPath("data.growthStage").type(JsonFieldType.STRING)
                         .description("아바타 성장등급"),
-                    fieldWithPath("data.behavior").type(JsonFieldType.NUMBER)
+                    fieldWithPath("data.behavior").type(JsonFieldType.STRING)
                         .description("아바타 행동"),
                     fieldWithPath("data.question").type(JsonFieldType.STRING)
                         .description("아바타 질문")

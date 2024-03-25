@@ -16,8 +16,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,7 +33,7 @@ public class AvatarApiControllerDocsTest extends RestDocsSupport {
     @Test
     void createAvatar() throws Exception {
         AvatarCreateRequest request = AvatarCreateRequest.builder()
-            .avatarType(1)
+            .avatarType("AA")
             .build();
 
         mockMvc.perform(
@@ -54,7 +52,7 @@ public class AvatarApiControllerDocsTest extends RestDocsSupport {
                         .description("회원 인증 토큰")
                 ),
                 requestFields(
-                    fieldWithPath("avatarType").type(JsonFieldType.NUMBER)
+                    fieldWithPath("avatarType").type(JsonFieldType.STRING)
                         .description("신규 아바타 타입")
                 ),
                 responseFields(
@@ -66,7 +64,7 @@ public class AvatarApiControllerDocsTest extends RestDocsSupport {
                         .description("메시지"),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.avatarType").type(JsonFieldType.NUMBER)
+                    fieldWithPath("data.avatarType").type(JsonFieldType.STRING)
                         .description("신규 아바타 타입")
                 )
             ));
@@ -76,8 +74,8 @@ public class AvatarApiControllerDocsTest extends RestDocsSupport {
     @Test
     void modifyAvatar() throws Exception {
         AvatarModifyRequest request = AvatarModifyRequest.builder()
-            .avatarType(1)
-            .growthStage(1)
+            .avatarType("AA")
+            .growthStage("A")
             .build();
 
         mockMvc.perform(
@@ -96,9 +94,9 @@ public class AvatarApiControllerDocsTest extends RestDocsSupport {
                         .description("회원 인증 토큰")
                 ),
                 requestFields(
-                    fieldWithPath("avatarType").type(JsonFieldType.NUMBER)
+                    fieldWithPath("avatarType").type(JsonFieldType.STRING)
                         .description("변경 아바타 타입"),
-                    fieldWithPath("growthStage").type(JsonFieldType.NUMBER)
+                    fieldWithPath("growthStage").type(JsonFieldType.STRING)
                         .description("변경 아바타 성장등급")
                 ),
                 responseFields(
@@ -110,9 +108,9 @@ public class AvatarApiControllerDocsTest extends RestDocsSupport {
                         .description("메시지"),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.avatarType").type(JsonFieldType.NUMBER)
+                    fieldWithPath("data.avatarType").type(JsonFieldType.STRING)
                         .description("변경 아바타 타입"),
-                    fieldWithPath("data.growthStage").type(JsonFieldType.NUMBER)
+                    fieldWithPath("data.growthStage").type(JsonFieldType.STRING)
                         .description("변경 아바타 성장등급")
                 )
             ));
@@ -122,8 +120,8 @@ public class AvatarApiControllerDocsTest extends RestDocsSupport {
     @Test
     void refreshAvatar() throws Exception {
         AvatarModifyRequest request = AvatarModifyRequest.builder()
-            .avatarType(1)
-            .growthStage(1)
+            .avatarType("BB")
+            .growthStage("A")
             .build();
 
         mockMvc.perform(
@@ -150,7 +148,7 @@ public class AvatarApiControllerDocsTest extends RestDocsSupport {
                         .description("메시지"),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.behavior").type(JsonFieldType.NUMBER)
+                    fieldWithPath("data.behavior").type(JsonFieldType.STRING)
                         .description("변경 아바타 행동"),
                     fieldWithPath("data.question").type(JsonFieldType.STRING)
                         .description("변경 아바타 질문")
