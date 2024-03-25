@@ -21,7 +21,7 @@ class AvatarApiControllerTest extends ControllerTestSupport {
     void createAvatar() throws Exception {
         //given
         AvatarCreateRequest request = AvatarCreateRequest.builder()
-                .avatarType(1)
+                .avatarType("AA")
                 .build();
         //when //then
         mockMvc.perform(
@@ -39,8 +39,8 @@ class AvatarApiControllerTest extends ControllerTestSupport {
     void modifyAvatar() throws Exception {
         //given
         AvatarModifyRequest request = AvatarModifyRequest.builder()
-                .avatarType(1)
-                .growthStage(1)
+                .avatarType("AA")
+                .growthStage("C")
                 .build();
         //when //then
         mockMvc.perform(
@@ -58,7 +58,7 @@ class AvatarApiControllerTest extends ControllerTestSupport {
     void refreshAvatar() throws Exception {
         //given
         AvatarRefreshResponse request = AvatarRefreshResponse.builder()
-                .behavior(2)
+                .behavior("Z8")
                 .question("오늘은 무슨 일이 있었나요?")
                 .build();
         //when //then

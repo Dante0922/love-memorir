@@ -16,9 +16,9 @@ public class AvatarQueryApiController {
     @GetMapping()
     public ApiResponse<AvatarResponse> searchAvatar() {
         AvatarResponse response = AvatarResponse.builder()
-                .avatarType(1)
-                .growthStage(1)
-                .behavior(2)
+                .avatarType("W2")
+                .growthStage("FG")
+                .behavior("W@")
                 .question("오늘은 무슨 일이 있었나요?")
                 .build();
         return ApiResponse.ok(response);
