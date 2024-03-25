@@ -54,4 +54,13 @@ public class Diary extends BaseTimeEntity {
             .member(member)
             .build();
     }
+
+    public void modify(String title, LocalDate relationshipStartedDate) {
+        this.title = title;
+        this.relationshipStartedDate = relationshipStartedDate;
+    }
+
+    public boolean isMine(Member member) {
+        return this.member.getId().equals(member.getId());
+    }
 }
