@@ -44,4 +44,14 @@ public class Diary extends BaseTimeEntity {
         this.pageCount = pageCount;
         this.member = member;
     }
+
+    public static Diary create(String title, LocalDate relationshipStartedDate, Member member) {
+        return Diary.builder()
+            .isFixed(false)
+            .title(title)
+            .relationshipStartedDate(relationshipStartedDate)
+            .pageCount(0)
+            .member(member)
+            .build();
+    }
 }

@@ -9,7 +9,6 @@ import com.lovememoir.server.domain.member.Gender;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.Role;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.lovememoir.server.common.constant.GlobalConstant.MAX_DIARY_COUNT;
 import static com.lovememoir.server.common.message.ExceptionMessage.MAXIMUM_DIARY_COUNT;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DiaryServiceTest extends IntegrationTestSupport {
 
