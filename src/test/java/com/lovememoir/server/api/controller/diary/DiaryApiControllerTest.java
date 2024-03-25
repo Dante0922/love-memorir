@@ -7,7 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDate;
+
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_BLANK_DIARY_TITLE;
+import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_RELATIONSHIP_STARTED_DATE;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -24,6 +27,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title(" ")
+            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
         //when //then
@@ -41,12 +45,36 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
+    @DisplayName("신규 일기장을 등록할 때 제목(파트너 닉네임)은 필수값이다.")
+    @Test
+    void createDiaryWithoutRelationshipStartedDate() throws Exception {
+        //given
+        DiaryCreateRequest request = DiaryCreateRequest.builder()
+            .title("푸바오")
+            .build();
+
+        //when //then
+        mockMvc.perform(
+                post(BASE_URL)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("$.message").value(NOT_NULL_RELATIONSHIP_STARTED_DATE))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
+
     @DisplayName("신규 일기장을 등록한다.")
     @Test
     void createDiary() throws Exception {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title("푸바오")
+            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
         //when //then
