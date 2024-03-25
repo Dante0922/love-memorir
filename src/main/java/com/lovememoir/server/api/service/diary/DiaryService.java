@@ -33,24 +33,36 @@ public class DiaryService {
         final String title = validateTitle(request.getTitle());
         final LocalDate relationshipStartedDate = validateRelationshipStartedDate(currentDateTime, request.getRelationshipStartedDate());
 
-        final Optional<Member> findMember = memberRepository.findByMemberKey(memberKey);
-        if (findMember.isEmpty()) {
-            throw new NoSuchElementException(NO_SUCH_MEMBER);
-        }
-        final Member member = findMember.get();
+        final Member member = getMember(memberKey);
 
-        final int diaryCount = diaryRepository.countByMemberId(member.getId());
-        if (diaryCount >= MAX_DIARY_COUNT) {
-            throw new IllegalArgumentException(MAXIMUM_DIARY_COUNT);
-        }
+        validateMaximumDiaryCount(member.getId());
 
-        final Diary diary = Diary.create(generateTitle(title), relationshipStartedDate, member);
-        final Diary savedDiary = diaryRepository.save(diary);
+        final Diary savedDiary = saveDiary(title, relationshipStartedDate, member);
 
         return DiaryCreateResponse.of(savedDiary);
     }
 
+    private Member getMember(final String memberKey) {
+        Optional<Member> findMember = memberRepository.findByMemberKey(memberKey);
+        if (findMember.isEmpty()) {
+            throw new NoSuchElementException(NO_SUCH_MEMBER);
+        }
+        return findMember.get();
+    }
+
+    private void validateMaximumDiaryCount(final Long memberId) {
+        final int diaryCount = diaryRepository.countByMemberId(memberId);
+        if (diaryCount >= MAX_DIARY_COUNT) {
+            throw new IllegalArgumentException(MAXIMUM_DIARY_COUNT);
+        }
+    }
+
     private String generateTitle(final String title) {
         return title + "와의 연애 기록";
+    }
+
+    private Diary saveDiary(String title, LocalDate relationshipStartedDate, Member member) {
+        final Diary diary = Diary.create(generateTitle(title), relationshipStartedDate, member);
+        return diaryRepository.save(diary);
     }
 }
