@@ -2,10 +2,13 @@ package com.lovememoir.server.api.controller.diary;
 
 import com.lovememoir.server.ControllerTestSupport;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
+import com.lovememoir.server.api.controller.diary.request.DiaryImageModifyRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDate;
 
@@ -116,7 +119,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
     @Test
     void modifyDiaryWithoutRelationshipStartedDate() throws Exception {
         //given
-        DiaryCreateRequest request = DiaryCreateRequest.builder()
+        DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title("푸바오")
             .build();
 
@@ -139,7 +142,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
     @Test
     void modifyDiary() throws Exception {
         //given
-        DiaryCreateRequest request = DiaryCreateRequest.builder()
+        DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title("루이바오")
             .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
@@ -149,6 +152,33 @@ class DiaryApiControllerTest extends ControllerTestSupport {
                 patch(BASE_URL + "/{diaryId}", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
+
+    @DisplayName("일기장 프로필 이미지를 수정한다.")
+    @Test
+    void modifyDiaryImage() throws Exception {
+        //given
+        MockMultipartFile file = new MockMultipartFile(
+            "profile",
+            "diary-profile-upload-image.jpg",
+            "image/jpg",
+            "image data".getBytes()
+        );
+
+        DiaryImageModifyRequest request = DiaryImageModifyRequest.builder()
+            .profile(file)
+            .build();
+
+        //when //then
+        mockMvc.perform(
+                multipart(BASE_URL + "/{diaryId}", 1L)
+                    .file(file)
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer jwt.access.token")
                     .with(csrf())
             )
             .andDo(print())
