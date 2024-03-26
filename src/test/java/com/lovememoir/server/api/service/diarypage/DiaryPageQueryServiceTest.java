@@ -6,6 +6,7 @@ import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.lovememoir.server.domain.member.Gender;
 import com.lovememoir.server.domain.member.Member;
@@ -64,6 +65,27 @@ class DiaryPageQueryServiceTest extends IntegrationTestSupport {
         assertThat(response.getContent()).hasSize(2)
             .extracting("diaryPageId")
             .containsExactly(diaryPage3.getId(), diaryPage1.getId());
+    }
+
+    @DisplayName("일기 페이지 식별키를 입력 받아 일기 정보를 조회한다.")
+    @Test
+    void searchDiaryPage() {
+        //given
+        Member member = createMember();
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage = createDiaryPage(diary, false);
+
+        //when
+        DiaryPageResponse response = diaryPageQueryService.searchDiaryPage(diaryPage.getId());
+
+        //then
+        assertThat(response)
+            .isNotNull()
+            .hasFieldOrPropertyWithValue("diaryPageId", diaryPage.getId())
+            .hasFieldOrPropertyWithValue("pageTitle", diaryPage.getTitle())
+            .hasFieldOrPropertyWithValue("pageContent", diaryPage.getContent())
+            .hasFieldOrPropertyWithValue("diaryDate", diaryPage.getDiaryDate())
+            .hasFieldOrPropertyWithValue("dateTimeOfCreation", diaryPage.getCreatedDateTime());
     }
 
     private Member createMember() {
