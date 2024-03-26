@@ -1,6 +1,5 @@
 package com.lovememoir.server.api.service.diary;
 
-import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest;
@@ -51,11 +50,7 @@ public class DiaryService {
 
         final Member member = getMember(memberKey);
 
-        Optional<Diary> findDiary = diaryRepository.findById(diaryId);
-        if (findDiary.isEmpty()) {
-            throw new IllegalArgumentException(NO_SUCH_DIARY);
-        }
-        Diary diary = findDiary.get();
+        final Diary diary = getDiary(diaryId);
 
         if (!diary.isMine(member)) {
             throw new AuthException(NO_AUTH);
@@ -88,5 +83,13 @@ public class DiaryService {
     private Diary saveDiary(String title, LocalDate relationshipStartedDate, Member member) {
         final Diary diary = Diary.create(generateTitle(title), relationshipStartedDate, member);
         return diaryRepository.save(diary);
+    }
+
+    private Diary getDiary(Long diaryId) {
+        Optional<Diary> findDiary = diaryRepository.findById(diaryId);
+        if (findDiary.isEmpty()) {
+            throw new IllegalArgumentException(NO_SUCH_DIARY);
+        }
+        return findDiary.get();
     }
 }
