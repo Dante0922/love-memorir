@@ -20,6 +20,6 @@ public class DiaryQueryService {
     }
 
     public List<DiarySearchResponse> searchMainDiaries(final String memberKey) {
-        return null;
+        return diaryQueryRepository.findMainDiaries(memberKey);
     }
 }
