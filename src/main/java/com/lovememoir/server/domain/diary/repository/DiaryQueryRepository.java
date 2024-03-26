@@ -43,4 +43,27 @@ public class DiaryQueryRepository {
             .orderBy(diary.createdDateTime.desc())
             .fetch();
     }
+
+    public List<DiarySearchResponse> findMainDiaries(final String memberKey) {
+        return queryFactory
+            .select(
+                Projections.constructor(
+                    DiarySearchResponse.class,
+                    diary.id,
+                    diary.isFixed,
+                    diary.title,
+                    diary.pageCount,
+                    diary.relationshipStartedDate
+                )
+            )
+            .from(diary)
+            .join(diary.member, member)
+            .where(
+                diary.isDeleted.isFalse(),
+                diary.member.memberKey.eq(memberKey),
+                diary.isFixed.isTrue()
+            )
+            .orderBy(diary.createdDateTime.desc())
+            .fetch();
+    }
 }

@@ -18,4 +18,8 @@ public class DiaryQueryService {
     public List<DiarySearchResponse> searchDiaries(final String memberKey) {
         return diaryQueryRepository.findByMemberKey(memberKey);
     }
+
+    public List<DiarySearchResponse> searchMainDiaries(final String memberKey) {
+        return null;
+    }
 }

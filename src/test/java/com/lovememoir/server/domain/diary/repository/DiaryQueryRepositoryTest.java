@@ -52,6 +52,27 @@ class DiaryQueryRepositoryTest extends IntegrationTestSupport {
             );
     }
 
+    @DisplayName("회원 고유키로 메인 일기장 목록을 조회한다.")
+    @Test
+    void findMainDiaries() {
+        //given
+        Member member = createMember();
+        Diary diary1 = createDiary(member, false, "루이바오와의 연애 기록", false);
+        Diary diary2 = createDiary(member, false, "후이바오와의 연애 기록", false);
+        Diary diary3 = createDiary(member, true, "강바오와의 연애 기록", true);
+        Diary diary4 = createDiary(member, true, "러바오와의 연애 기록", false);
+
+        //when
+        List<DiarySearchResponse> responses = diaryQueryRepository.findMainDiaries(member.getMemberKey());
+
+        //then
+        assertThat(responses).hasSize(1)
+            .extracting("isMain", "title", "pageCount")
+            .containsExactly(
+                tuple(true, "러바오와의 연애 기록", 0)
+            );
+    }
+
     private Member createMember() {
         Member member = Member.builder()
             .memberKey(UUID.randomUUID().toString())
