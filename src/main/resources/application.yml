@@ -21,3 +21,15 @@ logging:
   level:
     com.lovememoir.server: debug
     org.hibernate.SQL: debug
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${s3.accessKey}
+      secretKey: ${s3.secretKey}
+    s3:
+      bucket: love-memoir
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
