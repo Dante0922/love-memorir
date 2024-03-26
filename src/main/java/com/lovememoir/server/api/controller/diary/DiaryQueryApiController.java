@@ -36,4 +36,16 @@ public class DiaryQueryApiController {
 
         return ApiResponse.ok(response);
     }
+
+    @GetMapping("/main")
+    public ApiResponse<ListResponse<DiarySearchResponse>> searchMainDiaries() {
+        //TODO: 2024-03-26 11:17 dong82 회원 정보 토큰 추출
+        String memberKey = UUID.randomUUID().toString();
+
+        List<DiarySearchResponse> content = diaryQueryService.searchMainDiaries(memberKey);
+
+        ListResponse<DiarySearchResponse> response = ListResponse.of(content);
+
+        return ApiResponse.ok(response);
+    }
 }

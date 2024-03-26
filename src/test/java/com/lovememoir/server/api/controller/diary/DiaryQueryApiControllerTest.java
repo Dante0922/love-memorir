@@ -26,4 +26,17 @@ class DiaryQueryApiControllerTest extends ControllerTestSupport {
             .andDo(print())
             .andExpect(status().isOk());
     }
+
+    @DisplayName("회원의 메인 일기장 목록을 조회한다.")
+    @Test
+    void searchMainDiaries() throws Exception {
+        //given //when //then
+        mockMvc.perform(
+                get(BASE_URL + "/main")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
 }

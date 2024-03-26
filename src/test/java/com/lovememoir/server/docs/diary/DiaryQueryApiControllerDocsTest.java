@@ -107,4 +107,59 @@ public class DiaryQueryApiControllerDocsTest extends RestDocsSupport {
                 )
             ));
     }
+
+    @DisplayName("메인 일기장 목록 조회 API")
+    @Test
+    void searchMainDiaries() throws Exception {
+        DiarySearchResponse response = DiarySearchResponse.builder()
+            .diaryId(1L)
+            .isMain(true)
+            .title("푸바오와의 연애 기록")
+            .pageCount(10)
+            .relationshipStartedDate(LocalDate.of(2020, 7, 20))
+            .build();
+
+        given(diaryQueryService.searchMainDiaries(anyString()))
+            .willReturn(List.of(response));
+
+        mockMvc.perform(
+                get(BASE_URL + "/main")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("search-main-diaries",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION)
+                        .description("회원 인증 토큰")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.size").type(JsonFieldType.NUMBER)
+                        .description("등록된 일기장 갯수"),
+                    fieldWithPath("data.content").type(JsonFieldType.ARRAY)
+                        .description("등록된 일기장 데이터"),
+                    fieldWithPath("data.content[].diaryId").type(JsonFieldType.NUMBER)
+                        .description("일기장 식별키"),
+                    fieldWithPath("data.content[].isMain").type(JsonFieldType.BOOLEAN)
+                        .description("일기장 메인 여부"),
+                    fieldWithPath("data.content[].title").type(JsonFieldType.STRING)
+                        .description("일기장 제목"),
+                    fieldWithPath("data.content[].pageCount").type(JsonFieldType.NUMBER)
+                        .description("일기장 페이지 수"),
+                    fieldWithPath("data.content[].relationshipStartedDate").type(JsonFieldType.ARRAY)
+                        .description("일기장 연애 시작일")
+                )
+            ));
+    }
 }
