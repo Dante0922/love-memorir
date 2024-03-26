@@ -8,6 +8,7 @@ import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest
 import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
+import com.lovememoir.server.domain.diary.UploadFile;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
@@ -16,8 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateRelationshipStartedDate;
@@ -59,7 +62,13 @@ public class DiaryService {
     }
 
     public DiaryModifyResponse modifyDiaryImage(final String memberKey, final Long diaryId, final MultipartFile file) {
-        return null;
+        Diary diary = getMyDiary(memberKey, diaryId);
+
+        UploadFile uploadFile = fileUploadToAwsS3(file);
+
+        diary.modifyFile(uploadFile);
+
+        return DiaryModifyResponse.of(diary);
     }
 
     public DiaryRemoveResponse removeDiary(final String memberKey, final Long diaryId) {
@@ -105,5 +114,13 @@ public class DiaryService {
         }
 
         return diary;
+    }
+
+    private UploadFile fileUploadToAwsS3(MultipartFile file) {
+        try {
+            return fileStore.storeFile(file);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(FAIL_UPLOAD_FILE, e);
+        }
     }
 }

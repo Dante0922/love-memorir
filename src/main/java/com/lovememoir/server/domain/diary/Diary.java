@@ -64,6 +64,10 @@ public class Diary extends BaseTimeEntity {
         this.relationshipStartedDate = relationshipStartedDate;
     }
 
+    public void modifyFile(UploadFile file) {
+        this.file = file;
+    }
+
     public boolean isMine(Member member) {
         return this.member.getId().equals(member.getId());
     }
