@@ -44,7 +44,14 @@ public class DiaryPageService {
     }
 
     public DiaryPageModifyResponse modifyDiaryPage(final String memberKey, final Long diaryPageId, final LocalDateTime currentDateTime, DiaryPageModifyServiceRequest request) {
-        return null;
+        String title = validateTitle(request.getTitle());
+        LocalDate diaryDate = validateDiaryDate(currentDateTime, request.getDiaryDate());
+
+        DiaryPage diaryPage = getMyDiaryPage(memberKey, diaryPageId);
+
+        diaryPage.modify(title, request.getContent(), diaryDate);
+
+        return DiaryPageModifyResponse.of(diaryPage);
     }
 
     private Member getMember(final String memberKey) {
@@ -71,5 +78,21 @@ public class DiaryPageService {
     private DiaryPage saveDiaryPage(DiaryPageCreateServiceRequest request, String title, LocalDate diaryDate, Diary diary) {
         DiaryPage diaryPage = DiaryPage.create(title, request.getContent(), diaryDate, diary);
         return diaryPageRepository.save(diaryPage);
+    }
+
+    private DiaryPage getDiaryPage(final Long diaryPageId) {
+        return diaryPageRepository.findByIdWithDiary(diaryPageId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY_PAGE));
+    }
+
+    private DiaryPage getMyDiaryPage(final String memberKey, final Long diaryPageId) {
+        final Member member = getMember(memberKey);
+        final DiaryPage diaryPage = getDiaryPage(diaryPageId);
+
+        if (!diaryPage.getDiary().isMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        return diaryPage;
     }
 }

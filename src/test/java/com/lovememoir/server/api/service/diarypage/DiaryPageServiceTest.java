@@ -131,7 +131,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
             .hasMessage(NO_AUTH);
     }
 
-    @DisplayName("일기 수정시 본인의 일기장이 아니라면 예외가 발생한다.")
+    @DisplayName("회원 고유키, 일기 식별키, 일기 정보를 입력 받아 일기를 수정한다.")
     @Test
     void modifyDiaryPage() {
         //given
