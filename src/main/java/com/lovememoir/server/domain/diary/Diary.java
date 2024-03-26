@@ -31,17 +31,21 @@ public class Diary extends BaseTimeEntity {
     @Column(nullable = false, columnDefinition = "int default 0")
     private int pageCount;
 
+    @Embedded
+    private UploadFile file;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
-    private Diary(boolean isDeleted, boolean isFixed, String title, LocalDate relationshipStartedDate, int pageCount, Member member) {
+    private Diary(boolean isDeleted, boolean isFixed, String title, LocalDate relationshipStartedDate, int pageCount, UploadFile file, Member member) {
         super(isDeleted);
         this.isFixed = isFixed;
         this.title = title;
         this.relationshipStartedDate = relationshipStartedDate;
         this.pageCount = pageCount;
+        this.file = file;
         this.member = member;
     }
 
@@ -58,6 +62,10 @@ public class Diary extends BaseTimeEntity {
     public void modify(String title, LocalDate relationshipStartedDate) {
         this.title = title;
         this.relationshipStartedDate = relationshipStartedDate;
+    }
+
+    public void modifyFile(UploadFile file) {
+        this.file = file;
     }
 
     public boolean isMine(Member member) {
