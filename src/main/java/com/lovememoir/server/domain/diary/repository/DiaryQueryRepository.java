@@ -1,9 +1,8 @@
 package com.lovememoir.server.domain.diary.repository;
 
-import com.lovememoir.server.domain.diary.QDiary;
 import com.lovememoir.server.domain.diary.repository.response.DiarySearchResponse;
-import com.lovememoir.server.domain.member.QMember;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
@@ -22,29 +21,7 @@ public class DiaryQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public List<DiarySearchResponse> findByMemberKey(final String memberKey) {
-        return queryFactory
-            .select(
-                Projections.constructor(
-                    DiarySearchResponse.class,
-                    diary.id,
-                    diary.isFixed,
-                    diary.title,
-                    diary.pageCount,
-                    diary.relationshipStartedDate
-                )
-            )
-            .from(diary)
-            .join(diary.member, member)
-            .where(
-                diary.isDeleted.isFalse(),
-                diary.member.memberKey.eq(memberKey)
-            )
-            .orderBy(diary.createdDateTime.desc())
-            .fetch();
-    }
-
-    public List<DiarySearchResponse> findMainDiaries(final String memberKey) {
+    public List<DiarySearchResponse> findByMemberKey(final String memberKey, final boolean mainOnly) {
         return queryFactory
             .select(
                 Projections.constructor(
@@ -61,9 +38,13 @@ public class DiaryQueryRepository {
             .where(
                 diary.isDeleted.isFalse(),
                 diary.member.memberKey.eq(memberKey),
-                diary.isFixed.isTrue()
+                isFixedIsTrue(mainOnly)
             )
             .orderBy(diary.createdDateTime.desc())
             .fetch();
+    }
+
+    private BooleanExpression isFixedIsTrue(final boolean mainOnly) {
+        return mainOnly ? diary.isFixed.isTrue() : null;
     }
 }

@@ -40,7 +40,7 @@ class DiaryQueryRepositoryTest extends IntegrationTestSupport {
         Diary diary4 = createDiary(member, true, "러바오와의 연애 기록", false);
 
         //when
-        List<DiarySearchResponse> responses = diaryQueryRepository.findByMemberKey(member.getMemberKey());
+        List<DiarySearchResponse> responses = diaryQueryRepository.findByMemberKey(member.getMemberKey(), false);
 
         //then
         assertThat(responses).hasSize(3)
@@ -63,7 +63,7 @@ class DiaryQueryRepositoryTest extends IntegrationTestSupport {
         Diary diary4 = createDiary(member, true, "러바오와의 연애 기록", false);
 
         //when
-        List<DiarySearchResponse> responses = diaryQueryRepository.findMainDiaries(member.getMemberKey());
+        List<DiarySearchResponse> responses = diaryQueryRepository.findByMemberKey(member.getMemberKey(), true);
 
         //then
         assertThat(responses).hasSize(1)
