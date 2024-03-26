@@ -1,5 +1,5 @@
 [[modify-diary-image]]
-=== 일기장 정보 수정 API
+=== 일기장 프로필 이미지 수정 API
 
 ==== HTTP Request
 
