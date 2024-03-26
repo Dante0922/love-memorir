@@ -4,6 +4,7 @@ import com.lovememoir.server.api.controller.diary.DiaryApiController;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
+import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.service.diary.DiaryService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
@@ -105,7 +106,16 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
     void modifyDiary() throws Exception {
         DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title("루이바오")
+            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
+
+        DiaryModifyResponse response = DiaryModifyResponse.builder()
+            .diaryId(1L)
+            .title("루이바오와의 연애 기록")
+            .build();
+
+        given(diaryService.modifyDiary(anyString(), anyLong(), any(), any()))
+            .willReturn(response);
 
         mockMvc.perform(
                 patch(BASE_URL + "/{diaryId}", 1L)
@@ -128,7 +138,9 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                 ),
                 requestFields(
                     fieldWithPath("title").type(JsonFieldType.STRING)
-                        .description("수정할 일기장 제목")
+                        .description("수정할 일기장 제목"),
+                    fieldWithPath("relationshipStartedDate").type(JsonFieldType.ARRAY)
+                        .description("수정할 일기장 연애 시작일")
                 ),
                 responseFields(
                     fieldWithPath("code").type(JsonFieldType.NUMBER)

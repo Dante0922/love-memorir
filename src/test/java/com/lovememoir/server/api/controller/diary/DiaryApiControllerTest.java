@@ -45,7 +45,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
-    @DisplayName("신규 일기장을 등록할 때 제목(파트너 닉네임)은 필수값이다.")
+    @DisplayName("신규 일기장을 등록할 때 연애 시작일은 필수값이다.")
     @Test
     void createDiaryWithoutRelationshipStartedDate() throws Exception {
         //given
@@ -94,6 +94,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title(" ")
+            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
         //when //then
@@ -111,12 +112,36 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
+    @DisplayName("일기장 정보를 수정할 때 연애 시작일은 필수값이다.")
+    @Test
+    void modifyDiaryWithoutRelationshipStartedDate() throws Exception {
+        //given
+        DiaryCreateRequest request = DiaryCreateRequest.builder()
+            .title("푸바오")
+            .build();
+
+        //when //then
+        mockMvc.perform(
+                post(BASE_URL)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("$.message").value(NOT_NULL_RELATIONSHIP_STARTED_DATE))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
+
     @DisplayName("일기장 정보를 수정한다.")
     @Test
     void modifyDiary() throws Exception {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title("루이바오")
+            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
         //when //then

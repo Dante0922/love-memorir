@@ -1,7 +1,10 @@
 package com.lovememoir.server.api.service.diary;
 
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
+import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest;
+import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
+import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.member.Member;
@@ -18,8 +21,7 @@ import java.util.Optional;
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateRelationshipStartedDate;
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateTitle;
 import static com.lovememoir.server.common.constant.GlobalConstant.MAX_DIARY_COUNT;
-import static com.lovememoir.server.common.message.ExceptionMessage.MAXIMUM_DIARY_COUNT;
-import static com.lovememoir.server.common.message.ExceptionMessage.NO_SUCH_MEMBER;
+import static com.lovememoir.server.common.message.ExceptionMessage.*;
 
 @RequiredArgsConstructor
 @Service
@@ -40,6 +42,23 @@ public class DiaryService {
         final Diary savedDiary = saveDiary(title, relationshipStartedDate, member);
 
         return DiaryCreateResponse.of(savedDiary);
+    }
+
+    public DiaryModifyResponse modifyDiary(final String memberKey, final Long diaryId, final LocalDateTime currentDateTime, DiaryModifyServiceRequest request) {
+        final String title = validateTitle(request.getTitle());
+        final LocalDate relationshipStartedDate = validateRelationshipStartedDate(currentDateTime, request.getRelationshipStartedDate());
+
+        final Member member = getMember(memberKey);
+
+        final Diary diary = getDiary(diaryId);
+
+        if (!diary.isMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        diary.modify(generateTitle(title), relationshipStartedDate);
+
+        return DiaryModifyResponse.of(diary);
     }
 
     private Member getMember(final String memberKey) {
@@ -64,5 +83,13 @@ public class DiaryService {
     private Diary saveDiary(String title, LocalDate relationshipStartedDate, Member member) {
         final Diary diary = Diary.create(generateTitle(title), relationshipStartedDate, member);
         return diaryRepository.save(diary);
+    }
+
+    private Diary getDiary(Long diaryId) {
+        Optional<Diary> findDiary = diaryRepository.findById(diaryId);
+        if (findDiary.isEmpty()) {
+            throw new IllegalArgumentException(NO_SUCH_DIARY);
+        }
+        return findDiary.get();
     }
 }
