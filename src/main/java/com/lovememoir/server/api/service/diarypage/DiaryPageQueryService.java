@@ -42,6 +42,7 @@ public class DiaryPageQueryService {
     }
 
     public DiaryPageResponse searchDiaryPage(Long diaryPageId) {
-        return null;
+        return diaryPageQueryRepository.findById(diaryPageId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY_PAGE));
     }
 }
