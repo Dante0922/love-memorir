@@ -34,6 +34,7 @@ include::api/diary/create-diary.adoc[]
 include::api/diary/search-diaries.adoc[]
 include::api/diary/search-main-diaries.adoc[]
 include::api/diary/modify-diary.adoc[]
+include::api/diary/modify-diary-image.adoc[]
 include::api/diary/remove-diary.adoc[]
 
 [[Diary-Page-API]]
