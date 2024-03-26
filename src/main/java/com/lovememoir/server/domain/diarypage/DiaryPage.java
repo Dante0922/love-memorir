@@ -55,4 +55,10 @@ public class DiaryPage extends BaseTimeEntity {
             .diary(diary)
             .build();
     }
+
+    public void modify(String title, String content, LocalDate diaryDate) {
+        this.title = title;
+        this.content = content;
+        this.diaryDate = diaryDate;
+    }
 }

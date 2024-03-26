@@ -2,7 +2,10 @@ package com.lovememoir.server.api.service.diarypage;
 
 import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
+import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
+import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageCreateServiceRequest;
+import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
@@ -105,6 +108,95 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         assertThat(findDiary.get().getPageCount()).isOne();
     }
 
+    @DisplayName("일기 수정시 본인의 일기장이 아니라면 예외가 발생한다.")
+    @Test
+    void modifyDiaryPageWithoutAuth() {
+        //given
+        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 26, 0, 0);
+
+        Member member = createMember();
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage = createDiaryPage(diary);
+
+        Member otherMember = createMember();
+
+        DiaryPageModifyServiceRequest request = DiaryPageModifyServiceRequest.builder()
+            .title("쌍둥이 육아")
+            .content("혼자 루이바오랑 후이바오를 육아하기 너무 힘들다...너무 개구쟁이들이야")
+            .diaryDate(LocalDate.of(2024, 3, 20))
+            .build();
+
+        //when //then
+        assertThatThrownBy(() -> diaryPageService.modifyDiaryPage(otherMember.getMemberKey(), diaryPage.getId(), currentDateTime, request))
+            .isInstanceOf(AuthException.class)
+            .hasMessage(NO_AUTH);
+    }
+
+    @DisplayName("회원 고유키, 일기 식별키, 일기 정보를 입력 받아 일기를 수정한다.")
+    @Test
+    void modifyDiaryPage() {
+        //given
+        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 26, 0, 0);
+
+        Member member = createMember();
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage = createDiaryPage(diary);
+
+        DiaryPageModifyServiceRequest request = DiaryPageModifyServiceRequest.builder()
+            .title("쌍둥이 육아")
+            .content("혼자 루이바오랑 후이바오를 육아하기 너무 힘들다...너무 개구쟁이들이야")
+            .diaryDate(LocalDate.of(2024, 3, 20))
+            .build();
+
+        //when
+        DiaryPageModifyResponse response = diaryPageService.modifyDiaryPage(member.getMemberKey(), diaryPage.getId(), currentDateTime, request);
+
+        //then
+        assertThat(response).isNotNull();
+
+        Optional<DiaryPage> findDiaryPage = diaryPageRepository.findById(diaryPage.getId());
+        assertThat(findDiaryPage).isPresent();
+        assertThat(findDiaryPage.get())
+            .hasFieldOrPropertyWithValue("title", "쌍둥이 육아")
+            .hasFieldOrPropertyWithValue("content", "혼자 루이바오랑 후이바오를 육아하기 너무 힘들다...너무 개구쟁이들이야")
+            .hasFieldOrPropertyWithValue("diaryDate", LocalDate.of(2024, 3, 20));
+    }
+
+    @DisplayName("일기 삭제시 본인의 일기장이 아니라면 예외가 발생한다.")
+    @Test
+    void removeDiaryPageWithoutAuth() {
+        //given
+        Member member = createMember();
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage = createDiaryPage(diary);
+
+        Member otherMember = createMember();
+
+        //when //then
+        assertThatThrownBy(() -> diaryPageService.removeDiaryPage(otherMember.getMemberKey(), diaryPage.getId()))
+            .isInstanceOf(AuthException.class)
+            .hasMessage(NO_AUTH);
+    }
+
+    @DisplayName("회원 고유키와 일기 식별키를 입력 받아 일기를 삭제한다.")
+    @Test
+    void removeDiaryPage() {
+        //given
+        Member member = createMember();
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage = createDiaryPage(diary);
+
+        //when
+        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPage(member.getMemberKey(), diaryPage.getId());
+
+        //then
+        assertThat(response).isNotNull();
+
+        Optional<DiaryPage> findDiaryPage = diaryPageRepository.findById(diaryPage.getId());
+        assertThat(findDiaryPage).isPresent();
+        assertThat(findDiaryPage.get().isDeleted()).isTrue();
+    }
+
     private Member createMember() {
         Member member = Member.builder()
             .memberKey(UUID.randomUUID().toString())
@@ -125,5 +217,15 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
             .member(member)
             .build();
         return diaryRepository.save(diary);
+    }
+
+    private DiaryPage createDiaryPage(Diary diary) {
+        DiaryPage diaryPage = DiaryPage.builder()
+            .title("개구쟁이 쌍둥바오")
+            .content("혼자 루이바오랑 후이바오를 육아하기 너무 힘들다...너무 개구쟁이들이야")
+            .diaryDate(LocalDate.of(2024, 3, 10))
+            .diary(diary)
+            .build();
+        return diaryPageRepository.save(diaryPage);
     }
 }
