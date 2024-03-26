@@ -63,4 +63,8 @@ public class Diary extends BaseTimeEntity {
     public boolean isMine(Member member) {
         return this.member.getId().equals(member.getId());
     }
+
+    public void increasePageCount() {
+        pageCount += 1;
+    }
 }

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,19 +44,21 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
     @Test
     void createDiaryPageWithoutAuth() {
         //given
+        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 26, 0, 0);
+
         Member member = createMember();
         Diary diary = createDiary(member);
 
         Member otherMember = createMember();
 
         DiaryPageCreateServiceRequest request = DiaryPageCreateServiceRequest.builder()
-            .title("러바오 없이 쌍둥이 육아")
+            .title("쌍둥이 육아")
             .content("혼자 루이바오랑 후이바오를 육아하기 너무 힘들다...너무 개구쟁이들이야")
             .diaryDate(LocalDate.of(2024, 3, 20))
             .build();
 
         //when //then
-        assertThatThrownBy(() -> diaryPageService.createDiaryPage(otherMember.getMemberKey(), diary.getId(), request))
+        assertThatThrownBy(() -> diaryPageService.createDiaryPage(otherMember.getMemberKey(), diary.getId(), currentDateTime, request))
             .isInstanceOf(AuthException.class)
             .hasMessage(NO_AUTH);
 
@@ -71,25 +74,29 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
     @Test
     void createDiaryPage() {
         //given
+        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 26, 0, 0);
+
         Member member = createMember();
         Diary diary = createDiary(member);
 
         DiaryPageCreateServiceRequest request = DiaryPageCreateServiceRequest.builder()
-            .title("러바오 없이 쌍둥이 육아")
+            .title("쌍둥이 육아")
             .content("혼자 루이바오랑 후이바오를 육아하기 너무 힘들다...너무 개구쟁이들이야")
             .diaryDate(LocalDate.of(2024, 3, 20))
             .build();
 
         //when
-        DiaryPageCreateResponse response = diaryPageService.createDiaryPage(member.getMemberKey(), diary.getId(), request);
+        DiaryPageCreateResponse response = diaryPageService.createDiaryPage(member.getMemberKey(), diary.getId(), currentDateTime, request);
 
         //then
-        assertThat(response).isNotNull();
+        assertThat(response)
+            .isNotNull()
+            .hasFieldOrPropertyWithValue("contentLength", "혼자 루이바오랑 후이바오를 육아하기 너무 힘들다...너무 개구쟁이들이야".length());
 
         Optional<DiaryPage> findDiaryPage = diaryPageRepository.findById(response.getDiaryPageId());
         assertThat(findDiaryPage).isPresent();
         assertThat(findDiaryPage.get())
-            .hasFieldOrPropertyWithValue("title", "러바오 없이 쌍둥이 육아")
+            .hasFieldOrPropertyWithValue("title", "쌍둥이 육아")
             .hasFieldOrPropertyWithValue("content", "혼자 루이바오랑 후이바오를 육아하기 너무 힘들다...너무 개구쟁이들이야")
             .hasFieldOrPropertyWithValue("diaryDate", LocalDate.of(2024, 3, 20));
 
