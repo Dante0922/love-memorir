@@ -3,15 +3,22 @@ package com.lovememoir.server.docs.diarypage;
 import com.lovememoir.server.api.controller.diarypage.DiaryPageApiController;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageCreateRequest;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageModifyRequest;
+import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
+import com.lovememoir.server.api.service.diarypage.DiaryPageService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -28,10 +35,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
 
     private static final String BASE_URL = "/api/v1/diaries/{diaryId}/pages";
+    private final DiaryPageService diaryPageService = mock(DiaryPageService.class);
 
     @Override
     protected Object initController() {
-        return new DiaryPageApiController();
+        return new DiaryPageApiController(diaryPageService);
     }
 
     @DisplayName("신규 일기 등록 API")
@@ -42,6 +50,17 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
             .content("푸바오를 볼 수 있는 마지막날 에버랜드에서 오픈런했다.")
             .diaryDate(LocalDate.of(2024, 3, 3))
             .build();
+
+        DiaryPageCreateResponse response = DiaryPageCreateResponse.builder()
+            .diaryPageId(1L)
+            .title("푸바오가 떠나는 날")
+            .contentLength("푸바오를 볼 수 있는 마지막날 에버랜드에서 오픈런했다.".length())
+            .diaryDate(LocalDate.of(2024, 3, 3))
+            .createdDateTime(LocalDateTime.of(2024, 3, 5, 16, 0))
+            .build();
+
+        given(diaryPageService.createDiaryPage(anyString(), anyLong(), any(), any()))
+            .willReturn(response);
 
         mockMvc.perform(
                 post(BASE_URL, 1)

@@ -1,5 +1,6 @@
 package com.lovememoir.server.api.controller.diarypage.request;
 
+import com.lovememoir.server.api.service.diarypage.request.DiaryPageCreateServiceRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -28,5 +29,13 @@ public class DiaryPageCreateRequest {
         this.title = title;
         this.content = content;
         this.diaryDate = diaryDate;
+    }
+
+    public DiaryPageCreateServiceRequest toServiceRequest() {
+        return DiaryPageCreateServiceRequest.builder()
+            .title(title)
+            .content(content)
+            .diaryDate(diaryDate)
+            .build();
     }
 }

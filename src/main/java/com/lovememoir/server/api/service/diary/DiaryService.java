@@ -65,11 +65,8 @@ public class DiaryService {
     }
 
     private Member getMember(final String memberKey) {
-        Optional<Member> findMember = memberRepository.findByMemberKey(memberKey);
-        if (findMember.isEmpty()) {
-            throw new NoSuchElementException(NO_SUCH_MEMBER);
-        }
-        return findMember.get();
+        return memberRepository.findByMemberKey(memberKey)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
     }
 
     private void validateMaximumDiaryCount(final Long memberId) {
@@ -89,16 +86,12 @@ public class DiaryService {
     }
 
     private Diary getDiary(Long diaryId) {
-        Optional<Diary> findDiary = diaryRepository.findById(diaryId);
-        if (findDiary.isEmpty()) {
-            throw new IllegalArgumentException(NO_SUCH_DIARY);
-        }
-        return findDiary.get();
+        return diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
     }
 
     private Diary getMyDiary(String memberKey, Long diaryId) {
         final Member member = getMember(memberKey);
-
         final Diary diary = getDiary(diaryId);
 
         if (!diary.isMine(member)) {
