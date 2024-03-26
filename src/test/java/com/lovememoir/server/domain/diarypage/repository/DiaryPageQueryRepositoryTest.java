@@ -9,7 +9,6 @@ import com.lovememoir.server.domain.member.Gender;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.Role;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import org.springframework.data.domain.Slice;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class DiaryPageQueryRepositoryTest extends IntegrationTestSupport {
 
@@ -57,10 +56,8 @@ class DiaryPageQueryRepositoryTest extends IntegrationTestSupport {
         //then
         assertThat(content.getContent()).hasSize(2)
             .extracting("diaryPageId")
-            .containsExactly(
-                tuple(diaryPage3.getId()),
-                tuple(diaryPage1.getId())
-            );
+            .containsExactly(diaryPage3.getId(), diaryPage1.getId());
+
         assertThat(content.getNumber()).isEqualTo(1);
         assertThat(content.getSize()).isEqualTo(2);
         assertThat(content.isFirst()).isFalse();
