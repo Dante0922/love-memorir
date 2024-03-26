@@ -49,13 +49,7 @@ public class DiaryService {
         final String title = validateTitle(request.getTitle());
         final LocalDate relationshipStartedDate = validateRelationshipStartedDate(currentDateTime, request.getRelationshipStartedDate());
 
-        final Member member = getMember(memberKey);
-
-        final Diary diary = getDiary(diaryId);
-
-        if (!diary.isMine(member)) {
-            throw new AuthException(NO_AUTH);
-        }
+        final Diary diary = getMyDiary(memberKey, diaryId);
 
         diary.modify(generateTitle(title), relationshipStartedDate);
 
@@ -63,13 +57,7 @@ public class DiaryService {
     }
 
     public DiaryRemoveResponse removeDiary(final String memberKey, final Long diaryId) {
-        final Member member = getMember(memberKey);
-
-        final Diary diary = getDiary(diaryId);
-
-        if (!diary.isMine(member)) {
-            throw new AuthException(NO_AUTH);
-        }
+        final Diary diary = getMyDiary(memberKey, diaryId);
 
         diary.remove();
 
@@ -106,5 +94,17 @@ public class DiaryService {
             throw new IllegalArgumentException(NO_SUCH_DIARY);
         }
         return findDiary.get();
+    }
+
+    private Diary getMyDiary(String memberKey, Long diaryId) {
+        final Member member = getMember(memberKey);
+
+        final Diary diary = getDiary(diaryId);
+
+        if (!diary.isMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        return diary;
     }
 }
