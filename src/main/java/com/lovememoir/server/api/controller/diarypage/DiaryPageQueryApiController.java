@@ -3,6 +3,7 @@ package com.lovememoir.server.api.controller.diarypage;
 import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.api.SliceResponse;
 import com.lovememoir.server.api.controller.diarypage.param.DiaryPageSearchParam;
+import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import jakarta.validation.Valid;
@@ -26,25 +27,17 @@ import static com.lovememoir.server.common.constant.GlobalConstant.PAGE_SIZE;
 @RequestMapping("/api/v1/diaries/{diaryId}/pages")
 public class DiaryPageQueryApiController {
 
+    private final DiaryPageQueryService diaryPageQueryService;
+
     @GetMapping
     public ApiResponse<SliceResponse<DiaryPagesResponse>> searchDiaryPages(
         @PathVariable Long diaryId,
         @Valid @ModelAttribute DiaryPageSearchParam param
     ) {
-        DiaryPagesResponse response1 = DiaryPagesResponse.builder()
-            .diaryPageId(1L)
-            .pageTitle("푸바오와 마지막 인사")
-            .build();
-        DiaryPagesResponse response2 = DiaryPagesResponse.builder()
-            .diaryPageId(2L)
-            .pageTitle("루이바오의 먹방")
-            .build();
-        DiaryPagesResponse response3 = DiaryPagesResponse.builder()
-            .diaryPageId(3L)
-            .pageTitle("후쪽이 후이바오")
-            .build();
-        PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
-        SliceResponse<DiaryPagesResponse> response = SliceResponse.of(List.of(response3, response2, response1), pageRequest, false);
+        PageRequest pageRequest = PageRequest.of(param.getPage() - 1, PAGE_SIZE);
+
+        SliceResponse<DiaryPagesResponse> response = diaryPageQueryService.searchDiaryPages(diaryId, pageRequest);
+
         return ApiResponse.ok(response);
     }
 
