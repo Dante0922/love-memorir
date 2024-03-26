@@ -1,5 +1,6 @@
 package com.lovememoir.server.domain.diarypage.repository;
 
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.lovememoir.server.domain.diarypage.QDiaryPage.diaryPage;
 
@@ -51,5 +53,9 @@ public class DiaryPageQueryRepository {
             )
             .orderBy(diaryPage.createdDateTime.desc())
             .fetch();
+    }
+
+    public Optional<DiaryPageResponse> findById(final Long diaryPageId) {
+        return Optional.empty();
     }
 }

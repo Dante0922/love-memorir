@@ -4,6 +4,7 @@ import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.lovememoir.server.domain.member.Gender;
 import com.lovememoir.server.domain.member.Member;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,6 +78,27 @@ class DiaryPageQueryRepositoryTest extends IntegrationTestSupport {
         assertThat(content).hasSize(2)
             .extracting("diaryPageId")
             .containsExactly(diaryPage2.getId(), diaryPage1.getId());
+    }
+
+    @DisplayName("일기 페이지 식별키로 일기를 조회한다.")
+    @Test
+    void findById() {
+        //given
+        Member member = createMember();
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage = createDiaryPage(diary, false);
+
+        //when
+        Optional<DiaryPageResponse> response = diaryPageQueryRepository.findById(diaryPage.getId());
+
+        //then
+        assertThat(response).isPresent();
+        assertThat(response.get())
+            .hasFieldOrPropertyWithValue("diaryPageId", diaryPage.getId())
+            .hasFieldOrPropertyWithValue("pageTitle", diaryPage.getTitle())
+            .hasFieldOrPropertyWithValue("pageContent", diaryPage.getContent())
+            .hasFieldOrPropertyWithValue("diaryDate", diaryPage.getDiaryDate())
+            .hasFieldOrPropertyWithValue("dateTimeOfCreation", diaryPage.getCreatedDateTime());
     }
 
     private Member createMember() {
