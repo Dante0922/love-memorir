@@ -63,7 +63,17 @@ public class DiaryService {
     }
 
     public DiaryRemoveResponse removeDiary(final String memberKey, final Long diaryId) {
-        return null;
+        final Member member = getMember(memberKey);
+
+        final Diary diary = getDiary(diaryId);
+
+        if (!diary.isMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        diary.remove();
+
+        return DiaryRemoveResponse.of(diary);
     }
 
     private Member getMember(final String memberKey) {
