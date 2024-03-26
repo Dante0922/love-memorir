@@ -3,6 +3,7 @@ package com.lovememoir.server.domain.diarypage.repository;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +57,20 @@ public class DiaryPageQueryRepository {
     }
 
     public Optional<DiaryPageResponse> findById(final Long diaryPageId) {
-        return Optional.empty();
+        DiaryPageResponse content = queryFactory
+            .select(
+                Projections.constructor(
+                    DiaryPageResponse.class,
+                    Expressions.asNumber(diaryPageId),
+                    diaryPage.title,
+                    diaryPage.content,
+                    diaryPage.diaryDate,
+                    diaryPage.createdDateTime
+                )
+            )
+            .from(diaryPage)
+            .where(diaryPage.id.eq(diaryPageId))
+            .fetchFirst();
+        return Optional.ofNullable(content);
     }
 }
