@@ -2,6 +2,7 @@ package com.lovememoir.server.docs.diary;
 
 import com.lovememoir.server.api.controller.diary.DiaryApiController;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
+import com.lovememoir.server.api.controller.diary.request.DiaryImageModifyRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDate;
@@ -30,8 +33,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -142,6 +145,69 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                         .description("수정할 일기장 제목"),
                     fieldWithPath("relationshipStartedDate").type(JsonFieldType.ARRAY)
                         .description("수정할 일기장 연애 시작일")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.diaryId").type(JsonFieldType.NUMBER)
+                        .description("수정된 일기장 식별키"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING)
+                        .description("수정된 일기장 제목")
+                )
+            ));
+    }
+
+    @DisplayName("일기장 이미지 수정 API")
+    @Test
+    void modifyDiaryImage() throws Exception {
+        MockMultipartFile file = new MockMultipartFile(
+            "profile",
+            "diary-profile-upload-image.jpg",
+            "image/jpg",
+            "image data".getBytes()
+        );
+
+        DiaryImageModifyRequest request = DiaryImageModifyRequest.builder()
+            .profile(file)
+            .build();
+
+        DiaryModifyResponse response = DiaryModifyResponse.builder()
+            .diaryId(1L)
+            .title("루이바오와의 연애 기록")
+            .build();
+
+        given(diaryService.modifyDiaryImage(anyString(), anyLong(), any()))
+            .willReturn(response);
+
+        mockMvc.perform(
+                multipart(BASE_URL + "/{diaryId}", 1L)
+                    .file(file)
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer jwt.access.token")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("modify-diary-image",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION)
+                        .description("회원 인증 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("diaryId")
+                        .description("일기장 식별키")
+                ),
+                requestParts(
+                    partWithName("profile")
+                        .optional()
+                        .description("일기장 프로필 사진")
                 ),
                 responseFields(
                     fieldWithPath("code").type(JsonFieldType.NUMBER)
