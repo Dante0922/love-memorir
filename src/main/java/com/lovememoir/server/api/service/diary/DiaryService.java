@@ -2,6 +2,7 @@ package com.lovememoir.server.api.service.diary;
 
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
+import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest;
 import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
@@ -59,6 +60,10 @@ public class DiaryService {
         diary.modify(generateTitle(title), relationshipStartedDate);
 
         return DiaryModifyResponse.of(diary);
+    }
+
+    public DiaryRemoveResponse removeDiary(final String memberKey, final Long diaryId) {
+        return null;
     }
 
     private Member getMember(final String memberKey) {
