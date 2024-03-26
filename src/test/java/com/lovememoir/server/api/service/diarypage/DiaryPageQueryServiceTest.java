@@ -63,7 +63,7 @@ class DiaryPageQueryServiceTest extends IntegrationTestSupport {
             .hasFieldOrPropertyWithValue("isLast", true);
         assertThat(response.getContent()).hasSize(2)
             .extracting("diaryPageId")
-            .containsExactly(diaryPage2.getId(), diaryPage1.getId());
+            .containsExactly(diaryPage3.getId(), diaryPage1.getId());
     }
 
     private Member createMember() {

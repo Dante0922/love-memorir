@@ -7,6 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -16,7 +20,20 @@ public class DiaryPageQueryService {
     private final DiaryPageQueryRepository diaryPageQueryRepository;
 
     public SliceResponse<DiaryPagesResponse> searchDiaryPages(Long diaryId, Pageable pageable) {
+        List<Long> diaryIds = diaryPageQueryRepository.findAllIdByDiaryId(diaryId, pageable);
 
-        return null;
+        if (CollectionUtils.isEmpty(diaryIds)) {
+            return SliceResponse.of(new ArrayList<>(), pageable, false);
+        }
+
+        boolean hasNext = false;
+        if (diaryIds.size() > pageable.getPageSize()) {
+            diaryIds.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
+        List<DiaryPagesResponse> content = diaryPageQueryRepository.findAllByDiaryIdIn(diaryIds);
+
+        return SliceResponse.of(content, pageable, hasNext);
     }
 }
