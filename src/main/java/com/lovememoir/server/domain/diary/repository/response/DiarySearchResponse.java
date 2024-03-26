@@ -9,13 +9,17 @@ import java.time.LocalDate;
 public class DiarySearchResponse {
 
     private final Long diaryId;
+    private final Boolean isMain;
     private final String title;
-    private final LocalDate startDiary;
+    private final int diaryPage;
+    private final LocalDate relationshipStartedDate;
 
     @Builder
-    public DiarySearchResponse(Long diaryId, String title, LocalDate startDiary) {
+    public DiarySearchResponse(Long diaryId, Boolean isMain, String title, int diaryPage, LocalDate relationshipStartedDate) {
         this.diaryId = diaryId;
+        this.isMain = isMain;
         this.title = title;
-        this.startDiary = startDiary;
+        this.diaryPage = diaryPage;
+        this.relationshipStartedDate = relationshipStartedDate;
     }
 }
