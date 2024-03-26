@@ -3,6 +3,7 @@ package com.lovememoir.server.api.service.diary;
 import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
+import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest;
 import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
@@ -142,6 +143,39 @@ class DiaryServiceTest extends IntegrationTestSupport {
             .hasFieldOrPropertyWithValue("title", "루이바오와의 연애 기록")
             .hasFieldOrPropertyWithValue("relationshipStartedDate", LocalDate.of(2023, 7, 7))
             .hasFieldOrPropertyWithValue("pageCount", 0);
+    }
+
+    @DisplayName("일기장 삭제시 본인의 일기장이 아니라면 예외가 발생한다.")
+    @Test
+    void removeDiaryWithoutAuth() {
+        //given
+        Member member = createMember();
+        Diary diary = createDiary(member);
+
+        Member otherMember = createMember();
+
+        //when //then
+        assertThatThrownBy(() -> diaryService.removeDiary(otherMember.getMemberKey(), diary.getId()))
+            .isInstanceOf(AuthException.class)
+            .hasMessage(NO_AUTH);
+    }
+
+    @DisplayName("회원 고유키와 일기장 식별키를 입력 받아 일기장을 삭제한다.")
+    @Test
+    void removeDiary() {
+        //given
+        Member member = createMember();
+        Diary diary = createDiary(member);
+
+        //when
+        DiaryRemoveResponse response = diaryService.removeDiary(member.getMemberKey(), diary.getId());
+
+        //then
+        assertThat(response).isNotNull();
+
+        Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
+        assertThat(findDiary).isPresent();
+        assertThat(findDiary.get().isDeleted()).isTrue();
     }
 
     private Member createMember() {

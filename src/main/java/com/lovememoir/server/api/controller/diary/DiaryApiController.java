@@ -57,10 +57,10 @@ public class DiaryApiController {
 
     @DeleteMapping("/{diaryId}")
     public ApiResponse<DiaryRemoveResponse> removeDiary(@PathVariable Long diaryId) {
-        DiaryRemoveResponse response = DiaryRemoveResponse.builder()
-            .diaryId(1L)
-            .title("후이바오")
-            .build();
+        //TODO: 2024-03-26 10:30 dong82 회원 정보 토큰 추출
+        String memberKey = UUID.randomUUID().toString();
+
+        DiaryRemoveResponse response = diaryService.removeDiary(memberKey, diaryId);
 
         return ApiResponse.ok(response);
     }

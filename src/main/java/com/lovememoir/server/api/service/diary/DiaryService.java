@@ -2,6 +2,7 @@ package com.lovememoir.server.api.service.diary;
 
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
+import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest;
 import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
@@ -48,17 +49,19 @@ public class DiaryService {
         final String title = validateTitle(request.getTitle());
         final LocalDate relationshipStartedDate = validateRelationshipStartedDate(currentDateTime, request.getRelationshipStartedDate());
 
-        final Member member = getMember(memberKey);
-
-        final Diary diary = getDiary(diaryId);
-
-        if (!diary.isMine(member)) {
-            throw new AuthException(NO_AUTH);
-        }
+        final Diary diary = getMyDiary(memberKey, diaryId);
 
         diary.modify(generateTitle(title), relationshipStartedDate);
 
         return DiaryModifyResponse.of(diary);
+    }
+
+    public DiaryRemoveResponse removeDiary(final String memberKey, final Long diaryId) {
+        final Diary diary = getMyDiary(memberKey, diaryId);
+
+        diary.remove();
+
+        return DiaryRemoveResponse.of(diary);
     }
 
     private Member getMember(final String memberKey) {
@@ -91,5 +94,17 @@ public class DiaryService {
             throw new IllegalArgumentException(NO_SUCH_DIARY);
         }
         return findDiary.get();
+    }
+
+    private Diary getMyDiary(String memberKey, Long diaryId) {
+        final Member member = getMember(memberKey);
+
+        final Diary diary = getDiary(diaryId);
+
+        if (!diary.isMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        return diary;
     }
 }
