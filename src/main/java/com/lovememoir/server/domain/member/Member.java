@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 
 @Entity
 @Getter
@@ -49,6 +51,16 @@ public class Member extends BaseTimeEntity {
         this.gender = gender;
         this.birth = birth;
         this.role = role;
+    }
+
+    public static Member create(String nickname, Gender gender, String birth) {
+        return Member.builder()
+            .memberKey(UUID.randomUUID().toString())
+            .nickname(nickname)
+            .gender(gender)
+            .birth(birth)
+            .role(Role.USER)
+            .build();
     }
 }
 
