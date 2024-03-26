@@ -66,10 +66,11 @@ public class DiaryPageApiController {
         @PathVariable Long diaryId,
         @PathVariable Long diaryPageId
     ) {
-        DiaryPageRemoveResponse response = DiaryPageRemoveResponse.builder()
-            .diaryPageId(2L)
-            .title("엄마 음식 훔쳐간 후이바오")
-            .build();
+        //TODO: 2024-03-26 17:49 dong82 회원 정보 토큰 추출
+        String memberKey = UUID.randomUUID().toString();
+
+        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPage(memberKey, diaryPageId);
+
         return ApiResponse.ok(response);
     }
 }

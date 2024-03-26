@@ -5,6 +5,7 @@ import com.lovememoir.server.api.controller.diarypage.request.DiaryPageCreateReq
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageModifyRequest;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
+import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
 import com.lovememoir.server.api.service.diarypage.DiaryPageService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
@@ -185,6 +186,14 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
     @DisplayName("일기 삭제 API")
     @Test
     void removeDiaryPage() throws Exception {
+        DiaryPageRemoveResponse response = DiaryPageRemoveResponse.builder()
+            .diaryPageId(2L)
+            .title("엄마 음식 훔쳐간 후이바오")
+            .build();
+
+        given(diaryPageService.removeDiaryPage(anyString(), anyLong()))
+            .willReturn(response);
+
         mockMvc.perform(
                 delete(BASE_URL + "/{diaryPageId}", 1, 2)
                     .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
