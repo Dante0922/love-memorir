@@ -2,6 +2,7 @@ package com.lovememoir.server.api.service.diarypage;
 
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
+import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageCreateServiceRequest;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
@@ -52,6 +53,10 @@ public class DiaryPageService {
         diaryPage.modify(title, request.getContent(), diaryDate);
 
         return DiaryPageModifyResponse.of(diaryPage);
+    }
+
+    public DiaryPageRemoveResponse removeDiaryPage(final String memberKey, final Long diaryPageId) {
+        return null;
     }
 
     private Member getMember(final String memberKey) {
