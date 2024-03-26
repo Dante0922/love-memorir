@@ -15,7 +15,7 @@ public class DiaryQueryService {
 
     private final DiaryQueryRepository diaryQueryRepository;
 
-    public List<DiarySearchResponse> searchDiaries() {
+    public List<DiarySearchResponse> searchDiaries(final String memberKey) {
         return null;
     }
 }

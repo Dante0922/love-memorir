@@ -1,7 +1,8 @@
-package com.lovememoir.server.domain.diary.repository;
+package com.lovememoir.server.api.service.diary;
 
 import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.domain.diary.Diary;
+import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.diary.repository.response.DiarySearchResponse;
 import com.lovememoir.server.domain.member.Gender;
 import com.lovememoir.server.domain.member.Member;
@@ -18,10 +19,10 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-class DiaryQueryRepositoryTest extends IntegrationTestSupport {
+class DiaryQueryServiceTest extends IntegrationTestSupport {
 
     @Autowired
-    private DiaryQueryRepository diaryQueryRepository;
+    private DiaryQueryService diaryQueryService;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -29,9 +30,9 @@ class DiaryQueryRepositoryTest extends IntegrationTestSupport {
     @Autowired
     private DiaryRepository diaryRepository;
 
-    @DisplayName("회원 고유키로 일기장 목록을 조회한다.")
+    @DisplayName("회원 고유키를 입력 받아 일기장 목록을 조회한다.")
     @Test
-    void findByMemberKey() {
+    void searchDiaries() {
         //given
         Member member = createMember();
         Diary diary1 = createDiary(member, false, "루이바오와의 연애 기록", false);
@@ -40,7 +41,7 @@ class DiaryQueryRepositoryTest extends IntegrationTestSupport {
         Diary diary4 = createDiary(member, true, "러바오와의 연애 기록", false);
 
         //when
-        List<DiarySearchResponse> responses = diaryQueryRepository.findByMemberKey(member.getMemberKey());
+        List<DiarySearchResponse> responses = diaryQueryService.searchDiaries(member.getMemberKey());
 
         //then
         assertThat(responses).hasSize(3)
