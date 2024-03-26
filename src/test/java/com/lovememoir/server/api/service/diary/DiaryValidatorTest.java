@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static com.lovememoir.server.common.message.ValidationMessage.FUTURE_DATE;
-import static com.lovememoir.server.common.message.ValidationMessage.MAX_LENGTH_TITLE;
+import static com.lovememoir.server.common.message.ValidationMessage.FUTURE_RELATIONSHIP_STARTED_DATE;
+import static com.lovememoir.server.common.message.ValidationMessage.MAX_LENGTH_DIARY_TITLE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -22,7 +22,7 @@ class DiaryValidatorTest {
         //when //then
         assertThatThrownBy(() -> DiaryValidator.validateTitle(title))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(MAX_LENGTH_TITLE);
+            .hasMessage(MAX_LENGTH_DIARY_TITLE);
     }
 
     @DisplayName("입력 받은 제목의 앞 뒤 공백은 글자수에 포함되지 않는다.")
@@ -61,7 +61,7 @@ class DiaryValidatorTest {
         //when //then
         assertThatThrownBy(() -> DiaryValidator.validateRelationshipStartedDate(currentDateTime, relationshipStartedDate))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(FUTURE_DATE);
+            .hasMessage(FUTURE_RELATIONSHIP_STARTED_DATE);
     }
 
     @DisplayName("입력 받은 연애 시작일에 대해 유효성 검증된 연애 시작일을 반환한다.")
