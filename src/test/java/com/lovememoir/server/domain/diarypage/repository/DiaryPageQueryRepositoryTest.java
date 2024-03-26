@@ -13,9 +13,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,9 +34,9 @@ class DiaryPageQueryRepositoryTest extends IntegrationTestSupport {
     @Autowired
     private DiaryPageRepository diaryPageRepository;
 
-    @DisplayName("일기장 식별키로 일기 목록을 조회한다.")
+    @DisplayName("일기장 식별키로 일기 식별키 목록을 조회한다.")
     @Test
-    void findByDiaryId() {
+    void findAllIdByDiaryId() {
         //given
         Member member = createMember();
         Diary diary = createDiary(member);
@@ -51,17 +51,31 @@ class DiaryPageQueryRepositoryTest extends IntegrationTestSupport {
         PageRequest pageRequest = PageRequest.of(1, 2);
 
         //when
-        Slice<DiaryPagesResponse> content = diaryPageQueryRepository.findByDiaryId(diary.getId(), pageRequest);
+        List<Long> diaryIds = diaryPageQueryRepository.findAllIdByDiaryId(diary.getId(), pageRequest);
 
         //then
-        assertThat(content.getContent()).hasSize(2)
-            .extracting("diaryPageId")
+        assertThat(diaryIds).hasSize(2)
             .containsExactly(diaryPage3.getId(), diaryPage1.getId());
+    }
 
-        assertThat(content.getNumber()).isEqualTo(1);
-        assertThat(content.getSize()).isEqualTo(2);
-        assertThat(content.isFirst()).isFalse();
-        assertThat(content.isLast()).isTrue();
+    @DisplayName("일기 식별키 목록으로 일기 정보를 조회한다.")
+    @Test
+    void findAllByDiaryIdIn() {
+        //given
+        Member member = createMember();
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage1 = createDiaryPage(diary, false);
+        DiaryPage diaryPage2 = createDiaryPage(diary, false);
+
+        List<Long> diaryIds = List.of(diaryPage2.getId(), diaryPage1.getId());
+
+        //when
+        List<DiaryPagesResponse> content = diaryPageQueryRepository.findAllByDiaryIdIn(diaryIds);
+
+        //then
+        assertThat(content).hasSize(2)
+            .extracting("diaryPageId")
+            .containsExactly(diaryPage2.getId(), diaryPage1.getId());
     }
 
     private Member createMember() {

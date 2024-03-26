@@ -6,12 +6,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.lovememoir.server.domain.diarypage.QDiaryPage.diaryPage;
@@ -26,8 +22,8 @@ public class DiaryPageQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public Slice<DiaryPagesResponse> findByDiaryId(final Long diaryId, Pageable pageable) {
-        List<Long> ids = queryFactory
+    public List<Long> findAllIdByDiaryId(final Long diaryId, Pageable pageable) {
+        return queryFactory
             .select(diaryPage.id)
             .from(diaryPage)
             .where(
@@ -38,18 +34,10 @@ public class DiaryPageQueryRepository {
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize() + 1)
             .fetch();
+    }
 
-        if (CollectionUtils.isEmpty(ids)) {
-            return new SliceImpl<>(new ArrayList<>(), pageable, false);
-        }
-
-        boolean hasNext = false;
-        if (ids.size() > pageable.getPageSize()) {
-            ids.remove(pageable.getPageSize());
-            hasNext = true;
-        }
-
-        List<DiaryPagesResponse> content = queryFactory
+    public List<DiaryPagesResponse> findAllByDiaryIdIn(final List<Long> diaryIds) {
+        return queryFactory
             .select(
                 Projections.constructor(
                     DiaryPagesResponse.class,
@@ -59,11 +47,9 @@ public class DiaryPageQueryRepository {
             )
             .from(diaryPage)
             .where(
-                diaryPage.id.in(ids)
+                diaryPage.id.in(diaryIds)
             )
             .orderBy(diaryPage.createdDateTime.desc())
             .fetch();
-
-        return new SliceImpl<>(content, pageable, hasNext);
     }
 }
