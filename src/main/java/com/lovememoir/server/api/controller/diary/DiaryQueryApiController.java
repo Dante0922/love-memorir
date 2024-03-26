@@ -23,22 +23,22 @@ public class DiaryQueryApiController {
 
     @GetMapping
     public ApiResponse<ListResponse<DiarySearchResponse>> searchDiaries() {
-        DiarySearchResponse response1 = DiarySearchResponse.builder()
-            .diaryId(1L)
-            .title("푸바오")
-            .startDiary(LocalDate.of(2020, 7, 20))
-            .build();
-        DiarySearchResponse response2 = DiarySearchResponse.builder()
-            .diaryId(2L)
-            .title("루이바오")
-            .startDiary(LocalDate.of(2020, 7, 7))
-            .build();
-        DiarySearchResponse response3 = DiarySearchResponse.builder()
-            .diaryId(3L)
-            .title("후이바오")
-            .startDiary(LocalDate.of(2020, 7, 7))
-            .build();
-        ListResponse<DiarySearchResponse> response = ListResponse.of(List.of(response3, response2, response1));
-        return ApiResponse.ok(response);
+//        DiarySearchResponse response1 = DiarySearchResponse.builder()
+//            .diaryId(1L)
+//            .title("푸바오")
+//            .startDiary(LocalDate.of(2020, 7, 20))
+//            .build();
+//        DiarySearchResponse response2 = DiarySearchResponse.builder()
+//            .diaryId(2L)
+//            .title("루이바오")
+//            .startDiary(LocalDate.of(2020, 7, 7))
+//            .build();
+//        DiarySearchResponse response3 = DiarySearchResponse.builder()
+//            .diaryId(3L)
+//            .title("후이바오")
+//            .startDiary(LocalDate.of(2020, 7, 7))
+//            .build();
+//        ListResponse<DiarySearchResponse> response = ListResponse.of(List.of(response3, response2, response1));
+        return ApiResponse.ok(null);
     }
 }

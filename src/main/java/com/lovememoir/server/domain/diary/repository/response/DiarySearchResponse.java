@@ -11,15 +11,15 @@ public class DiarySearchResponse {
     private final Long diaryId;
     private final Boolean isMain;
     private final String title;
-    private final int diaryPage;
+    private final int pageCount;
     private final LocalDate relationshipStartedDate;
 
     @Builder
-    public DiarySearchResponse(Long diaryId, Boolean isMain, String title, int diaryPage, LocalDate relationshipStartedDate) {
+    public DiarySearchResponse(Long diaryId, Boolean isMain, String title, int pageCount, LocalDate relationshipStartedDate) {
         this.diaryId = diaryId;
         this.isMain = isMain;
         this.title = title;
-        this.diaryPage = diaryPage;
+        this.pageCount = pageCount;
         this.relationshipStartedDate = relationshipStartedDate;
     }
 }
