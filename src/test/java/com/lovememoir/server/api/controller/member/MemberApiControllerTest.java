@@ -2,7 +2,6 @@ package com.lovememoir.server.api.controller.member;
 
 import com.lovememoir.server.api.controller.member.request.MemberCreateRequest;
 import com.lovememoir.server.api.controller.member.request.MemberModifyRequest;
-import com.lovememoir.server.domain.member.Gender;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +38,6 @@ class MemberApiControllerTest extends ControllerTestSupport {
                 )
                 .andDo(print())
                 .andExpect(status().isCreated());
-
     }
 
     @Test
@@ -71,7 +69,7 @@ class MemberApiControllerTest extends ControllerTestSupport {
     void modifyMember() throws Exception {
         //given
         MemberModifyRequest request = MemberModifyRequest.builder()
-                .memberId(1L)
+                .memberKey("1L")
                 .nickname("hello")
                 .birth("1990-01-01")
                 .gender("M")

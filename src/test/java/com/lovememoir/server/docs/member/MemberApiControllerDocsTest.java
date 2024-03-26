@@ -1,7 +1,6 @@
 package com.lovememoir.server.docs.member;
 
 import com.lovememoir.server.api.controller.member.request.MemberModifyRequest;
-import com.lovememoir.server.domain.member.Gender;
 import com.lovememoir.server.api.controller.member.MemberApiController;
 import com.lovememoir.server.api.controller.member.request.MemberCreateRequest;
 import com.lovememoir.server.docs.RestDocsSupport;
@@ -19,8 +18,6 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -87,7 +84,7 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
     @Test
     void modifyMember() throws Exception {
         MemberModifyRequest request = MemberModifyRequest.builder()
-            .memberId(1L)
+            .memberKey("LL")
             .nickname("연해말")
             .gender("F")
             .birth("1990-01-01")
@@ -109,7 +106,7 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
                         .description("회원 인증 토큰")
                 ),
                 requestFields(
-                    fieldWithPath("memberId").type(JsonFieldType.NUMBER)
+                    fieldWithPath("memberKey").type(JsonFieldType.STRING)
                         .description("멤버 식별키"),
                     fieldWithPath("nickname").type(JsonFieldType.STRING)
                         .description("멤버 수정 닉네임"),
