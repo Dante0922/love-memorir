@@ -1,6 +1,7 @@
 package com.lovememoir.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lovememoir.server.api.service.diary.DiaryQueryService;
 import com.lovememoir.server.api.service.diary.DiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,4 +26,7 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected DiaryService diaryService;
+
+    @MockBean
+    protected DiaryQueryService diaryQueryService;
 }
