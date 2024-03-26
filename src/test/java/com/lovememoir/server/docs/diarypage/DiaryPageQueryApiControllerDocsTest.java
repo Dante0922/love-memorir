@@ -4,6 +4,7 @@ import com.lovememoir.server.api.SliceResponse;
 import com.lovememoir.server.api.controller.diarypage.DiaryPageQueryApiController;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
 import com.lovememoir.server.docs.RestDocsSupport;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.lovememoir.server.common.constant.GlobalConstant.PAGE_SIZE;
@@ -116,6 +119,17 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
     @DisplayName("일기 상세 조회 API")
     @Test
     void searchDiaryPage() throws Exception {
+        DiaryPageResponse response = DiaryPageResponse.builder()
+            .diaryPageId(1L)
+            .pageTitle("엄마 음식 훔쳐간 후이바오")
+            .pageContent("후이바오는 엄마의 음식을 훔치는 것을 좋아합니다ㅋㅋㅋ")
+            .diaryDate(LocalDate.of(2024, 3, 5))
+            .dateTimeOfCreation(LocalDateTime.of(2024, 3, 21, 17, 22))
+            .build();
+
+        given(diaryPageQueryService.searchDiaryPage(anyLong()))
+            .willReturn(response);
+
         mockMvc.perform(
                 get(BASE_URL + "/{diaryPageId}", 1L, 1L)
                     .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")

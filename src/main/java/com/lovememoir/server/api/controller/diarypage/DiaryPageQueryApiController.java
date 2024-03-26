@@ -46,13 +46,8 @@ public class DiaryPageQueryApiController {
         @PathVariable Long diaryId,
         @PathVariable Long diaryPageId
     ) {
-        DiaryPageResponse response = DiaryPageResponse.builder()
-            .diaryPageId(1L)
-            .pageTitle("엄마 음식 훔쳐간 후이바오")
-            .pageContent("후이바오는 엄마의 음식을 훔치는 것을 좋아합니다ㅋㅋㅋ")
-            .diaryDate(LocalDate.of(2024, 3, 5))
-            .dateTimeOfCreation(LocalDateTime.of(2024, 3, 21, 17, 22))
-            .build();
+        DiaryPageResponse response = diaryPageQueryService.searchDiaryPage(diaryPageId);
+
         return ApiResponse.ok(response);
     }
 
