@@ -56,7 +56,11 @@ public class DiaryPageService {
     }
 
     public DiaryPageRemoveResponse removeDiaryPage(final String memberKey, final Long diaryPageId) {
-        return null;
+        DiaryPage diaryPage = getMyDiaryPage(memberKey, diaryPageId);
+
+        diaryPage.remove();
+
+        return DiaryPageRemoveResponse.of(diaryPage);
     }
 
     private Member getMember(final String memberKey) {
