@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
-import static com.lovememoir.server.api.service.diarypage.DiaryPageValidator.*;
+import static com.lovememoir.server.api.service.diarypage.DiaryPageValidator.validateDiaryDate;
+import static com.lovememoir.server.api.service.diarypage.DiaryPageValidator.validateTitle;
 import static com.lovememoir.server.common.message.ExceptionMessage.*;
 
 @RequiredArgsConstructor
@@ -42,19 +42,13 @@ public class DiaryPageService {
     }
 
     private Member getMember(final String memberKey) {
-        Optional<Member> findMember = memberRepository.findByMemberKey(memberKey);
-        if (findMember.isEmpty()) {
-            throw new NoSuchElementException(NO_SUCH_MEMBER);
-        }
-        return findMember.get();
+        return memberRepository.findByMemberKey(memberKey)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
     }
 
     private Diary getDiary(final Long diaryId) {
-        Optional<Diary> findDiary = diaryRepository.findById(diaryId);
-        if (findDiary.isEmpty()) {
-            throw new NoSuchElementException(NO_SUCH_DIARY);
-        }
-        return findDiary.get();
+        return diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
     }
 
     private Diary getMyDiary(final String memberKey, final Long diaryId) {
