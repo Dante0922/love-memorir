@@ -1,7 +1,9 @@
 package com.lovememoir.server.api.service.diarypage;
 
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
+import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageCreateServiceRequest;
+import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
@@ -39,6 +41,10 @@ public class DiaryPageService {
         DiaryPage savedDiaryPage = saveDiaryPage(request, title, diaryDate, diary);
 
         return DiaryPageCreateResponse.of(savedDiaryPage);
+    }
+
+    public DiaryPageModifyResponse modifyDiaryPage(final String memberKey, final Long diaryPageId, final LocalDateTime currentDateTime, DiaryPageModifyServiceRequest request) {
+        return null;
     }
 
     private Member getMember(final String memberKey) {
