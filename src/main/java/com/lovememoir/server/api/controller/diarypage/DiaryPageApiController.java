@@ -7,6 +7,7 @@ import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateRe
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
 import com.lovememoir.server.api.service.diarypage.DiaryPageService;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -50,12 +51,13 @@ public class DiaryPageApiController {
         @PathVariable Long diaryPageId,
         @Valid @RequestBody DiaryPageModifyRequest request
     ) {
-        DiaryPageModifyResponse response = DiaryPageModifyResponse.builder()
-            .diaryPageId(1L)
-            .title("햇살미소 뿜뿜하는 루이후이")
-            .contentLength("루이는 판생이 즐거운 미소천사 해피판다!".length())
-            .diaryDate(LocalDate.of(2024, 3, 3))
-            .build();
+        //TODO: 2024-03-26 17:49 dong82 회원 정보 토큰 추출
+        String memberKey = UUID.randomUUID().toString();
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        DiaryPageModifyResponse response = diaryPageService.modifyDiaryPage(memberKey, diaryPageId, currentDateTime, request.toServiceRequest());
+
         return ApiResponse.ok(response);
     }
 

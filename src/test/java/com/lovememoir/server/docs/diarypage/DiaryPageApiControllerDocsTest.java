@@ -4,6 +4,7 @@ import com.lovememoir.server.api.controller.diarypage.DiaryPageApiController;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageCreateRequest;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageModifyRequest;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
+import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.service.diarypage.DiaryPageService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
@@ -120,6 +121,16 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
             .content("루이는 판생이 즐거운 미소천사 해피판다!")
             .diaryDate(LocalDate.of(2024, 3, 3))
             .build();
+
+        DiaryPageModifyResponse response = DiaryPageModifyResponse.builder()
+            .diaryPageId(1L)
+            .title("햇살미소 뿜뿜하는 루이후이")
+            .contentLength("루이는 판생이 즐거운 미소천사 해피판다!".length())
+            .diaryDate(LocalDate.of(2024, 3, 3))
+            .build();
+
+        given(diaryPageService.modifyDiaryPage(anyString(), anyLong(), any(), any()))
+            .willReturn(response);
 
         mockMvc.perform(
                 patch(BASE_URL + "/{diaryPageId}", 1, 1)
