@@ -6,6 +6,7 @@ import com.lovememoir.server.api.controller.diarypage.request.DiaryPageModifyReq
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
+import com.lovememoir.server.api.service.diarypage.DiaryPageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Diary Page Command Api Controller
@@ -24,19 +26,20 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/v1/diaries/{diaryId}/pages")
 public class DiaryPageApiController {
 
+    private final DiaryPageService diaryPageService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<DiaryPageCreateResponse> createDiaryPage(
         @PathVariable Long diaryId,
         @Valid @RequestBody DiaryPageCreateRequest request
     ) {
-        DiaryPageCreateResponse response = DiaryPageCreateResponse.builder()
-            .diaryPageId(1L)
-            .title("푸바오가 떠나는 날")
-            .contentLength("푸바오를 볼 수 있는 마지막날 에버랜드에서 오픈런했다.".length())
-            .diaryDate(LocalDate.of(2024, 3, 3))
-            .createdDateTime(LocalDateTime.of(2024, 3, 5, 16, 0))
-            .build();
+        //TODO: 2024-03-26 14:40 dong82 회원 정보 토큰 추출
+        String memberKey = UUID.randomUUID().toString();
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        DiaryPageCreateResponse response = diaryPageService.createDiaryPage(memberKey, diaryId, currentDateTime, request.toServiceRequest());
 
         return ApiResponse.created(response);
     }
