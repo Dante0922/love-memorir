@@ -1,12 +1,27 @@
 package com.lovememoir.server.docs.diarypage;
 
+import com.lovememoir.server.api.SliceResponse;
 import com.lovememoir.server.api.controller.diarypage.DiaryPageQueryApiController;
+import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
 import com.lovememoir.server.docs.RestDocsSupport;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.lovememoir.server.common.constant.GlobalConstant.PAGE_SIZE;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -23,14 +38,34 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
 
     private static final String BASE_URL = "/api/v1/diaries/{diaryId}/pages";
 
+    private final DiaryPageQueryService diaryPageQueryService = mock(DiaryPageQueryService.class);
+
     @Override
     protected Object initController() {
-        return new DiaryPageQueryApiController();
+        return new DiaryPageQueryApiController(diaryPageQueryService);
     }
 
     @DisplayName("일기 목록 조회 API")
     @Test
     void searchDiaryPages() throws Exception {
+        DiaryPagesResponse response1 = DiaryPagesResponse.builder()
+            .diaryPageId(1L)
+            .pageTitle("푸바오와 마지막 인사")
+            .build();
+        DiaryPagesResponse response2 = DiaryPagesResponse.builder()
+            .diaryPageId(2L)
+            .pageTitle("루이바오의 먹방")
+            .build();
+        DiaryPagesResponse response3 = DiaryPagesResponse.builder()
+            .diaryPageId(3L)
+            .pageTitle("후쪽이 후이바오")
+            .build();
+        PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
+        SliceResponse<DiaryPagesResponse> response = SliceResponse.of(List.of(response3, response2, response1), pageRequest, false);
+
+        given(diaryPageQueryService.searchDiaryPages(anyLong(), any()))
+            .willReturn(response);
+
         mockMvc.perform(
                 get(BASE_URL, 1L)
                     .param("page", "1")
@@ -84,6 +119,17 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
     @DisplayName("일기 상세 조회 API")
     @Test
     void searchDiaryPage() throws Exception {
+        DiaryPageResponse response = DiaryPageResponse.builder()
+            .diaryPageId(1L)
+            .pageTitle("엄마 음식 훔쳐간 후이바오")
+            .pageContent("후이바오는 엄마의 음식을 훔치는 것을 좋아합니다ㅋㅋㅋ")
+            .diaryDate(LocalDate.of(2024, 3, 5))
+            .dateTimeOfCreation(LocalDateTime.of(2024, 3, 21, 17, 22))
+            .build();
+
+        given(diaryPageQueryService.searchDiaryPage(anyLong()))
+            .willReturn(response);
+
         mockMvc.perform(
                 get(BASE_URL + "/{diaryPageId}", 1L, 1L)
                     .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
