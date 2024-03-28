@@ -26,6 +26,9 @@ public class Diary extends BaseTimeEntity {
     @Column(nullable = false, length = 15)
     private String title;
 
+    @Column(nullable = false)
+    private Boolean isInLove;
+
     private LocalDate relationshipStartedDate;
 
     @Column(nullable = false, columnDefinition = "int default 0")
@@ -39,28 +42,31 @@ public class Diary extends BaseTimeEntity {
     private Member member;
 
     @Builder
-    private Diary(boolean isDeleted, boolean isFixed, String title, LocalDate relationshipStartedDate, int pageCount, UploadFile file, Member member) {
+    private Diary(boolean isDeleted, boolean isFixed, String title, Boolean isInLove, LocalDate relationshipStartedDate, int pageCount, UploadFile file, Member member) {
         super(isDeleted);
         this.isFixed = isFixed;
         this.title = title;
+        this.isInLove = isInLove;
         this.relationshipStartedDate = relationshipStartedDate;
         this.pageCount = pageCount;
         this.file = file;
         this.member = member;
     }
 
-    public static Diary create(String title, LocalDate relationshipStartedDate, Member member) {
+    public static Diary create(String title, boolean inLove, LocalDate relationshipStartedDate, Member member) {
         return Diary.builder()
             .isFixed(false)
             .title(title)
+            .isInLove(inLove)
             .relationshipStartedDate(relationshipStartedDate)
             .pageCount(0)
             .member(member)
             .build();
     }
 
-    public void modify(String title, LocalDate relationshipStartedDate) {
+    public void modify(String title, boolean inLove, LocalDate relationshipStartedDate) {
         this.title = title;
+        this.isInLove = inLove;
         this.relationshipStartedDate = relationshipStartedDate;
     }
 
