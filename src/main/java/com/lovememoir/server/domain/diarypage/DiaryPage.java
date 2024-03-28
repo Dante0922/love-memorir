@@ -30,18 +30,20 @@ public class DiaryPage extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDate diaryDate;
 
-    //TODO: 2024-03-26 11:50 dong82 일기 감정 캐릭터 추가 여부
+    @Embedded
+    private AnalysisResult analysisResult;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
     @Builder
-    private DiaryPage(boolean isDeleted, String title, String content, LocalDate diaryDate, Diary diary) {
+    private DiaryPage(boolean isDeleted, String title, String content, LocalDate diaryDate, AnalysisResult analysisResult, Diary diary) {
         super(isDeleted);
         this.title = title;
         this.content = content;
         this.diaryDate = diaryDate;
+        this.analysisResult = analysisResult;
         this.diary = diary;
     }
 
