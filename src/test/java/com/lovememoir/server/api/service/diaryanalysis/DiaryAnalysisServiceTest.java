@@ -9,6 +9,8 @@ import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.diaryanalysis.DiaryAnalysis;
 import com.lovememoir.server.domain.diaryanalysis.repository.DiaryAnalysisRepository;
+import com.lovememoir.server.domain.diarypage.AnalysisResult;
+import com.lovememoir.server.domain.diarypage.AnalysisStatus;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
 import com.lovememoir.server.domain.member.Gender;
@@ -23,6 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,17 +66,27 @@ class DiaryAnalysisServiceTest extends IntegrationTestSupport {
         Diary diary = createDiary(member);
         DiaryPage diaryPage = createDiaryPage(diary);
         SystemCodeGroup group = createCodeGroup();
-        createEmotionCode(group);
+        SystemCode code1 = createEmotionCode(group, "행복");
+        SystemCode code2 = createEmotionCode(group, "설렘");
+        SystemCode code3 = createEmotionCode(group, "안정");
+        SystemCode code4 = createEmotionCode(group, "슬픔");
+        SystemCode code5 = createEmotionCode(group, "분노");
 
         given(chatClient.call(anyString()))
             .willReturn("행복: 8\n설렘: 7\n안정: 6\n슬픔: 4\n분노: 1");
 
         //when
-        diaryAnalysisService.diaryAnalysis(diaryPage.getId());
+        diaryAnalysisService.diaryAnalysis(diaryPage.getId(), group.getCode());
 
         //then
         List<DiaryAnalysis> findDiaryAnalyses = diaryAnalysisRepository.findAll();
         assertThat(findDiaryAnalyses).hasSize(5);
+
+        Optional<DiaryPage> findDiaryPage = diaryPageRepository.findById(diaryPage.getId());
+        assertThat(findDiaryPage).isPresent();
+        assertThat(findDiaryPage.get())
+            .hasFieldOrPropertyWithValue("analysisResult.analysisStatus", AnalysisStatus.SUCCESS)
+            .hasFieldOrPropertyWithValue("analysisResult.emotionCode", code1.getCode());
     }
 
     private Member createMember() {
@@ -103,6 +116,9 @@ class DiaryAnalysisServiceTest extends IntegrationTestSupport {
             .title("개구쟁이 쌍둥바오")
             .content("혼자 루이바오랑 후이바오를 육아하기 너무 힘들다...너무 개구쟁이들이야")
             .diaryDate(LocalDate.of(2024, 3, 10))
+            .analysisResult(AnalysisResult.builder()
+                .analysisStatus(AnalysisStatus.BEFORE)
+                .build())
             .diary(diary)
             .build();
         return diaryPageRepository.save(diaryPage);
@@ -115,27 +131,11 @@ class DiaryAnalysisServiceTest extends IntegrationTestSupport {
         return codeGroupRepository.save(group);
     }
 
-    private void createEmotionCode(SystemCodeGroup group) {
-        SystemCode code1 = SystemCode.builder()
-            .name("행복")
+    private SystemCode createEmotionCode(SystemCodeGroup group, String emotion) {
+        SystemCode code = SystemCode.builder()
+            .name(emotion)
             .group(group)
             .build();
-        SystemCode code2 = SystemCode.builder()
-            .name("설렘")
-            .group(group)
-            .build();
-        SystemCode code3 = SystemCode.builder()
-            .name("안정")
-            .group(group)
-            .build();
-        SystemCode code4 = SystemCode.builder()
-            .name("슬픔")
-            .group(group)
-            .build();
-        SystemCode code5 = SystemCode.builder()
-            .name("분노")
-            .group(group)
-            .build();
-        codeRepository.saveAll(List.of(code1, code2, code3, code4, code5));
+        return codeRepository.save(code);
     }
 }
