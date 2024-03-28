@@ -9,6 +9,8 @@ import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServic
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
+import com.lovememoir.server.domain.diarypage.AnalysisResult;
+import com.lovememoir.server.domain.diarypage.AnalysisStatus;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
 import com.lovememoir.server.domain.member.Gender;
@@ -224,6 +226,9 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
             .title("개구쟁이 쌍둥바오")
             .content("혼자 루이바오랑 후이바오를 육아하기 너무 힘들다...너무 개구쟁이들이야")
             .diaryDate(LocalDate.of(2024, 3, 10))
+            .analysisResult(AnalysisResult.builder()
+                .analysisStatus(AnalysisStatus.BEFORE)
+                .build())
             .diary(diary)
             .build();
         return diaryPageRepository.save(diaryPage);
