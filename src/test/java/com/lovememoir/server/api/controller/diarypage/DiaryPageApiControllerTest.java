@@ -3,11 +3,13 @@ package com.lovememoir.server.api.controller.diarypage;
 import com.lovememoir.server.ControllerTestSupport;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageCreateRequest;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageModifyRequest;
+import com.lovememoir.server.api.controller.diarypage.request.DiaryPageRemoveRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.lovememoir.server.common.message.ValidationMessage.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -214,9 +216,15 @@ class DiaryPageApiControllerTest extends ControllerTestSupport {
     @Test
     void removeDiaryPage() throws Exception {
         //given
+        DiaryPageRemoveRequest request = DiaryPageRemoveRequest.builder()
+            .diaryPageIds(List.of(1L, 2L, 3L))
+            .build();
+
         //when //then
         mockMvc.perform(
-                delete(BASE_URL + "/{diaryPageId}", 1L, 2L)
+                patch(BASE_URL + "/delete", 1L)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
                     .with(csrf())
             )
             .andDo(print())

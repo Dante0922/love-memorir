@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.lovememoir.server.api.service.diarypage.DiaryPageValidator.validateDiaryDate;
@@ -55,12 +56,14 @@ public class DiaryPageService {
         return DiaryPageModifyResponse.of(diaryPage);
     }
 
-    public DiaryPageRemoveResponse removeDiaryPage(final String memberKey, final Long diaryPageId) {
-        DiaryPage diaryPage = getMyDiaryPage(memberKey, diaryPageId);
+    public DiaryPageRemoveResponse removeDiaryPage(final List<Long> diaryPageId) {
+        List<DiaryPage> diaryPages = diaryPageRepository.findAllByIdIn(diaryPageId);
 
-        diaryPage.remove();
+        for (DiaryPage diaryPage : diaryPages) {
+            diaryPage.remove();
+        }
 
-        return DiaryPageRemoveResponse.of(diaryPage);
+        return DiaryPageRemoveResponse.of(diaryPages.size());
     }
 
     private Member getMember(final String memberKey) {

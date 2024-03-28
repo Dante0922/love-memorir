@@ -1,25 +1,21 @@
 package com.lovememoir.server.api.controller.diarypage.response;
 
-import com.lovememoir.server.domain.diarypage.DiaryPage;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class DiaryPageRemoveResponse {
 
-    private final Long diaryPageId;
-    private final String title;
+    private final int removedPageCount;
 
     @Builder
-    private DiaryPageRemoveResponse(Long diaryPageId, String title) {
-        this.diaryPageId = diaryPageId;
-        this.title = title;
+    private DiaryPageRemoveResponse(int removedPageCount) {
+        this.removedPageCount = removedPageCount;
     }
 
-    public static DiaryPageRemoveResponse of(DiaryPage diaryPage) {
+    public static DiaryPageRemoveResponse of(int removedPageCount) {
         return DiaryPageRemoveResponse.builder()
-            .diaryPageId(diaryPage.getId())
-            .title(diaryPage.getTitle())
+            .removedPageCount(removedPageCount)
             .build();
     }
 }
