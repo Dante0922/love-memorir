@@ -35,4 +35,12 @@ public class DiaryAnalysis extends BaseTimeEntity {
         this.weight = weight;
         this.diaryPage = diaryPage;
     }
+
+    public static DiaryAnalysis create(int emotionCode, int weight, DiaryPage diaryPage) {
+        return DiaryAnalysis.builder()
+            .emotionCode(emotionCode)
+            .weight(weight)
+            .diaryPage(diaryPage)
+            .build();
+    }
 }
