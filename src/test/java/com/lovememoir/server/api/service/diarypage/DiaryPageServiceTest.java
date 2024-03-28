@@ -164,22 +164,6 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
             .hasFieldOrPropertyWithValue("diaryDate", LocalDate.of(2024, 3, 20));
     }
 
-    @DisplayName("일기 삭제시 본인의 일기장이 아니라면 예외가 발생한다.")
-    @Test
-    void removeDiaryPageWithoutAuth() {
-        //given
-        Member member = createMember();
-        Diary diary = createDiary(member);
-        DiaryPage diaryPage = createDiaryPage(diary);
-
-        Member otherMember = createMember();
-
-        //when //then
-        assertThatThrownBy(() -> diaryPageService.removeDiaryPage(otherMember.getMemberKey(), diaryPage.getId()))
-            .isInstanceOf(AuthException.class)
-            .hasMessage(NO_AUTH);
-    }
-
     @DisplayName("회원 고유키와 일기 식별키를 입력 받아 일기를 삭제한다.")
     @Test
     void removeDiaryPage() {
@@ -189,7 +173,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         DiaryPage diaryPage = createDiaryPage(diary);
 
         //when
-        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPage(member.getMemberKey(), diaryPage.getId());
+        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPage(List.of(diaryPage.getId()));
 
         //then
         assertThat(response).isNotNull();

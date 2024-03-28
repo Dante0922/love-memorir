@@ -3,6 +3,7 @@ package com.lovememoir.server.api.controller.diarypage;
 import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageCreateRequest;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageModifyRequest;
+import com.lovememoir.server.api.controller.diarypage.request.DiaryPageRemoveRequest;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
@@ -59,15 +60,9 @@ public class DiaryPageApiController {
         return ApiResponse.ok(response);
     }
 
-    @DeleteMapping("/{diaryPageId}")
-    public ApiResponse<DiaryPageRemoveResponse> removeDiaryPage(
-        @PathVariable Long diaryId,
-        @PathVariable Long diaryPageId
-    ) {
-        //TODO: 2024-03-26 17:49 dong82 회원 정보 토큰 추출
-        String memberKey = UUID.randomUUID().toString();
-
-        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPage(memberKey, diaryPageId);
+    @PatchMapping("/delete")
+    public ApiResponse<DiaryPageRemoveResponse> removeDiaryPage(@PathVariable Long diaryId, @RequestBody DiaryPageRemoveRequest request) {
+        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPage(request.getDiaryPageIds());
 
         return ApiResponse.ok(response);
     }

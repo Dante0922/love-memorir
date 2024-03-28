@@ -3,6 +3,7 @@ package com.lovememoir.server.docs.diarypage;
 import com.lovememoir.server.api.controller.diarypage.DiaryPageApiController;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageCreateRequest;
 import com.lovememoir.server.api.controller.diarypage.request.DiaryPageModifyRequest;
+import com.lovememoir.server.api.controller.diarypage.request.DiaryPageRemoveRequest;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
@@ -17,6 +18,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
@@ -186,16 +188,21 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
     @DisplayName("일기 삭제 API")
     @Test
     void removeDiaryPage() throws Exception {
-        DiaryPageRemoveResponse response = DiaryPageRemoveResponse.builder()
-            .diaryPageId(2L)
-            .title("엄마 음식 훔쳐간 후이바오")
+        DiaryPageRemoveRequest request = DiaryPageRemoveRequest.builder()
+            .diaryPageIds(List.of(1L, 2L, 3L))
             .build();
 
-        given(diaryPageService.removeDiaryPage(anyString(), anyLong()))
+        DiaryPageRemoveResponse response = DiaryPageRemoveResponse.builder()
+            .removedPageCount(3)
+            .build();
+
+        given(diaryPageService.removeDiaryPage(anyList()))
             .willReturn(response);
 
         mockMvc.perform(
-                delete(BASE_URL + "/{diaryPageId}", 1, 2)
+                patch(BASE_URL + "/delete", 1)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
             )
             .andDo(print())
@@ -209,9 +216,11 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
                 ),
                 pathParameters(
                     parameterWithName("diaryId")
-                        .description("일기장 식별키"),
-                    parameterWithName("diaryPageId")
-                        .description("일기 식별키")
+                        .description("일기장 식별키")
+                ),
+                requestFields(
+                    fieldWithPath("diaryPageIds").type(JsonFieldType.ARRAY)
+                        .description("삭제할 일기 식별키")
                 ),
                 responseFields(
                     fieldWithPath("code").type(JsonFieldType.NUMBER)
@@ -222,10 +231,8 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
                         .description("메시지"),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.diaryPageId").type(JsonFieldType.NUMBER)
-                        .description("삭제된 일기 식별키"),
-                    fieldWithPath("data.title").type(JsonFieldType.STRING)
-                        .description("삭제된 일기 제목")
+                    fieldWithPath("data.removedPageCount").type(JsonFieldType.NUMBER)
+                        .description("삭제된 일기 갯수")
                 )
             ));
     }
