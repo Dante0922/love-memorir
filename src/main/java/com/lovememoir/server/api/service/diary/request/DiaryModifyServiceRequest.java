@@ -9,11 +9,13 @@ import java.time.LocalDate;
 public class DiaryModifyServiceRequest {
 
     private final String title;
+    private final boolean isInLove;
     private final LocalDate relationshipStartedDate;
 
     @Builder
-    private DiaryModifyServiceRequest(String title, LocalDate relationshipStartedDate) {
+    private DiaryModifyServiceRequest(String title, boolean isInLove, LocalDate relationshipStartedDate) {
         this.title = title;
+        this.isInLove = isInLove;
         this.relationshipStartedDate = relationshipStartedDate;
     }
 }

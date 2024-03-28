@@ -3,8 +3,7 @@ package com.lovememoir.server.api.service.diary;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static com.lovememoir.server.common.message.ValidationMessage.FUTURE_RELATIONSHIP_STARTED_DATE;
-import static com.lovememoir.server.common.message.ValidationMessage.MAX_LENGTH_DIARY_TITLE;
+import static com.lovememoir.server.common.message.ValidationMessage.*;
 
 public abstract class DiaryValidator {
 
@@ -20,7 +19,15 @@ public abstract class DiaryValidator {
         return title;
     }
 
-    public static LocalDate validateRelationshipStartedDate(final LocalDateTime currentDateTime, final LocalDate relationshipStartedDate) {
+    public static LocalDate validateRelationshipStartedDate(boolean isInLove, final LocalDate relationshipStartedDate, final LocalDateTime currentDateTime) {
+        if (!isInLove) {
+            return relationshipStartedDate;
+        }
+
+        if (relationshipStartedDate == null) {
+            throw new IllegalArgumentException(NOT_NULL_RELATIONSHIP_STARTED_DATE);
+        }
+
         if (isFuture(currentDateTime, relationshipStartedDate)) {
             throw new IllegalArgumentException(FUTURE_RELATIONSHIP_STARTED_DATE);
         }

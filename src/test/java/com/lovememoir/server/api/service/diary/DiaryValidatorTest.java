@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static com.lovememoir.server.common.message.ValidationMessage.FUTURE_RELATIONSHIP_STARTED_DATE;
-import static com.lovememoir.server.common.message.ValidationMessage.MAX_LENGTH_DIARY_TITLE;
+import static com.lovememoir.server.common.message.ValidationMessage.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -59,9 +58,33 @@ class DiaryValidatorTest {
         LocalDate relationshipStartedDate = LocalDate.of(2024, 3, 11);
 
         //when //then
-        assertThatThrownBy(() -> DiaryValidator.validateRelationshipStartedDate(currentDateTime, relationshipStartedDate))
+        assertThatThrownBy(() -> DiaryValidator.validateRelationshipStartedDate(true, relationshipStartedDate, currentDateTime))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(FUTURE_RELATIONSHIP_STARTED_DATE);
+    }
+
+    @DisplayName("연애중일 때 연애 시작일이 null이면 예외가 발생한다.")
+    @Test
+    void validateRelationshipStartedDateWithoutDate() {
+        //given
+        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 10, 23, 59);
+
+        //when //then
+        assertThatThrownBy(() -> DiaryValidator.validateRelationshipStartedDate(true, null, currentDateTime))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(NOT_NULL_RELATIONSHIP_STARTED_DATE);
+    }
+
+    @DisplayName("연애중이 아니라면 연애 시작일에 대한 유효성 검증을 하지 않는다.")
+    @Test
+    void validateRelationshipStartedDateWithIsNotInLove() {
+        //given
+        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 10, 23, 59);
+        //when
+        LocalDate validatedRelationshipStartedDate = DiaryValidator.validateRelationshipStartedDate(false, null, currentDateTime);
+
+        //then
+        assertThat(validatedRelationshipStartedDate).isNull();
     }
 
     @DisplayName("입력 받은 연애 시작일에 대해 유효성 검증된 연애 시작일을 반환한다.")
@@ -72,7 +95,7 @@ class DiaryValidatorTest {
         LocalDate relationshipStartedDate = LocalDate.of(2024, 3, 10);
 
         //when
-        LocalDate validatedRelationshipStartedDate = DiaryValidator.validateRelationshipStartedDate(currentDateTime, relationshipStartedDate);
+        LocalDate validatedRelationshipStartedDate = DiaryValidator.validateRelationshipStartedDate(true, relationshipStartedDate, currentDateTime);
 
         //then
         assertThat(validatedRelationshipStartedDate).isEqualTo(LocalDate.of(2024, 3, 10));

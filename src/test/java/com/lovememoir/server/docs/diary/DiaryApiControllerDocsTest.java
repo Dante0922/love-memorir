@@ -53,6 +53,7 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
     void createDiary() throws Exception {
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title("푸바오")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
@@ -83,7 +84,10 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                 requestFields(
                     fieldWithPath("title").type(JsonFieldType.STRING)
                         .description("신규 일기장 제목"),
+                    fieldWithPath("isInLove").type(JsonFieldType.BOOLEAN)
+                        .description("신규 일기장 연애 여부"),
                     fieldWithPath("relationshipStartedDate").type(JsonFieldType.ARRAY)
+                        .optional()
                         .description("신규 일기장 연애 시작일")
                 ),
                 responseFields(
@@ -110,6 +114,7 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
     void modifyDiary() throws Exception {
         DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title("루이바오")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
@@ -143,7 +148,10 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                 requestFields(
                     fieldWithPath("title").type(JsonFieldType.STRING)
                         .description("수정할 일기장 제목"),
+                    fieldWithPath("isInLove").type(JsonFieldType.BOOLEAN)
+                        .description("수정할 일기장 연애 여부"),
                     fieldWithPath("relationshipStartedDate").type(JsonFieldType.ARRAY)
+                        .optional()
                         .description("수정할 일기장 연애 시작일")
                 ),
                 responseFields(

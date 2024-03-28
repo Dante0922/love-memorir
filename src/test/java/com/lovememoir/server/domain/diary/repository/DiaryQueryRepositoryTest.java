@@ -88,6 +88,7 @@ class DiaryQueryRepositoryTest extends IntegrationTestSupport {
         Diary diary = Diary.builder()
             .isFixed(isFixed)
             .title(title)
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2016, 3, 3))
             .pageCount(0)
             .member(member)

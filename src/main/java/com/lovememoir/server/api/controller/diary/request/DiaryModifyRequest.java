@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_BLANK_DIARY_TITLE;
-import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_RELATIONSHIP_STARTED_DATE;
+import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_IS_IN_LOVE;
 
 @Getter
 @NoArgsConstructor
@@ -19,18 +19,22 @@ public class DiaryModifyRequest {
     @NotBlank(message = NOT_BLANK_DIARY_TITLE)
     private String title;
 
-    @NotNull(message = NOT_NULL_RELATIONSHIP_STARTED_DATE)
+    @NotNull(message = NOT_NULL_IS_IN_LOVE)
+    private Boolean isInLove;
+
     private LocalDate relationshipStartedDate;
 
     @Builder
-    private DiaryModifyRequest(String title, LocalDate relationshipStartedDate) {
+    private DiaryModifyRequest(String title, Boolean isInLove, LocalDate relationshipStartedDate) {
         this.title = title;
+        this.isInLove = isInLove;
         this.relationshipStartedDate = relationshipStartedDate;
     }
 
     public DiaryModifyServiceRequest toServiceRequest() {
         return DiaryModifyServiceRequest.builder()
             .title(title)
+            .isInLove(isInLove)
             .relationshipStartedDate(relationshipStartedDate)
             .build();
     }
