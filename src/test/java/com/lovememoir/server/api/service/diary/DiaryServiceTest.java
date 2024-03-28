@@ -62,6 +62,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
 
         DiaryCreateServiceRequest request = DiaryCreateServiceRequest.builder()
             .title("러바오")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2016, 3, 3))
             .build();
 
@@ -86,6 +87,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
 
         DiaryCreateServiceRequest request = DiaryCreateServiceRequest.builder()
             .title("러바오")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2016, 3, 3))
             .build();
 
@@ -117,6 +119,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
 
         DiaryModifyServiceRequest request = DiaryModifyServiceRequest.builder()
             .title("루이바오")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2023, 7, 7))
             .build();
 
@@ -137,6 +140,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
 
         DiaryModifyServiceRequest request = DiaryModifyServiceRequest.builder()
             .title("루이바오")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2023, 7, 7))
             .build();
 
@@ -260,6 +264,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         Diary diary = Diary.builder()
             .isFixed(false)
             .title("러바오와의 연애 기록")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2016, 3, 3))
             .pageCount(0)
             .member(member)

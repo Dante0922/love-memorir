@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateRelationshipStartedDate;
@@ -39,24 +38,24 @@ public class DiaryService {
 
     public DiaryCreateResponse createDiary(final String memberKey, final LocalDateTime currentDateTime, DiaryCreateServiceRequest request) {
         final String title = validateTitle(request.getTitle());
-        final LocalDate relationshipStartedDate = validateRelationshipStartedDate(currentDateTime, request.getRelationshipStartedDate());
+        final LocalDate relationshipStartedDate = validateRelationshipStartedDate(request.isInLove(), request.getRelationshipStartedDate(), currentDateTime);
 
         final Member member = getMember(memberKey);
 
         validateMaximumDiaryCount(member.getId());
 
-        final Diary savedDiary = saveDiary(title, relationshipStartedDate, member);
+        final Diary savedDiary = saveDiary(title, request.isInLove(), relationshipStartedDate, member);
 
         return DiaryCreateResponse.of(savedDiary);
     }
 
     public DiaryModifyResponse modifyDiary(final String memberKey, final Long diaryId, final LocalDateTime currentDateTime, DiaryModifyServiceRequest request) {
         final String title = validateTitle(request.getTitle());
-        final LocalDate relationshipStartedDate = validateRelationshipStartedDate(currentDateTime, request.getRelationshipStartedDate());
+        final LocalDate relationshipStartedDate = validateRelationshipStartedDate(request.isInLove(), request.getRelationshipStartedDate(), currentDateTime);
 
         final Diary diary = getMyDiary(memberKey, diaryId);
 
-        diary.modify(generateTitle(title), relationshipStartedDate);
+        diary.modify(generateTitle(title), request.isInLove(), relationshipStartedDate);
 
         return DiaryModifyResponse.of(diary);
     }
@@ -95,8 +94,8 @@ public class DiaryService {
         return title + "와의 연애 기록";
     }
 
-    private Diary saveDiary(String title, LocalDate relationshipStartedDate, Member member) {
-        final Diary diary = Diary.create(generateTitle(title), relationshipStartedDate, member);
+    private Diary saveDiary(String title, boolean inLove, LocalDate relationshipStartedDate, Member member) {
+        final Diary diary = Diary.create(generateTitle(title), inLove, relationshipStartedDate, member);
         return diaryRepository.save(diary);
     }
 

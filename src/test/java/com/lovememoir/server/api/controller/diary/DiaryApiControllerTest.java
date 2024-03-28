@@ -13,7 +13,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.time.LocalDate;
 
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_BLANK_DIARY_TITLE;
-import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_RELATIONSHIP_STARTED_DATE;
+import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_IS_IN_LOVE;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -30,6 +30,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title(" ")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
@@ -48,9 +49,9 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
-    @DisplayName("신규 일기장을 등록할 때 연애 시작일은 필수값이다.")
+    @DisplayName("신규 일기장을 등록할 때 연애 여부는 필수값이다.")
     @Test
-    void createDiaryWithoutRelationshipStartedDate() throws Exception {
+    void createDiaryWithoutIsInLove() throws Exception {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title("푸바오")
@@ -67,7 +68,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code").value("400"))
             .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-            .andExpect(jsonPath("$.message").value(NOT_NULL_RELATIONSHIP_STARTED_DATE))
+            .andExpect(jsonPath("$.message").value(NOT_NULL_IS_IN_LOVE))
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -77,6 +78,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title("푸바오")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
@@ -97,6 +99,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title(" ")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
@@ -115,7 +118,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
-    @DisplayName("일기장 정보를 수정할 때 연애 시작일은 필수값이다.")
+    @DisplayName("일기장 정보를 수정할 때 연애 여부은 필수값이다.")
     @Test
     void modifyDiaryWithoutRelationshipStartedDate() throws Exception {
         //given
@@ -125,7 +128,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
 
         //when //then
         mockMvc.perform(
-                post(BASE_URL)
+                patch(BASE_URL + "/{diaryId}", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
                     .with(csrf())
@@ -134,7 +137,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code").value("400"))
             .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-            .andExpect(jsonPath("$.message").value(NOT_NULL_RELATIONSHIP_STARTED_DATE))
+            .andExpect(jsonPath("$.message").value(NOT_NULL_IS_IN_LOVE))
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -144,6 +147,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title("루이바오")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
