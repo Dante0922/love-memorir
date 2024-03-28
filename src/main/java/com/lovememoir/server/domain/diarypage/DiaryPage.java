@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+import static com.lovememoir.server.domain.diarypage.AnalysisResult.*;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -54,6 +56,7 @@ public class DiaryPage extends BaseTimeEntity {
             .title(title)
             .content(content)
             .diaryDate(diaryDate)
+            .analysisResult(init())
             .diary(diary)
             .build();
     }
@@ -65,6 +68,6 @@ public class DiaryPage extends BaseTimeEntity {
     }
 
     public void successAnalysis(int emotionCode) {
-        analysisResult = AnalysisResult.success(emotionCode);
+        analysisResult = success(emotionCode);
     }
 }

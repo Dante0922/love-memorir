@@ -28,6 +28,13 @@ public class AnalysisResult {
         this.emotionCode = emotionCode;
     }
 
+    public static AnalysisResult init() {
+        return AnalysisResult.builder()
+            .analysisStatus(BEFORE)
+            .emotionCode(null)
+            .build();
+    }
+
     public static AnalysisResult success(int emotionCode) {
         return AnalysisResult.builder()
             .analysisStatus(SUCCESS)

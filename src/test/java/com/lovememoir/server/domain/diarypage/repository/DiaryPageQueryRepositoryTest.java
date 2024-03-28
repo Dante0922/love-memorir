@@ -3,6 +3,8 @@ package com.lovememoir.server.domain.diarypage.repository;
 import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
+import com.lovememoir.server.domain.diarypage.AnalysisResult;
+import com.lovememoir.server.domain.diarypage.AnalysisStatus;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
@@ -128,6 +130,9 @@ class DiaryPageQueryRepositoryTest extends IntegrationTestSupport {
             .title("title")
             .content("content")
             .diaryDate(LocalDate.of(2024, 3, 1))
+            .analysisResult(AnalysisResult.builder()
+                .analysisStatus(AnalysisStatus.BEFORE)
+                .build())
             .diary(diary)
             .isDeleted(isDeleted)
             .build();
