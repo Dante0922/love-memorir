@@ -1,7 +1,6 @@
 package com.lovememoir.server.api.controller.member.request;
 
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
-import com.lovememoir.server.domain.member.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

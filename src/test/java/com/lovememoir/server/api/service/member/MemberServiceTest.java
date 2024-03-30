@@ -2,13 +2,11 @@ package com.lovememoir.server.api.service.member;
 
 
 import com.lovememoir.server.IntegrationTestSupport;
-import com.lovememoir.server.api.controller.member.request.MemberCreateRequest;
 import com.lovememoir.server.api.controller.member.response.MemberCreateResponse;
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
-import com.lovememoir.server.domain.member.Gender;
+import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

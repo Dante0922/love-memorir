@@ -9,9 +9,9 @@ import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
-import com.lovememoir.server.domain.member.Gender;
+import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.Member;
-import com.lovememoir.server.domain.member.Role;
+import com.lovememoir.server.domain.member.enumerate.Role;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
