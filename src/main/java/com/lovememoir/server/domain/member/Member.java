@@ -24,7 +24,8 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 36, columnDefinition = "char(36)")
+    //TODO nullable = false
+    @Column(unique = true,  length = 36, columnDefinition = "char(36)")
     private String memberKey;
 
     //TODO socialId & socialType Entity 분리?
@@ -40,13 +41,14 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 8)
     private String nickname;
 
-    @Column(nullable = false, updatable = false, length = 1, columnDefinition = "char(1)")
+    //TODO nullable = false 추가
+    @Column(updatable = false, length = 1, columnDefinition = "char(1)")
     private Gender gender;
 
-    @Column(nullable = false, length = 10, columnDefinition = "char(10)")
+    @Column( length = 10, columnDefinition = "char(10)")
     private String birth;
 
-    @Column(nullable = false, length = 5)
+    @Column(length = 5)
     private RoleType roleType;
 
     @OneToOne
