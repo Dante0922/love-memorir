@@ -1,13 +1,11 @@
 package com.lovememoir.server.docs.diary;
 
-import com.lovememoir.server.api.ListResponse;
 import com.lovememoir.server.api.controller.diary.DiaryQueryApiController;
 import com.lovememoir.server.api.service.diary.DiaryQueryService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import com.lovememoir.server.domain.diary.repository.response.DiarySearchResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -16,16 +14,15 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,6 +43,7 @@ public class DiaryQueryApiControllerDocsTest extends RestDocsSupport {
             .diaryId(1L)
             .isMain(true)
             .title("러바오와의 연애 기록")
+            .profileImage("profile-image-url")
             .pageCount(10)
             .relationshipStartedDate(LocalDate.of(2016, 3, 3))
             .build();
@@ -53,6 +51,7 @@ public class DiaryQueryApiControllerDocsTest extends RestDocsSupport {
             .diaryId(2L)
             .isMain(false)
             .title("푸바오와의 연애 기록")
+            .profileImage("profile-image-url")
             .pageCount(7)
             .relationshipStartedDate(LocalDate.of(2020, 7, 20))
             .build();
@@ -60,6 +59,7 @@ public class DiaryQueryApiControllerDocsTest extends RestDocsSupport {
             .diaryId(3L)
             .isMain(false)
             .title("쌍둥바오와의 연애 기록")
+            .profileImage("profile-image-url")
             .pageCount(13)
             .relationshipStartedDate(LocalDate.of(2023, 7, 7))
             .build();
@@ -100,6 +100,8 @@ public class DiaryQueryApiControllerDocsTest extends RestDocsSupport {
                         .description("일기장 메인 여부"),
                     fieldWithPath("data.content[].title").type(JsonFieldType.STRING)
                         .description("일기장 제목"),
+                    fieldWithPath("data.content[].profileImage").type(JsonFieldType.STRING)
+                        .description("일기장 프로필 이미지"),
                     fieldWithPath("data.content[].pageCount").type(JsonFieldType.NUMBER)
                         .description("일기장 페이지 수"),
                     fieldWithPath("data.content[].relationshipStartedDate").type(JsonFieldType.ARRAY)
@@ -115,6 +117,7 @@ public class DiaryQueryApiControllerDocsTest extends RestDocsSupport {
             .diaryId(1L)
             .isMain(true)
             .title("푸바오와의 연애 기록")
+            .profileImage("profile-image-url")
             .pageCount(10)
             .relationshipStartedDate(LocalDate.of(2020, 7, 20))
             .build();
@@ -155,6 +158,8 @@ public class DiaryQueryApiControllerDocsTest extends RestDocsSupport {
                         .description("일기장 메인 여부"),
                     fieldWithPath("data.content[].title").type(JsonFieldType.STRING)
                         .description("일기장 제목"),
+                    fieldWithPath("data.content[].profileImage").type(JsonFieldType.STRING)
+                        .description("일기장 프로필 이미지"),
                     fieldWithPath("data.content[].pageCount").type(JsonFieldType.NUMBER)
                         .description("일기장 페이지 수"),
                     fieldWithPath("data.content[].relationshipStartedDate").type(JsonFieldType.ARRAY)

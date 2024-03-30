@@ -24,11 +24,12 @@ public class DiaryQueryRepository {
     public List<DiarySearchResponse> findByMemberKey(final String memberKey, final boolean mainOnly) {
         return queryFactory
             .select(
-                Projections.constructor(
+                Projections.fields(
                     DiarySearchResponse.class,
-                    diary.id,
-                    diary.isFixed,
+                    diary.id.as("diaryId"),
+                    diary.isFixed.as("isMain"),
                     diary.title,
+                    diary.file.storeFileUrl.as("profileImage"),
                     diary.pageCount,
                     diary.relationshipStartedDate
                 )
@@ -37,7 +38,7 @@ public class DiaryQueryRepository {
             .join(diary.member, member)
             .where(
                 diary.isDeleted.isFalse(),
-                diary.member.memberKey.eq(memberKey),
+                member.memberKey.eq(memberKey),
                 isFixedIsTrue(mainOnly)
             )
             .orderBy(diary.createdDateTime.desc())
