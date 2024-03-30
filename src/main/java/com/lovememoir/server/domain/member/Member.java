@@ -3,7 +3,7 @@ package com.lovememoir.server.domain.member;
 import com.lovememoir.server.domain.BaseTimeEntity;
 import com.lovememoir.server.domain.avatar.Avatar;
 import com.lovememoir.server.domain.member.enumerate.Gender;
-import com.lovememoir.server.domain.member.enumerate.Role;
+import com.lovememoir.server.domain.member.enumerate.RoleType;
 import com.lovememoir.server.domain.member.enumerate.SocialType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,11 +27,11 @@ public class Member extends BaseTimeEntity {
     @Column(unique = true, nullable = false, length = 36, columnDefinition = "char(36)")
     private String memberKey;
 
-    //TODO socialId & socialType 따로 빼기
-    @Column(nullable =false)
+    //TODO socialId & socialType Entity 분리?
+    //TODO nullable = false 추가
+    @Column(unique = true)
     private String socialId;
-
-    @Column(nullable =false)
+    @Column
     private SocialType socialType;
 
     @Column
@@ -47,7 +47,7 @@ public class Member extends BaseTimeEntity {
     private String birth;
 
     @Column(nullable = false, length = 5)
-    private Role role;
+    private RoleType roleType;
 
     @OneToOne
     @JoinColumn(name = "avatar_id")
@@ -58,7 +58,7 @@ public class Member extends BaseTimeEntity {
 //    private List<Diary> diaries;
 
     @Builder
-    private Member(String memberKey, String nickname, String socialId, SocialType socialType, String email, Gender gender, String birth, Role role) {
+    private Member(String memberKey, String nickname, String socialId, SocialType socialType, String email, Gender gender, String birth, RoleType roleType) {
         this.memberKey = memberKey;
         this.nickname = nickname;
         this.socialId = socialId;
@@ -66,7 +66,7 @@ public class Member extends BaseTimeEntity {
         this.email = email;
         this.gender = gender;
         this.birth = birth;
-        this.role = role;
+        this.roleType = roleType;
     }
 
     public static Member create(String nickname, String socialId, SocialType socialType, String email, Gender gender, String birth) {
@@ -78,7 +78,7 @@ public class Member extends BaseTimeEntity {
             .email(email)
             .gender(gender)
             .birth(birth)
-            .role(Role.USER)
+            .roleType(RoleType.USER)
             .build();
     }
 }

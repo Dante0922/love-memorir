@@ -13,6 +13,13 @@ spring:
       hibernate:
         default_batch_fetch_size: 100
 
+app:
+  auth:
+    token:
+      tokenSecret: secretkey123secretkey444secretkey586secretkeysecretkey
+      tokenExpiry: 1800000
+
+
 logging:
   level:
     com.lovememoir.server: debug

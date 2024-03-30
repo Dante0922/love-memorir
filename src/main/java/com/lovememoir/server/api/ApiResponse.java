@@ -38,4 +38,8 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> created(T data) {
         return of(CREATED, "CREATED", data);
     }
+
+    public static <T> ApiResponse<T> success(T data) {
+        return new ApiResponse<>(HttpStatus.OK, "SUCCESS", data);
+    }
 }

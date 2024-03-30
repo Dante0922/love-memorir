@@ -1,4 +1,4 @@
-package com.lovememoir.server.common.config;
+package com.lovememoir.server.auth.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

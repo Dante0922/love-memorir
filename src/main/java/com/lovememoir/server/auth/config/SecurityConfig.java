@@ -1,4 +1,4 @@
-package com.lovememoir.server.common.config;
+package com.lovememoir.server.auth.config;
 
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(
         auth -> auth
             .anyRequest().permitAll())

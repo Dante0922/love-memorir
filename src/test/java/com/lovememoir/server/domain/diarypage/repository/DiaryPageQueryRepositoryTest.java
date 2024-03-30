@@ -8,7 +8,7 @@ import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageRespo
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.Member;
-import com.lovememoir.server.domain.member.enumerate.Role;
+import com.lovememoir.server.domain.member.enumerate.RoleType;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -107,7 +107,7 @@ class DiaryPageQueryRepositoryTest extends IntegrationTestSupport {
             .nickname("아이바오")
             .gender(Gender.F)
             .birth("2013-07-13")
-            .role(Role.USER)
+            .roleType(RoleType.USER)
             .build();
         return memberRepository.save(member);
     }
