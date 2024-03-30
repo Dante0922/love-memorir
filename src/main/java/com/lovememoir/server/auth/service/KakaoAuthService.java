@@ -37,7 +37,6 @@ public class KakaoAuthService {
 
         log.info("member : {}", kakaoOAuth.getProvider());
         if (member == null) {
-
             oAuthRepository.save(kakaoOAuth);
             return AuthResponse.builder()
                 .appToken(appToken.getToken())
