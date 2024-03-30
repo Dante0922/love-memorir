@@ -1,16 +1,18 @@
 package com.lovememoir.server.auth.jwt;
 
 import com.lovememoir.server.domain.member.enumerate.RoleType;
-import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.security.Key;
 import java.util.Date;
 
 @RequiredArgsConstructor
+@Slf4j
 public class AuthToken {
 
     @Getter
@@ -33,6 +35,23 @@ public class AuthToken {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setExpiration(expiry)
                 .compact();
+    }
+
+    public boolean validate() {
+        return this.getTokenClaims() != null;
+    }
+
+    public Claims getTokenClaims() {
+        try {
+            return Jwts.parser()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            log.info("Invalid JWT signature.");
+        }
+        return null;
     }
 
 }

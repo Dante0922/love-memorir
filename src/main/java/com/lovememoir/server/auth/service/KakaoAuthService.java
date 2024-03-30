@@ -10,13 +10,14 @@ import com.lovememoir.server.domain.OAuth.repository.OAuthQueryRepository;
 import com.lovememoir.server.domain.OAuth.repository.OAuthRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberQueryRepository;
-import com.lovememoir.server.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KakaoAuthService {
 
     private final ClientKakao clientKakao;
@@ -34,8 +35,9 @@ public class KakaoAuthService {
 
         Member member = memberQueryRepository.findByProviderId(providerId);
 
-
+        log.info("member : {}", kakaoOAuth.getProvider());
         if (member == null) {
+
             oAuthRepository.save(kakaoOAuth);
             return AuthResponse.builder()
                 .appToken(appToken.getToken())

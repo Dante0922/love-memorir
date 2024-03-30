@@ -1,12 +1,24 @@
 package com.lovememoir.server.auth.jwt;
 
+import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.member.enumerate.RoleType;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.lovememoir.server.common.message.ExceptionMessage.FAILED_TO_GENERATE_TOKEN;
 
 @Component
 public class AuthTokenProvider {
@@ -21,18 +33,35 @@ public class AuthTokenProvider {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
+    public AuthToken createUserAppToken(String id) {
+        return createToken(id, RoleType.USER, expiry);
+    }
+
     public AuthToken createToken(String id, RoleType roleType, String expiry) {
         Date expiryDate = getExpiryDate(expiry);
         return new AuthToken(id, roleType, expiryDate, key);
-    }
-
-    public AuthToken createUserAppToken(String id) {
-        return createToken(id, RoleType.USER, expiry);
     }
 
     private Date getExpiryDate(String expiry) {
         return new Date(System.currentTimeMillis() + Long.parseLong(expiry));
     }
 
+    public AuthToken convertAuthToken(String token) {
+        return new AuthToken(token, key);
+    }
 
+    public Authentication getAuthentication(AuthToken token) {
+
+        if(token.validate()) {
+            Claims claims = token.getTokenClaims();
+            Collection<? extends SimpleGrantedAuthority> authorities = Arrays.stream(new String[]{claims.get(AUTHORITIES_KEY).toString()})
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+
+            User principal = new User(claims.getSubject(), "", authorities);
+            return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        } else {
+            throw new AuthException(FAILED_TO_GENERATE_TOKEN);
+        }
+    }
 }
