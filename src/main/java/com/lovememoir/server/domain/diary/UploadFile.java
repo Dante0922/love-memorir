@@ -9,14 +9,14 @@ import lombok.NoArgsConstructor;
 
 @Embeddable
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class UploadFile {
 
     @Column(updatable = false, length = 200)
-    private String uploadFileName;
+    private final String uploadFileName;
 
     @Column(updatable = false, length = 200)
-    private String storeFileUrl;
+    private final String storeFileUrl;
 
     @Builder
     private UploadFile(String uploadFileName, String storeFileUrl) {

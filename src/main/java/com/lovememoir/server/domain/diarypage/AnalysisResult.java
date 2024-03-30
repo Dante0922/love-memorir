@@ -13,14 +13,14 @@ import static com.lovememoir.server.domain.diarypage.AnalysisStatus.*;
 
 @Embeddable
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class AnalysisResult {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 7)
-    private AnalysisStatus analysisStatus;
+    private final AnalysisStatus analysisStatus;
 
-    private Integer emotionCode;
+    private final Integer emotionCode;
 
     @Builder
     private AnalysisResult(AnalysisStatus analysisStatus, Integer emotionCode) {
