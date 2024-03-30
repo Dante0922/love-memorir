@@ -1,5 +1,7 @@
-package com.lovememoir.server.domain.member.repository;
+package com.lovememoir.server.domain.OAuth.repository;
 
+import com.lovememoir.server.domain.OAuth.OAuth;
+import com.lovememoir.server.domain.OAuth.QOAuth;
 import com.lovememoir.server.domain.member.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -11,16 +13,15 @@ import static com.lovememoir.server.domain.member.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
-public class MemberQueryRepository {
+public class OAuthQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Transactional(readOnly = true)
-    public Member findByProviderId(String ProviderId) {
+    public OAuth findByProviderId(String providerId) {
         return jpaQueryFactory
-            .select(oAuth.member)
-            .from(oAuth)
-            .where(oAuth.providerId.eq(ProviderId))
+            .selectFrom(oAuth)
+            .where(oAuth.providerId.eq(providerId))
             .fetchOne();
     }
 }

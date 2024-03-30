@@ -1,8 +1,8 @@
 package com.lovememoir.server.auth.client;
 
-import com.lovememoir.server.domain.member.Member;
+import com.lovememoir.server.domain.OAuth.OAuth;
 
 public interface ClientProxy {
 
-    Member getUserData(String accessToken);
+    OAuth getOAuth(String accessToken);
 }

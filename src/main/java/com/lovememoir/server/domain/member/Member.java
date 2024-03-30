@@ -1,16 +1,17 @@
 package com.lovememoir.server.domain.member;
 
 import com.lovememoir.server.domain.BaseTimeEntity;
+import com.lovememoir.server.domain.OAuth.OAuth;
 import com.lovememoir.server.domain.avatar.Avatar;
 import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.enumerate.RoleType;
-import com.lovememoir.server.domain.member.enumerate.SocialType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -25,15 +26,8 @@ public class Member extends BaseTimeEntity {
     private Long id;
 
     //TODO nullable = false
-    @Column(unique = true,  length = 36, columnDefinition = "char(36)")
+    @Column(unique = true, length = 36, columnDefinition = "char(36)")
     private String memberKey;
-
-    //TODO socialId & socialType Entity 분리?
-    //TODO nullable = false 추가
-    @Column(unique = true)
-    private String socialId;
-    @Column
-    private SocialType socialType;
 
     @Column
     private String email;
@@ -41,15 +35,17 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 8)
     private String nickname;
 
-    //TODO nullable = false 추가
-    @Column(updatable = false, length = 1, columnDefinition = "char(1)")
+    @Column(nullable = false, updatable = false, length = 1, columnDefinition = "char(1)")
     private Gender gender;
 
-    @Column( length = 10, columnDefinition = "char(10)")
+    @Column(nullable = false, length = 10, columnDefinition = "char(10)")
     private String birth;
 
-    @Column(length = 5)
+    @Column(nullable = false, length = 5)
     private RoleType roleType;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<OAuth> oAuthSet;
 
     @OneToOne
     @JoinColumn(name = "avatar_id")
@@ -60,23 +56,19 @@ public class Member extends BaseTimeEntity {
 //    private List<Diary> diaries;
 
     @Builder
-    private Member(String memberKey, String nickname, String socialId, SocialType socialType, String email, Gender gender, String birth, RoleType roleType) {
+    private Member(String memberKey, String nickname, String email, Gender gender, String birth, RoleType roleType) {
         this.memberKey = memberKey;
         this.nickname = nickname;
-        this.socialId = socialId;
-        this.socialType = socialType;
         this.email = email;
         this.gender = gender;
         this.birth = birth;
         this.roleType = roleType;
     }
 
-    public static Member create(String nickname, String socialId, SocialType socialType, String email, Gender gender, String birth) {
+    public static Member create(String nickname, String email, Gender gender, String birth) {
         return Member.builder()
             .memberKey(UUID.randomUUID().toString())
             .nickname(nickname)
-            .socialId(socialId)
-            .socialType(socialType)
             .email(email)
             .gender(gender)
             .birth(birth)

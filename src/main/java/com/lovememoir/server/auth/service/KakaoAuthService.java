@@ -5,6 +5,9 @@ import com.lovememoir.server.auth.dto.AuthRequest;
 import com.lovememoir.server.auth.dto.AuthResponse;
 import com.lovememoir.server.auth.jwt.AuthToken;
 import com.lovememoir.server.auth.jwt.AuthTokenProvider;
+import com.lovememoir.server.domain.OAuth.OAuth;
+import com.lovememoir.server.domain.OAuth.repository.OAuthQueryRepository;
+import com.lovememoir.server.domain.OAuth.repository.OAuthRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberQueryRepository;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
@@ -17,20 +20,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class KakaoAuthService {
 
     private final ClientKakao clientKakao;
-    private final MemberQueryRepository memberQueryRepository;
     private final AuthTokenProvider authTokenProvider;
-    private final MemberRepository memberRepository;
+    private final OAuthRepository oAuthRepository;
+    private final OAuthQueryRepository oAuthQueryRepository;
+    private final MemberQueryRepository memberQueryRepository;
+
 
     @Transactional
     public AuthResponse login(AuthRequest authRequest) {
-        Member kakaoMember = clientKakao.getUserData(authRequest.getAccessToken());
-        String socialId = kakaoMember.getSocialId();
-        Member member = memberQueryRepository.findBySocialId(socialId);
+        OAuth kakaoOAuth = clientKakao.getOAuth(authRequest.getAccessToken());
+        String providerId = kakaoOAuth.getProviderId();
+        AuthToken appToken = authTokenProvider.createUserAppToken(providerId);
 
-        AuthToken appToken = authTokenProvider.createUserAppToken(socialId);
+        Member member = memberQueryRepository.findByProviderId(providerId);
+
 
         if (member == null) {
-            memberRepository.save(kakaoMember);
+            oAuthRepository.save(kakaoOAuth);
             return AuthResponse.builder()
                 .appToken(appToken.getToken())
                 .isNewMember(Boolean.TRUE)
