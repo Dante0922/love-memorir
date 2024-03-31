@@ -1,5 +1,6 @@
 package com.lovememoir.server.auth.jwt;
 
+import com.lovememoir.server.common.exception.AuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static com.lovememoir.server.common.message.ExceptionMessage.OAUTH_TOKEN_UNAUTHORIZED;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -31,8 +34,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (token.validate()) {
                 Authentication authentication = tokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                request.setAttribute("exception", new AuthException(OAUTH_TOKEN_UNAUTHORIZED));
             }
-            filterChain.doFilter(request, response);
+        } else {
+            request.setAttribute("exception", new AuthException(OAUTH_TOKEN_UNAUTHORIZED));
         }
+
+        filterChain.doFilter(request, response);
+
     }
 }

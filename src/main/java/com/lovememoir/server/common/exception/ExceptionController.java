@@ -13,11 +13,25 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AuthException.class)
     @ResponseBody
-    public ResponseEntity<ErrorResponse> authExceptionHandler(AuthException e) {
+    public ResponseEntity<ErrorResponse> authInvalidRequestHandler(AuthException e) {
+
         ErrorResponse response = ErrorResponse.builder()
-                .code("400")
-                .message(e.getMessage())
-                .build();
+            .code("400")
+            .message(e.getMessage())
+            .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> exception(Exception e) {
+
+        ErrorResponse response
+            = ErrorResponse.builder()
+            .code("500")
+            .message(e.getMessage())
+            .build();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
