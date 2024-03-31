@@ -1,6 +1,5 @@
 package com.lovememoir.server.api.controller.member.response;
 
-import com.lovememoir.server.domain.member.Gender;
 import lombok.Builder;
 import lombok.Getter;
 

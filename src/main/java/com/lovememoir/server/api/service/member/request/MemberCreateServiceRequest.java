@@ -1,19 +1,17 @@
-package com.lovememoir.server.api.controller.member.response;
+package com.lovememoir.server.api.service.member.request;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class MemberModifyResponse {
+public class MemberCreateServiceRequest {
 
-    private final String memberKey;
     private final String nickname;
     private final String gender;
     private final String birth;
 
     @Builder
-    private MemberModifyResponse(String memberKey, String nickname, String gender, String birth) {
-        this.memberKey = memberKey;
+    private MemberCreateServiceRequest(String nickname, String gender, String birth) {
         this.nickname = nickname;
         this.gender = gender;
         this.birth = birth;

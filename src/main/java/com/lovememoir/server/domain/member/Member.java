@@ -1,12 +1,18 @@
 package com.lovememoir.server.domain.member;
 
 import com.lovememoir.server.domain.BaseTimeEntity;
+import com.lovememoir.server.domain.OAuth.OAuth;
 import com.lovememoir.server.domain.avatar.Avatar;
+import com.lovememoir.server.domain.member.enumerate.Gender;
+import com.lovememoir.server.domain.member.enumerate.RoleType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
+import java.util.UUID;
 
 
 @Entity
@@ -19,8 +25,12 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 36, columnDefinition = "char(36)")
+    //TODO nullable = false
+    @Column(unique = true, length = 36, columnDefinition = "char(36)")
     private String memberKey;
+
+    @Column
+    private String email;
 
     @Column(nullable = false, length = 8)
     private String nickname;
@@ -32,7 +42,10 @@ public class Member extends BaseTimeEntity {
     private String birth;
 
     @Column(nullable = false, length = 5)
-    private Role role;
+    private RoleType roleType;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<OAuth> oAuthSet;
 
     @OneToOne
     @JoinColumn(name = "avatar_id")
@@ -43,12 +56,24 @@ public class Member extends BaseTimeEntity {
 //    private List<Diary> diaries;
 
     @Builder
-    private Member(String memberKey, String nickname, Gender gender, String birth, Role role) {
+    private Member(String memberKey, String nickname, String email, Gender gender, String birth, RoleType roleType) {
         this.memberKey = memberKey;
         this.nickname = nickname;
+        this.email = email;
         this.gender = gender;
         this.birth = birth;
-        this.role = role;
+        this.roleType = roleType;
+    }
+
+    public static Member create(String nickname, String email, Gender gender, String birth) {
+        return Member.builder()
+            .memberKey(UUID.randomUUID().toString())
+            .nickname(nickname)
+            .email(email)
+            .gender(gender)
+            .birth(birth)
+            .roleType(RoleType.USER)
+            .build();
     }
 }
 
