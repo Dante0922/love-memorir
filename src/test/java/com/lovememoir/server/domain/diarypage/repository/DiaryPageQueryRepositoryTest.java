@@ -100,7 +100,7 @@ class DiaryPageQueryRepositoryTest extends IntegrationTestSupport {
             .hasFieldOrPropertyWithValue("pageTitle", diaryPage.getTitle())
             .hasFieldOrPropertyWithValue("pageContent", diaryPage.getContent())
             .hasFieldOrPropertyWithValue("diaryDate", diaryPage.getDiaryDate())
-            .hasFieldOrPropertyWithValue("dateTimeOfCreation", diaryPage.getCreatedDateTime());
+            .hasFieldOrPropertyWithValue("createdDateTime", diaryPage.getCreatedDateTime());
     }
 
     private Member createMember() {
