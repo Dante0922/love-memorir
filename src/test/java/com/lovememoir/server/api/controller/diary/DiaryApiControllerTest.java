@@ -2,15 +2,18 @@ package com.lovememoir.server.api.controller.diary;
 
 import com.lovememoir.server.ControllerTestSupport;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
+import com.lovememoir.server.api.controller.diary.request.DiaryImageModifyRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDate;
 
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_BLANK_DIARY_TITLE;
-import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_RELATIONSHIP_STARTED_DATE;
+import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_IS_IN_LOVE;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -27,6 +30,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title(" ")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
@@ -45,9 +49,9 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
-    @DisplayName("신규 일기장을 등록할 때 연애 시작일은 필수값이다.")
+    @DisplayName("신규 일기장을 등록할 때 연애 여부는 필수값이다.")
     @Test
-    void createDiaryWithoutRelationshipStartedDate() throws Exception {
+    void createDiaryWithoutIsInLove() throws Exception {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title("푸바오")
@@ -64,7 +68,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code").value("400"))
             .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-            .andExpect(jsonPath("$.message").value(NOT_NULL_RELATIONSHIP_STARTED_DATE))
+            .andExpect(jsonPath("$.message").value(NOT_NULL_IS_IN_LOVE))
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -74,6 +78,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title("푸바오")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
@@ -94,6 +99,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title(" ")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
@@ -112,17 +118,17 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
-    @DisplayName("일기장 정보를 수정할 때 연애 시작일은 필수값이다.")
+    @DisplayName("일기장 정보를 수정할 때 연애 여부은 필수값이다.")
     @Test
     void modifyDiaryWithoutRelationshipStartedDate() throws Exception {
         //given
-        DiaryCreateRequest request = DiaryCreateRequest.builder()
+        DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title("푸바오")
             .build();
 
         //when //then
         mockMvc.perform(
-                post(BASE_URL)
+                patch(BASE_URL + "/{diaryId}", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
                     .with(csrf())
@@ -131,7 +137,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code").value("400"))
             .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-            .andExpect(jsonPath("$.message").value(NOT_NULL_RELATIONSHIP_STARTED_DATE))
+            .andExpect(jsonPath("$.message").value(NOT_NULL_IS_IN_LOVE))
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -139,8 +145,9 @@ class DiaryApiControllerTest extends ControllerTestSupport {
     @Test
     void modifyDiary() throws Exception {
         //given
-        DiaryCreateRequest request = DiaryCreateRequest.builder()
+        DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title("루이바오")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2024, 1, 1))
             .build();
 
@@ -149,6 +156,33 @@ class DiaryApiControllerTest extends ControllerTestSupport {
                 patch(BASE_URL + "/{diaryId}", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
+
+    @DisplayName("일기장 프로필 이미지를 수정한다.")
+    @Test
+    void modifyDiaryImage() throws Exception {
+        //given
+        MockMultipartFile file = new MockMultipartFile(
+            "profile",
+            "diary-profile-upload-image.jpg",
+            "image/jpg",
+            "image data".getBytes()
+        );
+
+        DiaryImageModifyRequest request = DiaryImageModifyRequest.builder()
+            .profile(file)
+            .build();
+
+        //when //then
+        mockMvc.perform(
+                multipart(BASE_URL + "/{diaryId}", 1L)
+                    .file(file)
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer jwt.access.token")
                     .with(csrf())
             )
             .andDo(print())

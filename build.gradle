@@ -1,41 +1,42 @@
 buildscript {
-	ext {
-		queryDslVersion = "5.0.0"
-	}
+    ext {
+        queryDslVersion = "5.0.0"
+    }
 }
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.1.9'
-	id 'io.spring.dependency-management' version '1.1.4'
-	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'java'
+    id 'org.springframework.boot' version '3.2.4'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com.love-memoir'
 version = '1.0'
 
 java {
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-	asciidoctorExt
-	querydsl.extendsFrom compileClasspath
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    asciidoctorExt
+    querydsl.extendsFrom compileClasspath
 }
 
 repositories {
-	mavenCentral()
-	maven { url 'https://repo.spring.io/milestone' }
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
 }
 
 ext {
-	set('snippetsDir', file("build/generated-snippets"))
-	set('springAiVersion', "0.8.1")
+    set('snippetsDir', file("build/generated-snippets"))
+    set('springAiVersion', "0.8.1")
 }
 
 dependencies {
+
 	//spring boot
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -50,20 +51,32 @@ dependencies {
 	//spring ai
 	//implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 
-	//h2
-	runtimeOnly 'com.h2database:h2'
+    //spring boot
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-	//lombok
-	annotationProcessor 'org.projectlombok:lombok'
-	compileOnly 'org.projectlombok:lombok'
+    //spring ai
+    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 
-	//test
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
 
-	//restdocs
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    //h2
+    runtimeOnly 'com.h2database:h2'
+
+    //lombok
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+
+    //test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    //restdocs
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
 
 	//querydsl
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
@@ -75,52 +88,62 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    //querydsl
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+
+    //aws s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 }
 
 dependencyManagement {
-//	imports {
-//		mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
-//	}
+	imports {
+		mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+	}
 }
 
 tasks.named('bootBuildImage') {
-	builder = 'paketobuildpacks/builder-jammy-base:latest'
+    builder = 'paketobuildpacks/builder-jammy-base:latest'
 }
 
 tasks.named('test') {
-	outputs.dir snippetsDir
-	useJUnitPlatform()
+    outputs.dir snippetsDir
+    useJUnitPlatform()
 }
 
 tasks.named('asciidoctor') {
-	inputs.dir snippetsDir
-	configurations 'asciidoctorExt'
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
 
-	sources {
-		include("**/index.adoc")
-	}
+    sources {
+        include("**/index.adoc")
+    }
 
-	baseDirFollowsSourceFile()
-	dependsOn test
+    baseDirFollowsSourceFile()
+    dependsOn test
 }
 
 bootJar {
-	dependsOn asciidoctor
-	from("${asciidoctor.outputDir}") {
-		into 'static/docs'
-	}
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
 }
 
 def querydslDir = "$buildDir/generated/querydsl"
 
 tasks.withType(JavaCompile).configureEach {
-	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+    options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
 }
 
 sourceSets {
-	main.java.srcDirs += [querydslDir]
+    main.java.srcDirs += [querydslDir]
 }
 
 clean {
-	delete file(querydslDir)
+    delete file(querydslDir)
 }

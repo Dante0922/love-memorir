@@ -2,11 +2,13 @@ package com.lovememoir.server.api.controller.diary;
 
 import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
+import com.lovememoir.server.api.controller.diary.request.DiaryImageModifyRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.DiaryService;
+import com.lovememoir.server.domain.diary.Diary;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,6 +53,19 @@ public class DiaryApiController {
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         DiaryModifyResponse response = diaryService.modifyDiary(memberKey, diaryId, currentDateTime, request.toServiceRequest());
+
+        return ApiResponse.ok(response);
+    }
+
+    @PostMapping("/{diaryId}")
+    public ApiResponse<DiaryModifyResponse> modifyDiaryImage(
+        @PathVariable Long diaryId,
+        @Valid @ModelAttribute DiaryImageModifyRequest request
+    ) {
+        //TODO: 2024-03-27 00:23 dong82 회원 정보 토큰 추출
+        String memberKey = UUID.randomUUID().toString();
+
+        DiaryModifyResponse response = diaryService.modifyDiaryImage(memberKey, diaryId, request.getProfile());
 
         return ApiResponse.ok(response);
     }

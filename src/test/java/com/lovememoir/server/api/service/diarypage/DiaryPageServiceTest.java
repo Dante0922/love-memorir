@@ -9,6 +9,8 @@ import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServic
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
+import com.lovememoir.server.domain.diarypage.AnalysisResult;
+import com.lovememoir.server.domain.diarypage.AnalysisStatus;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
 import com.lovememoir.server.domain.member.enumerate.Gender;
@@ -162,22 +164,6 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
             .hasFieldOrPropertyWithValue("diaryDate", LocalDate.of(2024, 3, 20));
     }
 
-    @DisplayName("일기 삭제시 본인의 일기장이 아니라면 예외가 발생한다.")
-    @Test
-    void removeDiaryPageWithoutAuth() {
-        //given
-        Member member = createMember();
-        Diary diary = createDiary(member);
-        DiaryPage diaryPage = createDiaryPage(diary);
-
-        Member otherMember = createMember();
-
-        //when //then
-        assertThatThrownBy(() -> diaryPageService.removeDiaryPage(otherMember.getMemberKey(), diaryPage.getId()))
-            .isInstanceOf(AuthException.class)
-            .hasMessage(NO_AUTH);
-    }
-
     @DisplayName("회원 고유키와 일기 식별키를 입력 받아 일기를 삭제한다.")
     @Test
     void removeDiaryPage() {
@@ -187,7 +173,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         DiaryPage diaryPage = createDiaryPage(diary);
 
         //when
-        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPage(member.getMemberKey(), diaryPage.getId());
+        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPage(List.of(diaryPage.getId()));
 
         //then
         assertThat(response).isNotNull();
@@ -212,6 +198,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         Diary diary = Diary.builder()
             .isFixed(false)
             .title("러바오와의 연애 기록")
+            .isInLove(true)
             .relationshipStartedDate(LocalDate.of(2016, 3, 3))
             .pageCount(0)
             .member(member)
@@ -224,6 +211,9 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
             .title("개구쟁이 쌍둥바오")
             .content("혼자 루이바오랑 후이바오를 육아하기 너무 힘들다...너무 개구쟁이들이야")
             .diaryDate(LocalDate.of(2024, 3, 10))
+            .analysisResult(AnalysisResult.builder()
+                .analysisStatus(AnalysisStatus.BEFORE)
+                .build())
             .diary(diary)
             .build();
         return diaryPageRepository.save(diaryPage);
