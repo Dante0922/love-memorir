@@ -1,12 +1,18 @@
 package com.lovememoir.server.auth.client;
 
 import com.lovememoir.server.auth.dto.KakaoUserResponse;
+import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.OAuth.OAuth;
 import com.lovememoir.server.domain.OAuth.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import static com.lovememoir.server.common.message.ExceptionMessage.OAUTH_SERVER_ERROR;
+import static com.lovememoir.server.common.message.ExceptionMessage.OAUTH_TOKEN_UNAUTHORIZED;
 
 @Component
 @RequiredArgsConstructor
@@ -23,6 +29,10 @@ public class ClientKakao implements ClientProxy {
             .uri("https://kapi.kakao.com/v2/user/me")
             .headers(h -> h.setBearerAuth(accessToken))
             .retrieve()
+            .onStatus(HttpStatusCode::is4xxClientError, response ->
+                Mono.error(new AuthException(OAUTH_TOKEN_UNAUTHORIZED)))
+            .onStatus(HttpStatusCode::is5xxServerError, response ->
+                Mono.error(new AuthException(OAUTH_SERVER_ERROR)))
             .bodyToMono(KakaoUserResponse.class)
             .block();
         log.info("kakaoUserResponse: {}", kakaoUserResponse.toString());
