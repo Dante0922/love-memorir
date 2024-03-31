@@ -41,8 +41,9 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 10, columnDefinition = "char(10)")
     private String birth;
 
+    @ElementCollection
     @Column(nullable = false, length = 5)
-    private RoleType roleType;
+    private Set<RoleType> roleType;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Auth> authSet;
@@ -56,7 +57,7 @@ public class Member extends BaseTimeEntity {
 //    private List<Diary> diaries;
 
     @Builder
-    private Member(String memberKey, String nickname, String email, Gender gender, String birth, RoleType roleType) {
+    private Member(String memberKey, String nickname, String email, Gender gender, String birth, Set<RoleType> roleType) {
         this.memberKey = memberKey;
         this.nickname = nickname;
         this.email = email;
@@ -72,7 +73,6 @@ public class Member extends BaseTimeEntity {
             .email(email)
             .gender(gender)
             .birth(birth)
-            .roleType(RoleType.USER)
             .build();
     }
 }
