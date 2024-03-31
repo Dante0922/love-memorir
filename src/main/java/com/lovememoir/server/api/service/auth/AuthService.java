@@ -1,8 +1,7 @@
-package com.lovememoir.server.auth.service;
+package com.lovememoir.server.api.service.auth;
 
-import com.lovememoir.server.auth.dto.AuthResponse;
-import com.lovememoir.server.auth.jwt.AuthToken;
-import com.lovememoir.server.auth.jwt.AuthTokenProvider;
+import com.lovememoir.server.common.auth.jwt.AuthToken;
+import com.lovememoir.server.common.auth.jwt.AuthTokenProvider;
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberQueryRepository;

@@ -1,9 +1,9 @@
-package com.lovememoir.server.auth.controller;
+package com.lovememoir.server.api.controller.auth;
 
 import com.lovememoir.server.api.ApiResponse;
-import com.lovememoir.server.auth.dto.AuthRequest;
-import com.lovememoir.server.auth.dto.AuthResponse;
-import com.lovememoir.server.auth.service.KakaoAuthService;
+import com.lovememoir.server.api.controller.auth.request.AuthRequest;
+import com.lovememoir.server.api.controller.auth.response.AuthResponse;
+import com.lovememoir.server.api.service.auth.KakaoAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;

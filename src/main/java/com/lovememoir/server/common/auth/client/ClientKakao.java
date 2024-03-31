@@ -1,9 +1,9 @@
-package com.lovememoir.server.auth.client;
+package com.lovememoir.server.common.auth.client;
 
-import com.lovememoir.server.auth.dto.KakaoUserResponse;
+import com.lovememoir.server.api.controller.auth.response.KakaoUserResponse;
 import com.lovememoir.server.common.exception.AuthException;
-import com.lovememoir.server.domain.OAuth.OAuth;
-import com.lovememoir.server.domain.OAuth.ProviderType;
+import com.lovememoir.server.domain.auth.Auth;
+import com.lovememoir.server.domain.auth.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
@@ -22,7 +22,7 @@ public class ClientKakao implements ClientProxy {
     private final WebClient webClient;
 
     @Override
-    public OAuth getOAuth(String accessToken) {
+    public Auth getOAuth(String accessToken) {
         log.info("accessToken: {}", accessToken);
 
         KakaoUserResponse kakaoUserResponse = webClient.get()
@@ -39,7 +39,7 @@ public class ClientKakao implements ClientProxy {
         log.info("kakaoUserResponse: {}", kakaoUserResponse.getProperties().toString());
         log.info("kakaoUserResponse: {}", kakaoUserResponse.getKakaoAccount().toString());
 
-        return OAuth.builder()
+        return Auth.builder()
             .provider(ProviderType.KAKAO)
             .providerId(String.valueOf(kakaoUserResponse.getId()))
             // TODO : 프론트로부터 RefreshToken 받아오기?

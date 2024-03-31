@@ -1,7 +1,7 @@
 package com.lovememoir.server.domain.member;
 
 import com.lovememoir.server.domain.BaseTimeEntity;
-import com.lovememoir.server.domain.OAuth.OAuth;
+import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.avatar.Avatar;
 import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.enumerate.RoleType;
@@ -45,7 +45,7 @@ public class Member extends BaseTimeEntity {
     private RoleType roleType;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<OAuth> oAuthSet;
+    private Set<Auth> authSet;
 
     @OneToOne
     @JoinColumn(name = "avatar_id")

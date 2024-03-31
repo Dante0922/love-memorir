@@ -1,13 +1,13 @@
-package com.lovememoir.server.auth.service;
+package com.lovememoir.server.api.service.auth;
 
-import com.lovememoir.server.auth.client.ClientKakao;
-import com.lovememoir.server.auth.dto.AuthRequest;
-import com.lovememoir.server.auth.dto.AuthResponse;
-import com.lovememoir.server.auth.jwt.AuthToken;
-import com.lovememoir.server.auth.jwt.AuthTokenProvider;
-import com.lovememoir.server.domain.OAuth.OAuth;
-import com.lovememoir.server.domain.OAuth.repository.OAuthQueryRepository;
-import com.lovememoir.server.domain.OAuth.repository.OAuthRepository;
+import com.lovememoir.server.common.auth.client.ClientKakao;
+import com.lovememoir.server.api.controller.auth.request.AuthRequest;
+import com.lovememoir.server.api.controller.auth.response.AuthResponse;
+import com.lovememoir.server.common.auth.jwt.AuthToken;
+import com.lovememoir.server.common.auth.jwt.AuthTokenProvider;
+import com.lovememoir.server.domain.auth.Auth;
+import com.lovememoir.server.domain.auth.repository.AuthQueryRepository;
+import com.lovememoir.server.domain.auth.repository.AuthRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,22 +22,22 @@ public class KakaoAuthService {
 
     private final ClientKakao clientKakao;
     private final AuthTokenProvider authTokenProvider;
-    private final OAuthRepository oAuthRepository;
-    private final OAuthQueryRepository oAuthQueryRepository;
+    private final AuthRepository authRepository;
+    private final AuthQueryRepository authQueryRepository;
     private final MemberQueryRepository memberQueryRepository;
 
 
     @Transactional
     public AuthResponse login(AuthRequest authRequest) {
-        OAuth kakaoOAuth = clientKakao.getOAuth(authRequest.getAccessToken());
-        String providerId = kakaoOAuth.getProviderId();
+        Auth kakaoAuth = clientKakao.getOAuth(authRequest.getAccessToken());
+        String providerId = kakaoAuth.getProviderId();
         AuthToken appToken = authTokenProvider.createUserAppToken(providerId);
 
         Member member = memberQueryRepository.findByProviderId(providerId);
 
-        log.info("member : {}", kakaoOAuth.getProvider());
+        log.info("member : {}", kakaoAuth.getProvider());
         if (member == null) {
-            oAuthRepository.save(kakaoOAuth);
+            authRepository.save(kakaoAuth);
             return AuthResponse.builder()
                 .appToken(appToken.getToken())
                 .isNewMember(Boolean.TRUE)

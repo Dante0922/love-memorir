@@ -1,4 +1,4 @@
-package com.lovememoir.server.auth.dto;
+package com.lovememoir.server.api.controller.auth.response;
 
 import lombok.Builder;
 import lombok.Getter;

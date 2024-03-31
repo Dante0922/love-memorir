@@ -1,6 +1,6 @@
-package com.lovememoir.server.domain.member.repository;
+package com.lovememoir.server.domain.auth.repository;
 
-import com.lovememoir.server.domain.member.Member;
+import com.lovememoir.server.domain.auth.Auth;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -11,16 +11,15 @@ import static com.lovememoir.server.domain.auth.QAuth.auth;
 
 @Repository
 @RequiredArgsConstructor
-public class MemberQueryRepository {
+public class AuthQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Transactional(readOnly = true)
-    public Member findByProviderId(String ProviderId) {
+    public Auth findByProviderId(String providerId) {
         return jpaQueryFactory
-            .select(auth.member)
-            .from(auth)
-            .where(auth.providerId.eq(ProviderId))
+            .selectFrom(auth)
+            .where(auth.providerId.eq(providerId))
             .fetchOne();
     }
 }

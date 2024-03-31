@@ -1,4 +1,4 @@
-package com.lovememoir.server.auth.jwt;
+package com.lovememoir.server.common.auth.jwt;
 
 import com.lovememoir.server.domain.member.enumerate.RoleType;
 import io.jsonwebtoken.Claims;

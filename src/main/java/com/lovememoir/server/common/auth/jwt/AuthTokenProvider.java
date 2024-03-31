@@ -1,4 +1,4 @@
-package com.lovememoir.server.auth.jwt;
+package com.lovememoir.server.common.auth.jwt;
 
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.member.enumerate.RoleType;
