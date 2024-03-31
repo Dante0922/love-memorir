@@ -16,6 +16,13 @@ spring:
     properties:
       hibernate:
         default_batch_fetch_size: 100
+  ai:
+    openai:
+      api-key: ${openai.api-key}
+      chat:
+        options:
+          model: gpt-4
+          temperature: 0.7
 
   security:
     oauth2:
@@ -38,20 +45,11 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
-
 app:
   auth:
     token:
       tokenSecret: secretkey123secretkey444secretkey586secretkeysecretkey
       tokenExpiry: 1800000
-      
-  ai:
-    openai:
-      api-key: ${openai.api-key}
-      chat:
-        options:
-          model: gpt-4
-          temperature: 0.7
 
 logging:
   level:
