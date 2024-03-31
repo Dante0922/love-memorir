@@ -16,7 +16,7 @@ spring:
     properties:
       hibernate:
         default_batch_fetch_size: 100
-<<<<<<< HEAD
+
   security:
     oauth2:
       client:
@@ -44,8 +44,7 @@ app:
     token:
       tokenSecret: secretkey123secretkey444secretkey586secretkeysecretkey
       tokenExpiry: 1800000
-
-
+      
   ai:
     openai:
       api-key: ${openai.api-key}

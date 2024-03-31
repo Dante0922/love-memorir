@@ -1,0 +1,14 @@
+[[modify-diary-image]]
+=== 일기장 프로필 이미지 수정 API
+
+==== HTTP Request
+
+include::{snippets}/modify-diary-image/http-request.adoc[]
+include::{snippets}/modify-diary-image/request-headers.adoc[]
+include::{snippets}/modify-diary-image/path-parameters.adoc[]
+include::{snippets}/modify-diary-image/request-parts.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/modify-diary-image/http-response.adoc[]
+include::{snippets}/modify-diary-image/response-fields.adoc[]
