@@ -42,10 +42,13 @@ public class DiaryPageQueryRepository {
     public List<DiaryPagesResponse> findAllByDiaryIdIn(final List<Long> diaryIds) {
         return queryFactory
             .select(
-                Projections.constructor(
+                Projections.fields(
                     DiaryPagesResponse.class,
-                    diaryPage.id,
-                    diaryPage.title
+                    diaryPage.id.as("diaryPageId"),
+                    diaryPage.analysisResult.analysisStatus,
+                    diaryPage.analysisResult.emotionCode,
+                    diaryPage.title.as("pageTitle"),
+                    diaryPage.createdDateTime
                 )
             )
             .from(diaryPage)
@@ -59,11 +62,13 @@ public class DiaryPageQueryRepository {
     public Optional<DiaryPageResponse> findById(final Long diaryPageId) {
         DiaryPageResponse content = queryFactory
             .select(
-                Projections.constructor(
+                Projections.fields(
                     DiaryPageResponse.class,
-                    Expressions.asNumber(diaryPageId),
-                    diaryPage.title,
-                    diaryPage.content,
+                    Expressions.asNumber(diaryPageId).as("diaryPageId"),
+                    diaryPage.analysisResult.analysisStatus,
+                    diaryPage.analysisResult.emotionCode,
+                    diaryPage.title.as("pageTitle"),
+                    diaryPage.content.as("pageContent"),
                     diaryPage.diaryDate,
                     diaryPage.createdDateTime
                 )
