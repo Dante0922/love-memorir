@@ -8,6 +8,7 @@ import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.DiaryService;
+import com.lovememoir.server.common.auth.CurrentMember;
 import com.lovememoir.server.common.auth.jwt.CustomUser;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.member.Member;
@@ -37,17 +38,19 @@ public class DiaryApiController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<DiaryCreateResponse> createDiary(@Valid @RequestBody DiaryCreateRequest request,
-                                                        @AuthenticationPrincipal CustomUser member) {
+                                                        @CurrentMember Member member) {
         //TODO: 2024-03-26 00:53 dong82 회원 정보 토큰 추출
-        /*멤버 출력.. */
-        Member member1 = member.getMember();
-        log.info("member : {}", member1.getId());
-        log.info("member : {}", member1.getNickname());
-        log.info("member : {}", member1.getBirth());
-        log.info("member : {}", member1.getGender());
-        log.info("member : {}", member1.getAuth());
-        log.info("member : {}", member1.getAuth().getProviderId());
-        /**/
+
+//        log.info("member : {}", member.getId());
+//        log.info("member : {}", member.getMemberKey());
+//        log.info("member : {}", member.getNickname());
+//        log.info("member : {}", member.getBirth());
+//        log.info("member : {}", member.getGender());
+//        log.info("member : {}", member.getAuth());
+//        log.info("member : {}", member.getAuth().getProvider());
+//        log.info("member : {}", member.getAuth().getProviderId());
+
+
         String memberKey = UUID.randomUUID().toString();
 
         LocalDateTime currentDateTime = LocalDateTime.now();
