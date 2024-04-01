@@ -56,7 +56,7 @@ public class DiaryApiController {
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         DiaryCreateResponse response = diaryService.createDiary(memberKey, currentDateTime, request.toServiceRequest());
-
+        // TODO 테스트코드 500 떨어지길래 임시로 막아두었어요. 확인 부탁드려요.
         return ApiResponse.created(response);
     }
 

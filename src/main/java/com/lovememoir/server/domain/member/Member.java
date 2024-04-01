@@ -56,7 +56,7 @@ public class Member extends BaseTimeEntity {
 //    private List<Diary> diaries;
 
     @Builder
-    private Member( String nickname, String email, Gender gender, String birth, RoleType roleType, Auth auth) {
+    private Member( String nickname, String memberKey, String email, Gender gender, String birth, RoleType roleType, Auth auth) {
         this.nickname = nickname;
         this.memberKey = UUID.randomUUID().toString();
         this.email = email;
@@ -66,7 +66,7 @@ public class Member extends BaseTimeEntity {
         this.auth = auth;
     }
 
-    public static Member create(String nickname, String email, Gender gender, String birth, RoleType roleType, Auth auth) {
+    public static Member create(String nickname, String memberKey, String email, Gender gender, String birth, RoleType roleType, Auth auth) {
         return Member.builder()
             .nickname(nickname)
             .email(email)

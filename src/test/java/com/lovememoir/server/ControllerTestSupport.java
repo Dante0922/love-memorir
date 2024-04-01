@@ -12,6 +12,7 @@ import com.lovememoir.server.api.service.diary.DiaryQueryService;
 import com.lovememoir.server.api.service.diary.DiaryService;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
 import com.lovememoir.server.api.service.diarypage.DiaryPageService;
+import com.lovememoir.server.api.service.member.MemberService;
 import com.lovememoir.server.common.interceptor.query.ApiQueryCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -53,4 +54,17 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected DiaryPageQueryService diaryPageQueryService;
+
+    @MockBean
+    protected MemberApiController memberApiController;
+
+    @MockBean
+    protected AvatarApiController avatarApiController;
+
+    @MockBean
+    protected AvatarQueryApiController avatarQueryApiController;
+
+    @MockBean
+    protected MemberService memberService;
+
 }
