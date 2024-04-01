@@ -31,9 +31,14 @@ public class KakaoAuthService {
     public AuthResponse login(AuthRequest authRequest) {
         Auth kakaoAuth = clientKakao.getOAuth(authRequest.getAccessToken());
         String providerId = kakaoAuth.getProviderId();
-        AuthToken appToken = authTokenProvider.createUserAppToken(providerId);
+        Auth savedAuth = authQueryRepository.findByProviderId(providerId);
+        if(savedAuth == null) {
+            log.info("savedAuth is null");
+            authRepository.save(kakaoAuth);
+        }
 
-        Member member = memberQueryRepository.findByProviderId(providerId);
+        AuthToken appToken = authTokenProvider.createUserAppToken(providerId);
+        Member member = memberQueryRepository.findByAuthId(1L);
 
         log.info("member : {}", kakaoAuth.getProvider());
         if (member == null) {

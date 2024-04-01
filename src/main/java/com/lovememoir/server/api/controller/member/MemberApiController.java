@@ -8,6 +8,10 @@ import com.lovememoir.server.api.controller.member.response.MemberModifyResponse
 import com.lovememoir.server.api.controller.member.response.MemberRemoveResponse;
 import com.lovememoir.server.api.service.member.MemberService;
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
+import com.lovememoir.server.common.auth.jwt.CustomUser;
+import com.lovememoir.server.domain.auth.Auth;
+import com.lovememoir.server.domain.auth.ProviderType;
+import com.lovememoir.server.domain.member.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +32,8 @@ public class MemberApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<MemberCreateResponse> createMember(@Valid @RequestBody MemberCreateRequest request
     , @AuthenticationPrincipal UserDetails userDetails) {
-        log.info("userDetails: {}", userDetails);
-        MemberCreateResponse response = memberService.createMember(request.toServiceRequest());
+        String providerId = userDetails.getUsername();
+        MemberCreateResponse response = memberService.createMember(request.toServiceRequest(providerId));
         return ApiResponse.created(response);
     }
 

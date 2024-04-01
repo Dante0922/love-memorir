@@ -27,8 +27,9 @@ public class AuthService {
         }
 
         try {
-            Member member = memberQueryRepository.findByProviderId(claims.getSubject());
-            return member.getId();
+//            Member member = memberQueryRepository.findByProviderId(claims.getSubject());
+//            return member.getId();
+            return null;
         } catch (NullPointerException e) {
             throw new AuthException(USER_NOT_FOUND);
         }

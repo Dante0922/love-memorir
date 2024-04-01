@@ -8,10 +8,14 @@ import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.DiaryService;
+import com.lovememoir.server.common.auth.jwt.CustomUser;
 import com.lovememoir.server.domain.diary.Diary;
+import com.lovememoir.server.domain.member.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -25,14 +29,25 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/diaries")
+@Slf4j
 public class DiaryApiController {
 
     private final DiaryService diaryService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<DiaryCreateResponse> createDiary(@Valid @RequestBody DiaryCreateRequest request) {
+    public ApiResponse<DiaryCreateResponse> createDiary(@Valid @RequestBody DiaryCreateRequest request,
+                                                        @AuthenticationPrincipal CustomUser member) {
         //TODO: 2024-03-26 00:53 dong82 회원 정보 토큰 추출
+        /*멤버 출력.. */
+        Member member1 = member.getMember();
+        log.info("member : {}", member1.getId());
+        log.info("member : {}", member1.getNickname());
+        log.info("member : {}", member1.getBirth());
+        log.info("member : {}", member1.getGender());
+        log.info("member : {}", member1.getAuth());
+        log.info("member : {}", member1.getAuth().getProviderId());
+        /**/
         String memberKey = UUID.randomUUID().toString();
 
         LocalDateTime currentDateTime = LocalDateTime.now();
