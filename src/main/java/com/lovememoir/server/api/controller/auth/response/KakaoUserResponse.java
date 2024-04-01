@@ -1,4 +1,4 @@
-package com.lovememoir.server.auth.dto;
+package com.lovememoir.server.api.controller.auth.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

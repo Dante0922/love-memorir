@@ -7,18 +7,15 @@ import lombok.Getter;
 @Getter
 public class MemberCreateResponse {
 
-    private final String memberKey;
     private final String nickname;
 
     @Builder
-    private MemberCreateResponse(String memberKey, String nickname) {
-        this.memberKey = memberKey;
+    private MemberCreateResponse( String nickname) {
         this.nickname = nickname;
     }
 
     public static MemberCreateResponse of(Member member) {
         return MemberCreateResponse.builder()
-            .memberKey(member.getMemberKey())
             .nickname(member.getNickname())
             .build();
     }

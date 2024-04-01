@@ -1,7 +1,7 @@
 package com.lovememoir.server.domain.member;
 
 import com.lovememoir.server.domain.BaseTimeEntity;
-import com.lovememoir.server.domain.OAuth.OAuth;
+import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.avatar.Avatar;
 import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.enumerate.RoleType;
@@ -25,8 +25,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    //TODO nullable = false
-    @Column(unique = true, length = 36, columnDefinition = "char(36)")
+    @Column(nullable = false, unique = true)
     private String memberKey;
 
     @Column
@@ -44,8 +43,9 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 5)
     private RoleType roleType;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<OAuth> oAuthSet;
+    @OneToOne
+    @JoinColumn(name = "auth_id")
+    private Auth auth;
 
     @OneToOne
     @JoinColumn(name = "avatar_id")
@@ -56,23 +56,24 @@ public class Member extends BaseTimeEntity {
 //    private List<Diary> diaries;
 
     @Builder
-    private Member(String memberKey, String nickname, String email, Gender gender, String birth, RoleType roleType) {
-        this.memberKey = memberKey;
+    private Member( String nickname, String email, Gender gender, String birth, RoleType roleType, Auth auth) {
         this.nickname = nickname;
+        this.memberKey = UUID.randomUUID().toString();
         this.email = email;
         this.gender = gender;
         this.birth = birth;
         this.roleType = roleType;
+        this.auth = auth;
     }
 
-    public static Member create(String nickname, String email, Gender gender, String birth) {
+    public static Member create(String nickname, String email, Gender gender, String birth, RoleType roleType, Auth auth) {
         return Member.builder()
-            .memberKey(UUID.randomUUID().toString())
             .nickname(nickname)
             .email(email)
             .gender(gender)
             .birth(birth)
-            .roleType(RoleType.USER)
+            .roleType(roleType)
+            .auth(auth)
             .build();
     }
 }

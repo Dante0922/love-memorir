@@ -1,4 +1,4 @@
-package com.lovememoir.server.domain.OAuth;
+package com.lovememoir.server.domain.auth;
 
 import com.lovememoir.server.domain.member.Member;
 import jakarta.persistence.*;
@@ -11,14 +11,13 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class OAuth {
+public class Auth {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @OneToOne(mappedBy = "auth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Member member;
 
     @Column(nullable = false)
@@ -34,7 +33,7 @@ public class OAuth {
     private LocalDateTime expiredAt;
 
     @Builder
-    private OAuth(Member member, ProviderType provider, String providerId, String accessToken, String refreshToken, LocalDateTime expiredAt) {
+    private Auth(Member member, ProviderType provider, String providerId, String accessToken, String refreshToken, LocalDateTime expiredAt) {
         this.member = member;
         this.provider = provider;
         this.providerId = providerId;
@@ -43,8 +42,8 @@ public class OAuth {
         this.expiredAt = expiredAt;
     }
 
-    public static OAuth create(Member member, ProviderType provider, String providerId, String accessToken, String refreshToken, LocalDateTime expiredAt) {
-        return OAuth.builder()
+    public static Auth create(Member member, ProviderType provider, String providerId, String accessToken, String refreshToken, LocalDateTime expiredAt) {
+        return Auth.builder()
                 .member(member)
                 .provider(provider)
                 .providerId(providerId)

@@ -1,4 +1,4 @@
-package com.lovememoir.server.auth.jwt;
+package com.lovememoir.server.common.auth.jwt;
 
 import jakarta.servlet.http.HttpServletRequest;
 

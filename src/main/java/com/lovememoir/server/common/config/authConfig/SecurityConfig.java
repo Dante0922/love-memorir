@@ -1,7 +1,10 @@
-package com.lovememoir.server.auth.config;
+package com.lovememoir.server.common.config.authConfig;
 
-import com.lovememoir.server.auth.jwt.AuthTokenProvider;
-import com.lovememoir.server.auth.jwt.JwtAuthenticationFilter;
+import com.lovememoir.server.common.auth.jwt.AuthTokenProvider;
+import com.lovememoir.server.common.auth.jwt.CustomUserDetailsService;
+import com.lovememoir.server.common.auth.jwt.JwtAuthenticationFilter;
+import com.lovememoir.server.domain.auth.repository.AuthQueryRepository;
+import com.lovememoir.server.domain.member.repository.MemberQueryRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +14,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -27,6 +30,8 @@ import static com.lovememoir.server.common.message.ExceptionMessage.OAUTH_TOKEN_
 public class SecurityConfig {
 
     private final AuthTokenProvider authTokenProvider;
+    private final MemberQueryRepository memberQueryRepository;
+    private final AuthQueryRepository authQueryRepository;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -35,6 +40,7 @@ public class SecurityConfig {
             .requestMatchers(new AntPathRequestMatcher("/h2-console/**")
             );
     }
+
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, authException) -> {
@@ -44,14 +50,19 @@ public class SecurityConfig {
     }
 
     @Bean
+    public UserDetailsService userDetailsService() {
+        return new CustomUserDetailsService(authQueryRepository, memberQueryRepository);
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(authTokenProvider);
         log.info("jwtAuthFilter: {}", jwtAuthFilter);
         log.info("http: {}", http);
 
         return http.authorizeHttpRequests(
-        auth -> auth
-            .anyRequest().authenticated()
+                auth -> auth
+                    .anyRequest().authenticated()
             )
             .headers(headers -> headers
                 .frameOptions(FrameOptionsConfig::sameOrigin)
@@ -60,15 +71,14 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
-//            .sessionManagement(session -> session
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//            )
+            .userDetailsService(userDetailsService())
             .addFilterBefore(jwtAuthFilter,
                 UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling(
                 exceptionHandling -> exceptionHandling
                     .authenticationEntryPoint(authenticationEntryPoint())
             )
+
             .build();
     }
 }

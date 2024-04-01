@@ -1,4 +1,4 @@
-package com.lovememoir.server.domain.OAuth;
+package com.lovememoir.server.domain.auth;
 
 public enum ProviderType {
     KAKAO,
