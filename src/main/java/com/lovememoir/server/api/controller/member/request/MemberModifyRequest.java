@@ -1,5 +1,7 @@
 package com.lovememoir.server.api.controller.member.request;
 
+import com.lovememoir.server.api.service.member.request.MemberModifyServiceRequest;
+import com.lovememoir.server.domain.member.Member;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -12,8 +14,6 @@ import static com.lovememoir.server.common.message.ValidationMessage.*;
 @NoArgsConstructor
 public class MemberModifyRequest {
 
-    @NotNull(message = NOT_NULL_MEMBER_ID)
-    private String memberKey;
     @NotBlank(message = NOT_BLANK_MEMBER_NICKNAME)
     private String nickname;
     @NotNull(message = NOT_NULL_MEMBER_GENDER)
@@ -21,12 +21,19 @@ public class MemberModifyRequest {
     @NotBlank(message = NOT_BLANK_MEMBER_BIRTH)
     private String birth;
 
-
     @Builder
-    private MemberModifyRequest(String memberKey, String nickname, String gender, String birth) {
-        this.memberKey = memberKey;
+    private MemberModifyRequest(String nickname, String gender, String birth) {
         this.nickname = nickname;
         this.gender = gender;
         this.birth = birth;
+    }
+
+    public MemberModifyServiceRequest toServiceRequest(Member member) {
+        return MemberModifyServiceRequest.builder()
+            .member(member)
+            .nickname(nickname)
+            .gender(gender)
+            .birth(birth)
+            .build();
     }
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public class MemberCreateServiceRequest {
 
+
     private final String nickname;
     private final String gender;
     private final String birth;

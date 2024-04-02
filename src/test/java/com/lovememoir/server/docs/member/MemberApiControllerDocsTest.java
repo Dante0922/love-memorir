@@ -89,7 +89,6 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
     @Test
     void modifyMember() throws Exception {
         MemberModifyRequest request = MemberModifyRequest.builder()
-            .memberKey("LL")
             .nickname("연해말")
             .gender("F")
             .birth("1990-01-01")

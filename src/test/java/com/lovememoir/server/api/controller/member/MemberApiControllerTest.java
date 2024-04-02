@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.lovememoir.server.ControllerTestSupport;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_BLANK_MEMBER_NICKNAME;
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_MEMBER_ID;
@@ -20,8 +21,9 @@ class MemberApiControllerTest extends ControllerTestSupport {
 
     private static final String BASE_URL = "/api/v1/members";
 
-    @Test
     @DisplayName("신규 멤버를 등록한다.")
+    @Test
+    @WithMockUser
     void createMember() throws Exception {
         //given
         MemberCreateRequest request = MemberCreateRequest.builder()
@@ -69,7 +71,6 @@ class MemberApiControllerTest extends ControllerTestSupport {
     void modifyMember() throws Exception {
         //given
         MemberModifyRequest request = MemberModifyRequest.builder()
-                .memberKey("1L")
                 .nickname("hello")
                 .birth("1990-01-01")
                 .gender("M")
