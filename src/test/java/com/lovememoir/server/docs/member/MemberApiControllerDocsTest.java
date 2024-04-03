@@ -1,5 +1,6 @@
 package com.lovememoir.server.docs.member;
 
+import com.lovememoir.server.WithAuthMember;
 import com.lovememoir.server.api.controller.member.request.MemberModifyRequest;
 import com.lovememoir.server.api.controller.member.MemberApiController;
 import com.lovememoir.server.api.controller.member.request.MemberCreateRequest;
@@ -87,6 +88,7 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
 
     @DisplayName("멤버 정보 수정 API")
     @Test
+    @WithAuthMember
     void modifyMember() throws Exception {
         MemberModifyRequest request = MemberModifyRequest.builder()
             .nickname("연해말")
@@ -110,8 +112,6 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
                         .description("회원 인증 토큰")
                 ),
                 requestFields(
-                    fieldWithPath("memberKey").type(JsonFieldType.STRING)
-                        .description("멤버 식별키"),
                     fieldWithPath("nickname").type(JsonFieldType.STRING)
                         .description("멤버 수정 닉네임"),
                     fieldWithPath("gender").type(JsonFieldType.STRING)
@@ -128,8 +128,6 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
                         .description("메시지"),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.memberKey").type(JsonFieldType.STRING)
-                        .description("멤버 식별키"),
                     fieldWithPath("data.nickname").type(JsonFieldType.STRING)
                         .description("멤버 수정 닉네임"),
                     fieldWithPath("data.gender").type(JsonFieldType.STRING)

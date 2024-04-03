@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static com.lovememoir.server.api.service.member.MemberValidator.*;
 import static com.lovememoir.server.common.message.ExceptionMessage.ALREADY_REGISTERED_USER;
+import static com.lovememoir.server.common.message.ExceptionMessage.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -37,6 +38,7 @@ public class MemberService {
         Auth auth = authQueryRepository.findByProviderId(request.getProviderId());
         String nickname = validateNickname(request.getNickname());
         Gender gender = Gender.valueOf(request.getGender());
+
 
         Member byAuthId = memberQueryRepository.findByAuthId(auth.getId());
         if (byAuthId != null) {
@@ -58,6 +60,12 @@ public class MemberService {
 
     public MemberModifyResponse modifyMember(MemberModifyServiceRequest request) {
         Member member = memberQueryRepository.findByAuthId(request.getMember().getId());
+
+        log.info("member: {}", member);
+        log.info("request: {}", request);
+        if (member == null) {
+            throw new IllegalArgumentException(USER_NOT_FOUND);
+        }
 
         String nickname = validateNickname(request.getNickname());
         String birth = request.getBirth();

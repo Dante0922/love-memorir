@@ -59,9 +59,6 @@ public class AuthTokenProvider {
         if(token.validate()) {
             Claims claims = token.getTokenClaims();
             UserDetails principal = customUserDetailsService.loadUserByUsername(claims.getSubject());
-//            Collection<? extends SimpleGrantedAuthority> authorities = Arrays.stream(new String[]{claims.get(AUTHORITIES_KEY).toString()})
-//                .map(SimpleGrantedAuthority::new)
-//                .toList();
 
             return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
         } else {

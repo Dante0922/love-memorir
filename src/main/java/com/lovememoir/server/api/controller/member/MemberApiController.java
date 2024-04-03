@@ -33,6 +33,7 @@ public class MemberApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<MemberCreateResponse> createMember(@Valid @RequestBody MemberCreateRequest request,
                                                           @AuthenticationPrincipal UserDetails userDetails) {
+
         String providerId = userDetails.getUsername();
         MemberCreateResponse response = memberService.createMember(request.toServiceRequest(providerId));
         return ApiResponse.created(response);

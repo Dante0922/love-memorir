@@ -1,6 +1,7 @@
 package com.lovememoir.server.api.controller.diary;
 
 import com.lovememoir.server.ControllerTestSupport;
+import com.lovememoir.server.WithAuthMember;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryImageModifyRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
@@ -74,6 +75,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
 
     @DisplayName("신규 일기장을 등록한다.")
     @Test
+    @WithAuthMember
     void createDiary() throws Exception {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
@@ -88,10 +90,9 @@ class DiaryApiControllerTest extends ControllerTestSupport {
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
                     .with(csrf())
-            );
-            //TODO 500 에러 발생?? 확인 필요
-//            .andDo(print())
-//            .andExpect(status().isCreated());
+            )
+            .andDo(print())
+            .andExpect(status().isCreated());
     }
 
     @DisplayName("일기장 정보를 수정할 때 제목(파트너 닉네임)은 필수값이다.")
