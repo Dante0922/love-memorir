@@ -58,12 +58,9 @@ public class AuthTokenProvider {
 
         if(token.validate()) {
             Claims claims = token.getTokenClaims();
-            Collection<? extends SimpleGrantedAuthority> authorities = Arrays.stream(new String[]{claims.get(AUTHORITIES_KEY).toString()})
-                .map(SimpleGrantedAuthority::new)
-                .toList();
             UserDetails principal = customUserDetailsService.loadUserByUsername(claims.getSubject());
-//            User principal = new User(claims.getSubject(), "", authorities);
-            return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+
+            return new UsernamePasswordAuthenticationToken(principal, "", principal.getAuthorities());
         } else {
             throw new AuthException(FAILED_TO_GENERATE_TOKEN);
         }

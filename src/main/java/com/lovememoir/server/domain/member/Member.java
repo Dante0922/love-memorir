@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,7 +35,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 8)
     private String nickname;
 
-    @Column(nullable = false, updatable = false, length = 1, columnDefinition = "char(1)")
+    @Column(nullable = false, length = 1, columnDefinition = "char(1)")
     private Gender gender;
 
     @Column(nullable = false, length = 10, columnDefinition = "char(10)")
@@ -56,7 +57,7 @@ public class Member extends BaseTimeEntity {
 //    private List<Diary> diaries;
 
     @Builder
-    private Member( String nickname, String memberKey, String email, Gender gender, String birth, RoleType roleType, Auth auth) {
+    private Member(String nickname, String memberKey, String email, Gender gender, String birth, RoleType roleType, Auth auth) {
         this.nickname = nickname;
         this.memberKey = UUID.randomUUID().toString();
         this.email = email;
@@ -76,5 +77,12 @@ public class Member extends BaseTimeEntity {
             .auth(auth)
             .build();
     }
+
+    public void modify(String nickname, String birth, Gender gender) {
+        this.nickname = nickname;
+        this.birth = birth;
+        this.gender = gender;
+    }
+
 }
 

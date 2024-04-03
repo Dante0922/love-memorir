@@ -56,15 +56,6 @@ public abstract class ControllerTestSupport {
     protected DiaryPageQueryService diaryPageQueryService;
 
     @MockBean
-    protected MemberApiController memberApiController;
-
-    @MockBean
-    protected AvatarApiController avatarApiController;
-
-    @MockBean
-    protected AvatarQueryApiController avatarQueryApiController;
-
-    @MockBean
     protected MemberService memberService;
 
 }

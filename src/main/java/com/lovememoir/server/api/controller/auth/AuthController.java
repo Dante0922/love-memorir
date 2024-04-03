@@ -23,5 +23,4 @@ public class AuthController {
         log.info("authRequest: {}", authRequest);
         return ApiResponse.success(kakaoAuthService.login(authRequest));
     }
-
 }

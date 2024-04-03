@@ -8,6 +8,8 @@ import com.lovememoir.server.api.controller.member.response.MemberModifyResponse
 import com.lovememoir.server.api.controller.member.response.MemberRemoveResponse;
 import com.lovememoir.server.api.service.member.MemberService;
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
+import com.lovememoir.server.common.auth.CurrentMember;
+import com.lovememoir.server.common.auth.SecurityUtils;
 import com.lovememoir.server.common.auth.jwt.CustomUser;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.ProviderType;
@@ -30,21 +32,17 @@ public class MemberApiController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<MemberCreateResponse> createMember(@Valid @RequestBody MemberCreateRequest request
-    , @AuthenticationPrincipal UserDetails userDetails) {
-        String providerId = userDetails.getUsername();
-        MemberCreateResponse response = memberService.createMember(request.toServiceRequest(providerId));
+    public ApiResponse<MemberCreateResponse> createMember(@Valid @RequestBody MemberCreateRequest request) {
+
+
+        MemberCreateResponse response = memberService.createMember(request.toServiceRequest());
         return ApiResponse.created(response);
     }
 
     @PatchMapping()
-    public ApiResponse<MemberModifyResponse> modifyMember(@Valid @RequestBody MemberModifyRequest request) {
-        MemberModifyResponse response = MemberModifyResponse.builder()
-            .memberKey("hello")
-            .nickname(request.getNickname())
-            .birth(request.getBirth())
-            .gender("F")
-            .build();
+    public ApiResponse<MemberModifyResponse> modifyMember(@Valid @RequestBody MemberModifyRequest request,
+                                                          @CurrentMember Member member) {
+        MemberModifyResponse response = memberService.modifyMember(request.toServiceRequest(member));
         return ApiResponse.ok(response);
     }
 
