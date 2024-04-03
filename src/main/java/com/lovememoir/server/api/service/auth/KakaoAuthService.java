@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class KakaoAuthService {
 
     private final ClientKakao clientKakao;
@@ -27,7 +28,6 @@ public class KakaoAuthService {
     private final MemberQueryRepository memberQueryRepository;
 
 
-    @Transactional
     public AuthResponse login(AuthRequest authRequest) {
         Auth kakaoAuth = clientKakao.getOAuth(authRequest.getAccessToken());
         String providerId = kakaoAuth.getProviderId();

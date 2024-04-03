@@ -24,4 +24,12 @@ public class SecurityUtils {
         CustomUser principal = (CustomUser) authentication.getPrincipal();
         return  principal.getAuth();
     }
+    public static String getAuthId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new IllegalStateException("Security Context에 인증 정보가 없습니다.");
+        }
+        CustomUser principal = (CustomUser) authentication.getPrincipal();
+        return  principal.getAuth().getProviderId();
+    }
 }

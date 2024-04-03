@@ -60,7 +60,7 @@ public class AuthTokenProvider {
             Claims claims = token.getTokenClaims();
             UserDetails principal = customUserDetailsService.loadUserByUsername(claims.getSubject());
 
-            return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
+            return new UsernamePasswordAuthenticationToken(principal, "", principal.getAuthorities());
         } else {
             throw new AuthException(FAILED_TO_GENERATE_TOKEN);
         }

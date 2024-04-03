@@ -1,19 +1,16 @@
 package com.lovememoir.server.api.controller.member;
 
+import com.lovememoir.server.ControllerTestSupport;
 import com.lovememoir.server.WithAuthMember;
 import com.lovememoir.server.api.controller.member.request.MemberCreateRequest;
 import com.lovememoir.server.api.controller.member.request.MemberModifyRequest;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import com.lovememoir.server.ControllerTestSupport;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_BLANK_MEMBER_NICKNAME;
-import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_MEMBER_ID;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -39,7 +36,7 @@ class MemberApiControllerTest extends ControllerTestSupport {
         //when //then
         mockMvc.perform(
                         post(BASE_URL)
-                                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzNDE0MTM2MDE0Iiwicm9sZSI6IlVTRVIiLCJleHAiOjE3MTIxNTExNzd9.xraMNB1ZF5qibU2NqFDTaG7UPUR9zVGBFkfQaskCP4o")
+                                .header("Authorization", "Bearer token")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf())
