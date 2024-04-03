@@ -29,12 +29,11 @@ public class MemberCreateRequest {
         this.birth = birth;
     }
 
-    public MemberCreateServiceRequest toServiceRequest(String providerId) {
+    public MemberCreateServiceRequest toServiceRequest() {
         return MemberCreateServiceRequest.builder()
             .nickname(nickname)
             .gender(gender)
             .birth(birth)
-            .providerId(providerId)
             .build();
     }
 }

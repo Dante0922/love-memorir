@@ -4,6 +4,7 @@ import com.lovememoir.server.api.controller.member.response.MemberCreateResponse
 import com.lovememoir.server.api.controller.member.response.MemberModifyResponse;
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
 import com.lovememoir.server.api.service.member.request.MemberModifyServiceRequest;
+import com.lovememoir.server.common.auth.SecurityUtils;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.repository.AuthQueryRepository;
 import com.lovememoir.server.domain.member.enumerate.Gender;
@@ -35,12 +36,12 @@ public class MemberService {
 
     public MemberCreateResponse createMember(MemberCreateServiceRequest request) {
 
-        Auth auth = authQueryRepository.findByProviderId(request.getProviderId());
+        Auth currentAuth = SecurityUtils.getCurrentAuth();
         String nickname = validateNickname(request.getNickname());
         Gender gender = Gender.valueOf(request.getGender());
 
 
-        Member byAuthId = memberQueryRepository.findByAuthId(auth.getId());
+        Member byAuthId = memberQueryRepository.findByAuthId(currentAuth.getId());
         if (byAuthId != null) {
             throw new IllegalArgumentException(ALREADY_REGISTERED_USER);
         }
@@ -51,7 +52,7 @@ public class MemberService {
             .gender(gender)
             .birth(request.getBirth())
             .roleType(RoleType.USER)
-            .auth(auth)
+            .auth(currentAuth)
             .build();
 
         Member createdMember = memberRepository.save(member);

@@ -9,6 +9,7 @@ import com.lovememoir.server.api.controller.member.response.MemberRemoveResponse
 import com.lovememoir.server.api.service.member.MemberService;
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
 import com.lovememoir.server.common.auth.CurrentMember;
+import com.lovememoir.server.common.auth.SecurityUtils;
 import com.lovememoir.server.common.auth.jwt.CustomUser;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.ProviderType;
@@ -31,11 +32,10 @@ public class MemberApiController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<MemberCreateResponse> createMember(@Valid @RequestBody MemberCreateRequest request,
-                                                          @AuthenticationPrincipal UserDetails userDetails) {
+    public ApiResponse<MemberCreateResponse> createMember(@Valid @RequestBody MemberCreateRequest request) {
 
-        String providerId = userDetails.getUsername();
-        MemberCreateResponse response = memberService.createMember(request.toServiceRequest(providerId));
+
+        MemberCreateResponse response = memberService.createMember(request.toServiceRequest());
         return ApiResponse.created(response);
     }
 

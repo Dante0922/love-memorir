@@ -39,6 +39,7 @@ class MemberApiControllerTest extends ControllerTestSupport {
         //when //then
         mockMvc.perform(
                         post(BASE_URL)
+                                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzNDE0MTM2MDE0Iiwicm9sZSI6IlVTRVIiLCJleHAiOjE3MTIxNTExNzd9.xraMNB1ZF5qibU2NqFDTaG7UPUR9zVGBFkfQaskCP4o")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf())

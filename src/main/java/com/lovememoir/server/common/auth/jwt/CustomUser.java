@@ -3,6 +3,7 @@ package com.lovememoir.server.common.auth.jwt;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.member.Member;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
