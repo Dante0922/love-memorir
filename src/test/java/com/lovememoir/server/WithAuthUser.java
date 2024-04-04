@@ -7,8 +7,8 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
-@WithSecurityContext(factory = WithAuthMemberSecurityContextFactory.class)
-public @interface WithAuthMember {
+@WithSecurityContext(factory = WithAuthUserSecurityContextFactory.class)
+public @interface WithAuthUser {
     String providerId() default "1234567890";
     String role() default "USER";
 }

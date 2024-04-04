@@ -1,8 +1,8 @@
 package com.lovememoir.server.api.service.auth;
 
-import com.lovememoir.server.common.auth.client.ClientKakao;
 import com.lovememoir.server.api.controller.auth.request.AuthRequest;
 import com.lovememoir.server.api.controller.auth.response.AuthResponse;
+import com.lovememoir.server.common.auth.client.ClientKakao;
 import com.lovememoir.server.common.auth.jwt.AuthToken;
 import com.lovememoir.server.common.auth.jwt.AuthTokenProvider;
 import com.lovememoir.server.domain.auth.Auth;
@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,29 +31,22 @@ public class KakaoAuthService {
 
 
     public AuthResponse login(AuthRequest authRequest) {
-        Auth kakaoAuth = clientKakao.getOAuth(authRequest.getAccessToken());
-        String providerId = kakaoAuth.getProviderId();
-        Auth savedAuth = authQueryRepository.findByProviderId(providerId);
+        String accessToken = authRequest.getAccessToken();
+
+        String authId = clientKakao.getAuthId(accessToken);
+        Auth savedAuth = authRepository.findById(authId).orElse(null);
         if(savedAuth == null) {
-            log.info("savedAuth is null");
+            Auth kakaoAuth = clientKakao.createAuth(accessToken);
             authRepository.save(kakaoAuth);
         }
 
-        AuthToken appToken = authTokenProvider.createUserAppToken(providerId);
-        Member member = memberQueryRepository.findByAuthId(1L);
+        AuthToken appToken = authTokenProvider.createUserAppToken(authId);
+        Member member = memberQueryRepository.findByAuthId(authId);
 
-        log.info("member : {}", kakaoAuth.getProvider());
-        if (member == null) {
-            authRepository.save(kakaoAuth);
-            return AuthResponse.builder()
-                .appToken(appToken.getToken())
-                .isNewMember(Boolean.TRUE)
-                .build();
-        }
-
+        boolean isNewMember = member == null;
         return AuthResponse.builder()
             .appToken(appToken.getToken())
-            .isNewMember(Boolean.FALSE)
+            .isNewMember(isNewMember)
             .build();
     }
 }

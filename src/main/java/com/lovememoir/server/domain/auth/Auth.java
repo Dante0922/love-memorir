@@ -14,17 +14,14 @@ import java.time.LocalDateTime;
 public class Auth {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    public String id;
 
-    @OneToOne(mappedBy = "auth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Column(nullable = false)
     private ProviderType provider;
-
-    @Column(nullable = false)
-    private String providerId;
 
     private String accessToken;
 
@@ -33,23 +30,27 @@ public class Auth {
     private LocalDateTime expiredAt;
 
     @Builder
-    private Auth(Member member, ProviderType provider, String providerId, String accessToken, String refreshToken, LocalDateTime expiredAt) {
+    private Auth(String id, Member member, ProviderType provider, String accessToken, String refreshToken, LocalDateTime expiredAt) {
+        this.id = id;
         this.member = member;
         this.provider = provider;
-        this.providerId = providerId;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.expiredAt = expiredAt;
     }
 
-    public static Auth create(Member member, ProviderType provider, String providerId, String accessToken, String refreshToken, LocalDateTime expiredAt) {
+    public static Auth create(String id, Member member, ProviderType provider, String accessToken, String refreshToken, LocalDateTime expiredAt) {
         return Auth.builder()
+                .id(id)
                 .member(member)
                 .provider(provider)
-                .providerId(providerId)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .expiredAt(expiredAt)
                 .build();
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }

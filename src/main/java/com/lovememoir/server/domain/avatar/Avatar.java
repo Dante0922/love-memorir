@@ -1,7 +1,6 @@
 package com.lovememoir.server.domain.avatar;
 
 import com.lovememoir.server.domain.BaseTimeEntity;
-import com.lovememoir.server.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

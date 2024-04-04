@@ -4,5 +4,5 @@ import com.lovememoir.server.domain.auth.Auth;
 
 public interface ClientProxy {
 
-    Auth getOAuth(String accessToken);
+    Auth createAuth(String accessToken);
 }

@@ -9,7 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static com.lovememoir.server.domain.diarypage.AnalysisStatus.*;
+import static com.lovememoir.server.domain.diarypage.AnalysisStatus.BEFORE;
+import static com.lovememoir.server.domain.diarypage.AnalysisStatus.SUCCESS;
 
 @Embeddable
 @Getter

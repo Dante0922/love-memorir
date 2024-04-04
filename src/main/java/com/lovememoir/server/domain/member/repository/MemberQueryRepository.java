@@ -16,7 +16,7 @@ public class MemberQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Transactional(readOnly = true)
-    public Member findByAuthId(Long id) {
+    public Member findByAuthId(String id) {
         return jpaQueryFactory
             .select(auth.member)
             .from(auth)

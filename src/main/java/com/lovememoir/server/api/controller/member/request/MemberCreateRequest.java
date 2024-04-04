@@ -1,7 +1,6 @@
 package com.lovememoir.server.api.controller.member.request;
 
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
-import com.lovememoir.server.domain.auth.Auth;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -29,8 +28,9 @@ public class MemberCreateRequest {
         this.birth = birth;
     }
 
-    public MemberCreateServiceRequest toServiceRequest() {
+    public MemberCreateServiceRequest toServiceRequest(String authId) {
         return MemberCreateServiceRequest.builder()
+            .authId(authId)
             .nickname(nickname)
             .gender(gender)
             .birth(birth)

@@ -11,8 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -44,8 +42,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 5)
     private RoleType roleType;
 
-    @OneToOne
-    @JoinColumn(name = "auth_id")
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Auth auth;
 
     @OneToOne
@@ -65,6 +62,9 @@ public class Member extends BaseTimeEntity {
         this.birth = birth;
         this.roleType = roleType;
         this.auth = auth;
+        if (auth != null) {
+            auth.setMember(this);
+        }
     }
 
     public static Member create(String nickname, String memberKey, String email, Gender gender, String birth, RoleType roleType, Auth auth) {

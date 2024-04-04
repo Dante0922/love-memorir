@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static com.lovememoir.server.common.message.ValidationMessage.*;
+import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_AVATAR_GROWTH_STAGE;
+import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_AVATAR_TYPE;
 
 @Getter
 @NoArgsConstructor

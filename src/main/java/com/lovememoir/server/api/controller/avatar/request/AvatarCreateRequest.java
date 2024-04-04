@@ -1,7 +1,6 @@
 package com.lovememoir.server.api.controller.avatar.request;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

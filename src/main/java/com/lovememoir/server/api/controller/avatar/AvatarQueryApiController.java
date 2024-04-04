@@ -4,7 +4,6 @@ import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.domain.avatar.repository.response.AvatarResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
