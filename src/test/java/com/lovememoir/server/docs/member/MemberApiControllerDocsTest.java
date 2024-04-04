@@ -9,8 +9,13 @@ import com.lovememoir.server.api.service.member.MemberService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -46,7 +51,6 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
 
     @DisplayName("신규 멤버 가입 API")
     @Test
-    @WithAuthMember
     void createMember() throws Exception {
         MemberCreateRequest request = MemberCreateRequest.builder()
             .nickname("연해말")
@@ -57,15 +61,6 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
             .nickname("연해말")
             .build();
 
-        //TODO 왜 어노테이션이 안 먹지??
-        String providerId = "user.authorization.token";
-        String role = "ROLE_USER";
-        User principal = new User(providerId, "", List.of(new SimpleGrantedAuthority(role)));
-
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(principal, "password", List.of(new SimpleGrantedAuthority(role)));
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(token);
-        //TODO 위 부분 공통화 할 것
 
         given(memberService.createMember(any()))
             .willReturn(response);

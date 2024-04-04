@@ -4,6 +4,7 @@ import com.lovememoir.server.ControllerTestSupport;
 import com.lovememoir.server.api.controller.member.request.MemberCreateRequest;
 import com.lovememoir.server.api.controller.member.request.MemberModifyRequest;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -42,6 +43,10 @@ class MemberApiControllerTest extends ControllerTestSupport {
                 )
                 .andDo(print())
                 .andExpect(status().isCreated());
+
+        //TODO 왜 겉에만 훑고 나오는지 확인 필요
+//        long count = memberRepository.findAll().stream().count();
+//        Assertions.assertEquals(count, 1);
     }
 
     @Test
