@@ -27,7 +27,7 @@ public class MemberApiController {
     public ApiResponse<MemberCreateResponse> createMember(@Valid @RequestBody MemberCreateRequest request) {
 
         String authId = SecurityUtils.getAuthId();
-        MemberCreateResponse response = memberService.createMember(request.toServiceRequest());
+        MemberCreateResponse response = memberService.createMember(request.toServiceRequest(authId));
         return ApiResponse.created(response);
     }
 

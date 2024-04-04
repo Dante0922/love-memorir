@@ -34,18 +34,16 @@ public class MemberService {
     private final AuthRepository authRepository;
 
     public MemberCreateResponse createMember(MemberCreateServiceRequest request) {
-        String authId = SecurityUtils.getAuthId();
-        Auth currentAuth = authRepository.findById(authId).orElse(null);
         String nickname = validateNickname(request.getNickname());
         Gender gender = Gender.valueOf(request.getGender());
+        Auth currentAuth = authRepository.findById(request.getAuthId()).orElse(null);
 
-
-        Member byAuthId = memberQueryRepository.findByAuthId(currentAuth.getId());
-        if (byAuthId != null) {
+        Member member = memberQueryRepository.findByAuthId(request.getAuthId());
+        if (member != null) {
             throw new IllegalArgumentException(ALREADY_REGISTERED_USER);
         }
 
-        Member member = Member.builder()
+        Member newMember = Member.builder()
             .nickname(nickname)
             .email(request.getEmail())
             .gender(gender)
@@ -54,14 +52,14 @@ public class MemberService {
             .auth(currentAuth)
             .build();
 
-        Member createdMember = memberRepository.save(member);
+        Member createdMember = memberRepository.save(newMember);
         return MemberCreateResponse.of(createdMember);
     }
 
     public MemberModifyResponse modifyMember(MemberModifyServiceRequest request) {
-        Auth byProviderId = authRepository.findById(request.getAuthId()).orElse(null);
+        Auth currentAuth = authRepository.findById(request.getAuthId()).orElse(null);
 
-        Member member = memberQueryRepository.findByAuthId(byProviderId.getId());
+        Member member = memberQueryRepository.findByAuthId(currentAuth.getId());
         if (member == null) {
             throw new IllegalArgumentException(USER_NOT_FOUND);
         }

@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -29,29 +31,22 @@ public class KakaoAuthService {
 
 
     public AuthResponse login(AuthRequest authRequest) {
-        Auth kakaoAuth = clientKakao.getOAuth(authRequest.getAccessToken());
-        String authId = kakaoAuth.getId();
+        String accessToken = authRequest.getAccessToken();
+
+        String authId = clientKakao.getAuthId(accessToken);
         Auth savedAuth = authRepository.findById(authId).orElse(null);
         if(savedAuth == null) {
-            log.info("savedAuth is null");
+            Auth kakaoAuth = clientKakao.createAuth(accessToken);
             authRepository.save(kakaoAuth);
         }
 
         AuthToken appToken = authTokenProvider.createUserAppToken(authId);
-        Member member = memberQueryRepository.findByAuthId("ㄴㅇㄹㅇㄴㄹ");
+        Member member = memberQueryRepository.findByAuthId(authId);
 
-        log.info("member : {}", kakaoAuth.getProvider());
-        if (member == null) {
-            authRepository.save(kakaoAuth);
-            return AuthResponse.builder()
-                .appToken(appToken.getToken())
-                .isNewMember(Boolean.TRUE)
-                .build();
-        }
-
+        boolean isNewMember = member == null;
         return AuthResponse.builder()
             .appToken(appToken.getToken())
-            .isNewMember(Boolean.FALSE)
+            .isNewMember(isNewMember)
             .build();
     }
 }
