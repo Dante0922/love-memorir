@@ -7,8 +7,8 @@ import com.lovememoir.server.api.service.member.request.MemberModifyServiceReque
 import com.lovememoir.server.common.auth.SecurityUtils;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.repository.AuthQueryRepository;
-import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.Member;
+import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.enumerate.RoleType;
 import com.lovememoir.server.domain.member.repository.MemberQueryRepository;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
@@ -17,10 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.Optional;
-
-import static com.lovememoir.server.api.service.member.MemberValidator.*;
+import static com.lovememoir.server.api.service.member.MemberValidator.validateNickname;
 import static com.lovememoir.server.common.message.ExceptionMessage.ALREADY_REGISTERED_USER;
 import static com.lovememoir.server.common.message.ExceptionMessage.USER_NOT_FOUND;
 
@@ -35,8 +32,8 @@ public class MemberService {
     private final AuthQueryRepository authQueryRepository;
 
     public MemberCreateResponse createMember(MemberCreateServiceRequest request) {
-
-        Auth currentAuth = SecurityUtils.getCurrentAuth();
+        String authId = SecurityUtils.getAuthId();
+        Auth currentAuth = authQueryRepository.findByProviderId(authId);
         String nickname = validateNickname(request.getNickname());
         Gender gender = Gender.valueOf(request.getGender());
 
@@ -60,10 +57,9 @@ public class MemberService {
     }
 
     public MemberModifyResponse modifyMember(MemberModifyServiceRequest request) {
-        Member member = memberQueryRepository.findByAuthId(request.getMember().getId());
+        Auth byProviderId = authQueryRepository.findByProviderId(request.getAuthId());
 
-        log.info("member: {}", member);
-        log.info("request: {}", request);
+        Member member = memberQueryRepository.findByAuthId(byProviderId.getId());
         if (member == null) {
             throw new IllegalArgumentException(USER_NOT_FOUND);
         }

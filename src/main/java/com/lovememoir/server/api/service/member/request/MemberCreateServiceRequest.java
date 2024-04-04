@@ -1,7 +1,5 @@
 package com.lovememoir.server.api.service.member.request;
 
-import com.lovememoir.server.domain.auth.Auth;
-import com.lovememoir.server.domain.member.enumerate.Gender;
 import lombok.Builder;
 import lombok.Getter;
 

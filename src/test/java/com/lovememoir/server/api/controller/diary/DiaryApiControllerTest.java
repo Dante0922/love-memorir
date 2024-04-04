@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.time.LocalDate;
 
@@ -75,7 +76,6 @@ class DiaryApiControllerTest extends ControllerTestSupport {
 
     @DisplayName("신규 일기장을 등록한다.")
     @Test
-    @WithAuthMember
     void createDiary() throws Exception {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()

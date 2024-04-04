@@ -3,7 +3,8 @@ package com.lovememoir.server.api.service.diarypage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static com.lovememoir.server.common.message.ValidationMessage.*;
+import static com.lovememoir.server.common.message.ValidationMessage.FUTURE_DIARY_DATE;
+import static com.lovememoir.server.common.message.ValidationMessage.MAX_LENGTH_DIARY_PAGE_TITLE;
 
 public abstract class DiaryPageValidator {
 

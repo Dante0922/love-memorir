@@ -9,7 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -22,7 +21,6 @@ import static com.lovememoir.server.common.message.ExceptionMessage.FAILED_TO_GE
 @Component
 public class AuthTokenProvider {
 
-    private final CustomUserDetailsService customUserDetailsService;
 
     @Value("${app.auth.token.tokenExpiry}")
     private String expiry;
@@ -30,8 +28,8 @@ public class AuthTokenProvider {
     private final Key key;
     private static final String AUTHORITIES_KEY = "role";
 
-    public AuthTokenProvider(CustomUserDetailsService customUserDetailsService, @Value("${app.auth.token.tokenSecret}") String secretKey) {
-        this.customUserDetailsService = customUserDetailsService;
+    public AuthTokenProvider(@Value("${app.auth.token.tokenSecret}") String secretKey) {
+   ;
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
@@ -58,9 +56,14 @@ public class AuthTokenProvider {
 
         if(token.validate()) {
             Claims claims = token.getTokenClaims();
-            UserDetails principal = customUserDetailsService.loadUserByUsername(claims.getSubject());
+            Collection<? extends SimpleGrantedAuthority> authorities =
+                    Arrays.stream(new String[]{claims.get(AUTHORITIES_KEY).toString()})
+                            .map(SimpleGrantedAuthority::new)
+                            .toList();
 
-            return new UsernamePasswordAuthenticationToken(principal, "", principal.getAuthorities());
+            User pricipal = new User(claims.getSubject(), "", authorities);
+
+            return new UsernamePasswordAuthenticationToken(pricipal, token, authorities);
         } else {
             throw new AuthException(FAILED_TO_GENERATE_TOKEN);
         }

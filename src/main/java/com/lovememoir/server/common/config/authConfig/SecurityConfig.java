@@ -1,7 +1,6 @@
 package com.lovememoir.server.common.config.authConfig;
 
 import com.lovememoir.server.common.auth.jwt.AuthTokenProvider;
-import com.lovememoir.server.common.auth.jwt.CustomUserDetailsService;
 import com.lovememoir.server.common.auth.jwt.JwtAuthenticationFilter;
 import com.lovememoir.server.domain.auth.repository.AuthQueryRepository;
 import com.lovememoir.server.domain.member.repository.MemberQueryRepository;
@@ -15,7 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -50,11 +48,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService(authQueryRepository, memberQueryRepository);
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(authTokenProvider);
         log.info("jwtAuthFilter: {}", jwtAuthFilter);
@@ -71,7 +64,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
-            .userDetailsService(userDetailsService())
+
             .addFilterBefore(jwtAuthFilter,
                 UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling(

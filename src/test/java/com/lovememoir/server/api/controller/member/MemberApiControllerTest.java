@@ -1,7 +1,6 @@
 package com.lovememoir.server.api.controller.member;
 
 import com.lovememoir.server.ControllerTestSupport;
-import com.lovememoir.server.WithAuthMember;
 import com.lovememoir.server.api.controller.member.request.MemberCreateRequest;
 import com.lovememoir.server.api.controller.member.request.MemberModifyRequest;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
@@ -71,7 +70,6 @@ class MemberApiControllerTest extends ControllerTestSupport {
 
     @Test
     @DisplayName("멤버 정보를 수정한다")
-    @WithAuthMember
     void modifyMember() throws Exception {
         //given
         MemberModifyRequest request = MemberModifyRequest.builder()

@@ -1,8 +1,8 @@
 package com.lovememoir.server.api.service.auth;
 
-import com.lovememoir.server.common.auth.client.ClientKakao;
 import com.lovememoir.server.api.controller.auth.request.AuthRequest;
 import com.lovememoir.server.api.controller.auth.response.AuthResponse;
+import com.lovememoir.server.common.auth.client.ClientKakao;
 import com.lovememoir.server.common.auth.jwt.AuthToken;
 import com.lovememoir.server.common.auth.jwt.AuthTokenProvider;
 import com.lovememoir.server.domain.auth.Auth;

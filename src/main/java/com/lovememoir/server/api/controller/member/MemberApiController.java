@@ -7,19 +7,11 @@ import com.lovememoir.server.api.controller.member.response.MemberCreateResponse
 import com.lovememoir.server.api.controller.member.response.MemberModifyResponse;
 import com.lovememoir.server.api.controller.member.response.MemberRemoveResponse;
 import com.lovememoir.server.api.service.member.MemberService;
-import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
-import com.lovememoir.server.common.auth.CurrentMember;
 import com.lovememoir.server.common.auth.SecurityUtils;
-import com.lovememoir.server.common.auth.jwt.CustomUser;
-import com.lovememoir.server.domain.auth.Auth;
-import com.lovememoir.server.domain.auth.ProviderType;
-import com.lovememoir.server.domain.member.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -34,15 +26,16 @@ public class MemberApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<MemberCreateResponse> createMember(@Valid @RequestBody MemberCreateRequest request) {
 
-
+        String authId = SecurityUtils.getAuthId();
         MemberCreateResponse response = memberService.createMember(request.toServiceRequest());
         return ApiResponse.created(response);
     }
 
     @PatchMapping()
-    public ApiResponse<MemberModifyResponse> modifyMember(@Valid @RequestBody MemberModifyRequest request,
-                                                          @CurrentMember Member member) {
-        MemberModifyResponse response = memberService.modifyMember(request.toServiceRequest(member));
+    public ApiResponse<MemberModifyResponse> modifyMember(@Valid @RequestBody MemberModifyRequest request) {
+        String authId = SecurityUtils.getAuthId();
+
+        MemberModifyResponse response = memberService.modifyMember(request.toServiceRequest(authId));
         return ApiResponse.ok(response);
     }
 
