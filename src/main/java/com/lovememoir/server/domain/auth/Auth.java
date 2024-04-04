@@ -16,7 +16,8 @@ public class Auth {
     @Id
     public String id;
 
-    @OneToOne(mappedBy = "auth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Column(nullable = false)
@@ -47,5 +48,9 @@ public class Auth {
                 .refreshToken(refreshToken)
                 .expiredAt(expiredAt)
                 .build();
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }
