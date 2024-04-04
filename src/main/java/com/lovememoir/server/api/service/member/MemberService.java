@@ -7,6 +7,7 @@ import com.lovememoir.server.api.service.member.request.MemberModifyServiceReque
 import com.lovememoir.server.common.auth.SecurityUtils;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.repository.AuthQueryRepository;
+import com.lovememoir.server.domain.auth.repository.AuthRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.enumerate.RoleType;
@@ -30,10 +31,11 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
     private final AuthQueryRepository authQueryRepository;
+    private final AuthRepository authRepository;
 
     public MemberCreateResponse createMember(MemberCreateServiceRequest request) {
         String authId = SecurityUtils.getAuthId();
-        Auth currentAuth = authQueryRepository.findByProviderId(authId);
+        Auth currentAuth = authRepository.findById(authId).orElse(null);
         String nickname = validateNickname(request.getNickname());
         Gender gender = Gender.valueOf(request.getGender());
 
@@ -57,7 +59,7 @@ public class MemberService {
     }
 
     public MemberModifyResponse modifyMember(MemberModifyServiceRequest request) {
-        Auth byProviderId = authQueryRepository.findByProviderId(request.getAuthId());
+        Auth byProviderId = authRepository.findById(request.getAuthId()).orElse(null);
 
         Member member = memberQueryRepository.findByAuthId(byProviderId.getId());
         if (member == null) {

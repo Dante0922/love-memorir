@@ -40,8 +40,8 @@ public class ClientKakao implements ClientProxy {
         log.info("kakaoUserResponse: {}", kakaoUserResponse.getKakaoAccount().toString());
 
         return Auth.builder()
+            .id(kakaoUserResponse.getId().toString())
             .provider(ProviderType.KAKAO)
-            .providerId(String.valueOf(kakaoUserResponse.getId()))
             // TODO : 프론트로부터 RefreshToken 받아오기?
             .accessToken(accessToken)
             .build();

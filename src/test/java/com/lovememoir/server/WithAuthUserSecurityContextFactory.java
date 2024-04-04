@@ -9,10 +9,10 @@ import org.springframework.security.test.context.support.WithSecurityContextFact
 
 import java.util.List;
 
-public class WithAuthMemberSecurityContextFactory implements WithSecurityContextFactory<WithAuthMember> {
+public class WithAuthUserSecurityContextFactory implements WithSecurityContextFactory<WithAuthUser> {
 
     @Override
-    public SecurityContext createSecurityContext(WithAuthMember annotation) {
+    public SecurityContext createSecurityContext(WithAuthUser annotation) {
         String providerId = annotation.providerId();
         String role = annotation.role();
         User principal = new User(providerId, "", List.of(new SimpleGrantedAuthority(role)));

@@ -1,7 +1,6 @@
 package com.lovememoir.server.api.controller.diary;
 
 import com.lovememoir.server.ControllerTestSupport;
-import com.lovememoir.server.WithAuthMember;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryImageModifyRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import java.time.LocalDate;
 

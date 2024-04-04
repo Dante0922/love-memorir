@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.User;
 
 public class SecurityUtils {
 
-
     public static String getAuthId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
