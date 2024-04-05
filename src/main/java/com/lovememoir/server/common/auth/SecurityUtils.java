@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.User;
 
 public class SecurityUtils {
 
-    public static String getAuthId() {
+    public static String getProviderId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             throw new IllegalStateException("Security Context에 인증 정보가 없습니다.");

@@ -25,14 +25,14 @@ public class ClientKakao implements ClientProxy {
     public Auth createAuth(String accessToken) {
         KakaoUserResponse kakaoUserResponse = getUserResponse(accessToken);
         return Auth.builder()
-            .id(kakaoUserResponse.getId().toString())
             .provider(ProviderType.KAKAO)
+            .providerId(kakaoUserResponse.getId().toString())
             // TODO : 프론트로부터 RefreshToken 받아오기?
             .accessToken(accessToken)
             .build();
     }
 
-    public String getAuthId(String accessToken) {
+    public String getProviderId(String accessToken) {
         KakaoUserResponse kakaoUserResponse = getUserResponse(accessToken);
         return kakaoUserResponse.getId().toString();
     }
