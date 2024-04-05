@@ -28,9 +28,9 @@ public class MemberCreateRequest {
         this.birth = birth;
     }
 
-    public MemberCreateServiceRequest toServiceRequest(String authId) {
+    public MemberCreateServiceRequest toServiceRequest(String providerId) {
         return MemberCreateServiceRequest.builder()
-            .authId(authId)
+            .providerId(providerId)
             .nickname(nickname)
             .gender(gender)
             .birth(birth)

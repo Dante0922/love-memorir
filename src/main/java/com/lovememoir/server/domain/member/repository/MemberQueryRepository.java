@@ -16,11 +16,11 @@ public class MemberQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Transactional(readOnly = true)
-    public Member findByAuthId(String id) {
+    public Member findByProviderId(String id) {
         return jpaQueryFactory
             .select(auth.member)
             .from(auth)
-            .where(auth.id.eq(id))
+            .where(auth.providerId.eq(id))
             .fetchOne();
     }
 }

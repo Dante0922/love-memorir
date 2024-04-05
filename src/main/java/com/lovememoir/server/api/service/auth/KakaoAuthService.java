@@ -15,8 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,15 +31,18 @@ public class KakaoAuthService {
     public AuthResponse login(AuthRequest authRequest) {
         String accessToken = authRequest.getAccessToken();
 
-        String authId = clientKakao.getAuthId(accessToken);
-        Auth savedAuth = authRepository.findById(authId).orElse(null);
-        if(savedAuth == null) {
+        String providerId = clientKakao.getProviderId(accessToken);
+        log.info("providerId: {}", providerId);
+        Auth savedAuth = authQueryRepository.findByProviderId(providerId);
+        log.info("savedAuth: {}", savedAuth);
+        log.info("accessToken: {}", accessToken);
+        if (savedAuth == null) {
             Auth kakaoAuth = clientKakao.createAuth(accessToken);
             authRepository.save(kakaoAuth);
         }
 
-        AuthToken appToken = authTokenProvider.createUserAppToken(authId);
-        Member member = memberQueryRepository.findByAuthId(authId);
+        AuthToken appToken = authTokenProvider.createUserAppToken(providerId);
+        Member member = memberQueryRepository.findByProviderId(providerId);
 
         boolean isNewMember = member == null;
         return AuthResponse.builder()

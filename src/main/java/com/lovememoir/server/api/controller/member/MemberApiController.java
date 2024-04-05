@@ -26,16 +26,16 @@ public class MemberApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<MemberCreateResponse> createMember(@Valid @RequestBody MemberCreateRequest request) {
 
-        String authId = SecurityUtils.getAuthId();
-        MemberCreateResponse response = memberService.createMember(request.toServiceRequest(authId));
+        String providerId = SecurityUtils.getProviderId();
+        MemberCreateResponse response = memberService.createMember(request.toServiceRequest(providerId));
         return ApiResponse.created(response);
     }
 
     @PatchMapping()
     public ApiResponse<MemberModifyResponse> modifyMember(@Valid @RequestBody MemberModifyRequest request) {
-        String authId = SecurityUtils.getAuthId();
+        String providerId = SecurityUtils.getProviderId();
 
-        MemberModifyResponse response = memberService.modifyMember(request.toServiceRequest(authId));
+        MemberModifyResponse response = memberService.modifyMember(request.toServiceRequest(providerId));
         return ApiResponse.ok(response);
     }
 

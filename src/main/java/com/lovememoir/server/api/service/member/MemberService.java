@@ -4,7 +4,6 @@ import com.lovememoir.server.api.controller.member.response.MemberCreateResponse
 import com.lovememoir.server.api.controller.member.response.MemberModifyResponse;
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
 import com.lovememoir.server.api.service.member.request.MemberModifyServiceRequest;
-import com.lovememoir.server.common.auth.SecurityUtils;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.repository.AuthQueryRepository;
 import com.lovememoir.server.domain.auth.repository.AuthRepository;
@@ -36,9 +35,9 @@ public class MemberService {
     public MemberCreateResponse createMember(MemberCreateServiceRequest request) {
         String nickname = validateNickname(request.getNickname());
         Gender gender = Gender.valueOf(request.getGender());
-        Auth currentAuth = authRepository.findById(request.getAuthId()).orElse(null);
+        Auth currentAuth = authQueryRepository.findByProviderId(request.getProviderId());
+        Member member = memberQueryRepository.findByProviderId(request.getProviderId());
 
-        Member member = memberQueryRepository.findByAuthId(request.getAuthId());
         if (member != null) {
             throw new IllegalArgumentException(ALREADY_REGISTERED_USER);
         }
@@ -57,9 +56,9 @@ public class MemberService {
     }
 
     public MemberModifyResponse modifyMember(MemberModifyServiceRequest request) {
-        Auth currentAuth = authRepository.findById(request.getAuthId()).orElse(null);
+        Auth currentAuth = authQueryRepository.findByProviderId(request.getProviderId());
+        Member member = memberQueryRepository.findByProviderId(request.getProviderId());
 
-        Member member = memberQueryRepository.findByAuthId(currentAuth.getId());
         if (member == null) {
             throw new IllegalArgumentException(USER_NOT_FOUND);
         }
