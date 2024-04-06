@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class MemberCreateResponse {
 
+
     private final String nickname;
 
     @Builder
