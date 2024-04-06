@@ -4,6 +4,7 @@ import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.api.FileStore;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
+import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest;
 import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
@@ -338,6 +339,42 @@ class DiaryServiceTest extends IntegrationTestSupport {
         Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
         assertThat(findDiary).isPresent();
         assertThat(findDiary.get().isMain()).isFalse();
+    }
+
+    @DisplayName("일기장 삭제 시 본인의 일기장이 아니라면 예외가 발생한다.")
+    @Test
+    void removeDiaryWithoutAuth() {
+        //given
+        Member member = createMember();
+        Auth auth = createAuth(member, "1234567890");
+        Diary diary = createDiary(member, false, false);
+
+        Member otherMember = createMember();
+        Auth otherAuth = createAuth(otherMember, "0987654321");
+
+        //when //then
+        assertThatThrownBy(() -> diaryService.removeDiary(otherAuth.getProviderId(), diary.getId()))
+            .isInstanceOf(AuthException.class)
+            .hasMessage(NO_AUTH);
+    }
+
+    @DisplayName("회원 정보와 일기장 정보를 입력 받아 일기장을 삭제한다.")
+    @Test
+    void removeDiary() {
+        //given
+        Member member = createMember();
+        Auth auth = createAuth(member, "1234567890");
+        Diary diary = createDiary(member, false, false);
+
+        //when
+        DiaryRemoveResponse response = diaryService.removeDiary(auth.getProviderId(), diary.getId());
+
+        //then
+        assertThat(response).isNotNull();
+
+        Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
+        assertThat(findDiary).isPresent();
+        assertThat(findDiary.get().isDeleted()).isTrue();
     }
 
     private Member createMember() {

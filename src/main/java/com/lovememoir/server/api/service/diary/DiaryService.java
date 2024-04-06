@@ -124,7 +124,7 @@ public class DiaryService {
         return DiaryModifyResponse.of(diary);
     }
 
-    public DiaryRemoveResponse removeDiary(final String memberKey, final Long diaryId) {
+    public DiaryRemoveResponse removeDiary(final String providerId, final long diaryId) {
         return null;
     }
 
