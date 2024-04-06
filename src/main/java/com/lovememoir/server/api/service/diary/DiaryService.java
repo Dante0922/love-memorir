@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateLoveInfo;
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateTitle;
@@ -101,7 +102,26 @@ public class DiaryService {
     }
 
     public DiaryModifyResponse modifyDiaryMainStatus(final String providerId, final long diaryId) {
-        return null;
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
+
+        Diary diary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
+
+        if (diary.isNotMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        Diary mainDiary = diaryRepository.findMainDiaryByMemberId(member.getId())
+            .orElse(null);
+
+        if (mainDiary != null && !mainDiary.getId().equals(diaryId)) {
+            mainDiary.modifyMainStatus();
+        }
+
+        diary.modifyMainStatus();
+
+        return DiaryModifyResponse.of(diary);
     }
 
     public DiaryRemoveResponse removeDiary(final String memberKey, final Long diaryId) {

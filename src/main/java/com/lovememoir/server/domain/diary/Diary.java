@@ -78,6 +78,10 @@ public class Diary extends BaseTimeEntity {
         isStored = !isStored;
     }
 
+    public void modifyMainStatus() {
+        isMain = !isMain;
+    }
+
     public boolean isNotMine(Member member) {
         return !this.member.getId().equals(member.getId());
     }
