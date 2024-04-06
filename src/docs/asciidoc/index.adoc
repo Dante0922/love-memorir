@@ -15,6 +15,7 @@ include::overview.adoc[]
 == 멤버 API
 
 include::api/member/create-member.adoc[]
+include::api/member/search-member.adoc[]
 include::api/member/modify-member.adoc[]
 include::api/member/remove-member.adoc[]
 

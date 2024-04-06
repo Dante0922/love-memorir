@@ -8,10 +8,12 @@ import com.lovememoir.server.api.controller.diary.DiaryQueryApiController;
 import com.lovememoir.server.api.controller.diarypage.DiaryPageApiController;
 import com.lovememoir.server.api.controller.diarypage.DiaryPageQueryApiController;
 import com.lovememoir.server.api.controller.member.MemberApiController;
+import com.lovememoir.server.api.controller.member.MemberQueryApiController;
 import com.lovememoir.server.api.service.diary.DiaryQueryService;
 import com.lovememoir.server.api.service.diary.DiaryService;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
 import com.lovememoir.server.api.service.diarypage.DiaryPageService;
+import com.lovememoir.server.api.service.member.MemberQueryService;
 import com.lovememoir.server.api.service.member.MemberService;
 import com.lovememoir.server.common.interceptor.query.ApiQueryCounter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
  */
 @WithMockUser
 @WebMvcTest(controllers = {
-    MemberApiController.class,
+    MemberApiController.class, MemberQueryApiController.class,
     AvatarApiController.class, AvatarQueryApiController.class,
     DiaryApiController.class, DiaryQueryApiController.class,
     DiaryPageApiController.class, DiaryPageQueryApiController.class
@@ -57,5 +59,8 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected MemberService memberService;
+
+    @MockBean
+    protected MemberQueryService memberQueryService;
 
 }

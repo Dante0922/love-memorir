@@ -1,0 +1,11 @@
+[[search-member]]
+=== 멤버 조회 API
+
+==== HTTP Request
+
+include::{snippets}/search-member/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/search-member/http-response.adoc[]
+include::{snippets}/search-member/response-fields.adoc[]
