@@ -46,7 +46,7 @@ public class DiaryService {
         return DiaryCreateResponse.of(savedDiary);
     }
 
-    public DiaryModifyResponse modifyDiary(final String memberKey, final Long diaryId, final LocalDateTime currentDateTime, DiaryModifyServiceRequest request) {
+    public DiaryModifyResponse modifyDiary(final String providerId, final long diaryId, final LocalDate currentDate, DiaryModifyServiceRequest request) {
         return null;
     }
 

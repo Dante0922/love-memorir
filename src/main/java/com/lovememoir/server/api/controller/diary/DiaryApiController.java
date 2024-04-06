@@ -52,9 +52,9 @@ public class DiaryApiController {
         //TODO: 2024-03-26 02:19 dong82 회원 정보 토큰 추출
         String memberKey = UUID.randomUUID().toString();
 
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDate currentDate = LocalDate.now();
 
-        DiaryModifyResponse response = diaryService.modifyDiary(memberKey, diaryId, currentDateTime, request.toServiceRequest());
+        DiaryModifyResponse response = diaryService.modifyDiary(memberKey, diaryId, currentDate, request.toServiceRequest());
 
         return ApiResponse.ok(response);
     }

@@ -12,6 +12,7 @@ import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.ProviderType;
 import com.lovememoir.server.domain.auth.repository.AuthRepository;
 import com.lovememoir.server.domain.diary.Diary;
+import com.lovememoir.server.domain.diary.LoveInfo;
 import com.lovememoir.server.domain.diary.UploadFile;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.member.Member;
@@ -91,6 +92,43 @@ class DiaryServiceTest extends IntegrationTestSupport {
             .hasFieldOrPropertyWithValue("isStored", false);
     }
 
+    @DisplayName("회원 정보와 일기장 정보를 입력 받아 일기장 정보를 수정한다.")
+    @Test
+    void modifyDiary() {
+        //given
+        LocalDate currentDate = LocalDate.of(2024, 1, 1);
+
+        Member member = createMember();
+        Auth auth = createAuth(member);
+        Diary diary = createDiary(member);
+
+        DiaryModifyServiceRequest request = DiaryModifyServiceRequest.builder()
+            .title("푸바오")
+            .isLove(true)
+            .startedDate(LocalDate.of(2023, 12, 25))
+            .finishedDate(null)
+            .build();
+
+        //when
+        DiaryModifyResponse response = diaryService.modifyDiary(auth.getProviderId(), diary.getId(), currentDate, request);
+
+        //then
+        assertThat(response).isNotNull();
+
+        Optional<Diary> findDiary = diaryRepository.findById(response.getDiaryId());
+        assertThat(findDiary).isPresent();
+        assertThat(findDiary.get())
+            .hasFieldOrPropertyWithValue("isMain", false)
+            .hasFieldOrPropertyWithValue("title", "푸바오")
+            .hasFieldOrPropertyWithValue("loveInfo.isLove", true)
+            .hasFieldOrPropertyWithValue("loveInfo.startedDate", LocalDate.of(2023, 12, 25))
+            .hasFieldOrPropertyWithValue("loveInfo.finishedDate", null)
+            .hasFieldOrPropertyWithValue("pageCount", 0)
+            .hasFieldOrPropertyWithValue("profile.uploadFileName", null)
+            .hasFieldOrPropertyWithValue("profile.storeFileUrl", null)
+            .hasFieldOrPropertyWithValue("isStored", false);
+    }
+
     private Member createMember() {
         Member member = Member.builder()
             .memberKey(UUID.randomUUID().toString())
@@ -112,5 +150,23 @@ class DiaryServiceTest extends IntegrationTestSupport {
             .member(member)
             .build();
         return authRepository.save(auth);
+    }
+
+    private Diary createDiary(Member member) {
+        Diary diary = Diary.builder()
+            .isDeleted(false)
+            .isMain(false)
+            .title("후이바오")
+            .loveInfo(LoveInfo.builder()
+                .isLove(false)
+                .startedDate(null)
+                .finishedDate(null)
+                .build())
+            .pageCount(0)
+            .profile(null)
+            .isStored(false)
+            .member(member)
+            .build();
+        return diaryRepository.save(diary);
     }
 }
