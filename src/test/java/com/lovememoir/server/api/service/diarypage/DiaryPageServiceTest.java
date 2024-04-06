@@ -3,10 +3,7 @@ package com.lovememoir.server.api.service.diarypage;
 import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.api.FileStore;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
-import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
-import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageCreateServiceRequest;
-import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.attachedimage.AttachedImage;
 import com.lovememoir.server.domain.attachedimage.repository.AttachedImageRepository;
@@ -17,7 +14,6 @@ import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.LoveInfo;
 import com.lovememoir.server.domain.diary.UploadFile;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
-import com.lovememoir.server.domain.diarypage.AnalysisResult;
 import com.lovememoir.server.domain.diarypage.AnalysisStatus;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
@@ -27,17 +23,14 @@ import com.lovememoir.server.domain.member.enumerate.RoleType;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.lovememoir.server.common.message.ExceptionMessage.NO_AUTH;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,7 +67,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         LocalDate currentDate = LocalDate.of(2024, 4, 6);
 
         Member member = createMember();
-        Auth auth = createAuth(member);
+        Auth auth = createAuth(member, "0123456789");
         Diary diary = createDiary(member);
         MockMultipartFile image1 = new MockMultipartFile(
             "image",
@@ -97,7 +90,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
             .build();
 
         Member otherMember = createMember();
-        Auth otherAuth = createAuth(otherMember);
+        Auth otherAuth = createAuth(otherMember, "9876543210");
 
         //when //then
         assertThatThrownBy(() -> diaryPageService.createDiaryPage(otherAuth.getProviderId(), diary.getId(), currentDate, request))
@@ -118,7 +111,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         LocalDate currentDate = LocalDate.of(2024, 4, 6);
 
         Member member = createMember();
-        Auth auth = createAuth(member);
+        Auth auth = createAuth(member, "0123456789");
         Diary diary = createDiary(member);
         MockMultipartFile image1 = new MockMultipartFile(
             "image",
@@ -182,10 +175,10 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         return memberRepository.save(member);
     }
 
-    private Auth createAuth(Member member) {
+    private Auth createAuth(Member member, String providerId) {
         Auth auth = Auth.builder()
             .provider(ProviderType.KAKAO)
-            .providerId("0123456789")
+            .providerId(providerId)
             .accessToken("access.token")
             .refreshToken("refresh.token")
             .expiredAt(null)

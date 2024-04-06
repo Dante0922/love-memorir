@@ -57,7 +57,6 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
             .diaryPageId(1L)
             .title("푸바오가 떠나는 날")
             .contentLength("푸바오를 볼 수 있는 마지막날 에버랜드에서 오픈런했다.".length())
-            .diaryDate(LocalDate.of(2024, 3, 3))
             .createdDateTime(LocalDateTime.of(2024, 3, 5, 16, 0))
             .build();
 

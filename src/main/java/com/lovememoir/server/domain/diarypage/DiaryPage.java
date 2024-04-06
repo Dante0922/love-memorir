@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+import static com.lovememoir.server.domain.diarypage.AnalysisResult.*;
 import static com.lovememoir.server.domain.diarypage.AnalysisResult.init;
 import static com.lovememoir.server.domain.diarypage.AnalysisResult.success;
 
@@ -48,5 +49,16 @@ public class DiaryPage extends BaseTimeEntity {
         this.recordDate = recordDate;
         this.analysis = analysis;
         this.diary = diary;
+    }
+
+    public static DiaryPage create(String title, String content, LocalDate recordDate, Diary diary) {
+        return DiaryPage.builder()
+            .isDeleted(false)
+            .title(title)
+            .content(content)
+            .recordDate(recordDate)
+            .analysis(init())
+            .diary(diary)
+            .build();
     }
 }

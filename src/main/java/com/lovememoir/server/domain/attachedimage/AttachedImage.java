@@ -9,6 +9,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,5 +34,11 @@ public class AttachedImage extends BaseTimeEntity {
         super(isDeleted);
         this.image = image;
         this.diaryPage = diaryPage;
+    }
+
+    public static List<AttachedImage> create(List<UploadFile> images, DiaryPage diaryPage) {
+        return images.stream()
+            .map(image -> new AttachedImage(false, image, diaryPage))
+            .collect(Collectors.toList());
     }
 }
