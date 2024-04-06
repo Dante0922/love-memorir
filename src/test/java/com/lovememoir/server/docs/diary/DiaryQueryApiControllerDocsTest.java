@@ -39,34 +39,6 @@ public class DiaryQueryApiControllerDocsTest extends RestDocsSupport {
     @DisplayName("일기장 목록 조회 API")
     @Test
     void searchDiaries() throws Exception {
-        DiarySearchResponse response1 = DiarySearchResponse.builder()
-            .diaryId(1L)
-            .isMain(true)
-            .title("러바오와의 연애 기록")
-            .profileImage("profile-image-url")
-            .pageCount(10)
-            .relationshipStartedDate(LocalDate.of(2016, 3, 3))
-            .build();
-        DiarySearchResponse response2 = DiarySearchResponse.builder()
-            .diaryId(2L)
-            .isMain(false)
-            .title("푸바오와의 연애 기록")
-            .profileImage("profile-image-url")
-            .pageCount(7)
-            .relationshipStartedDate(LocalDate.of(2020, 7, 20))
-            .build();
-        DiarySearchResponse response3 = DiarySearchResponse.builder()
-            .diaryId(3L)
-            .isMain(false)
-            .title("쌍둥바오와의 연애 기록")
-            .profileImage("profile-image-url")
-            .pageCount(13)
-            .relationshipStartedDate(LocalDate.of(2023, 7, 7))
-            .build();
-
-        given(diaryQueryService.searchDiaries(anyString()))
-            .willReturn(List.of(response3, response2, response1));
-
         mockMvc.perform(
                 get(BASE_URL)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -113,18 +85,6 @@ public class DiaryQueryApiControllerDocsTest extends RestDocsSupport {
     @DisplayName("메인 일기장 목록 조회 API")
     @Test
     void searchMainDiaries() throws Exception {
-        DiarySearchResponse response = DiarySearchResponse.builder()
-            .diaryId(1L)
-            .isMain(true)
-            .title("푸바오와의 연애 기록")
-            .profileImage("profile-image-url")
-            .pageCount(10)
-            .relationshipStartedDate(LocalDate.of(2020, 7, 20))
-            .build();
-
-        given(diaryQueryService.searchMainDiaries(anyString()))
-            .willReturn(List.of(response));
-
         mockMvc.perform(
                 get(BASE_URL + "/main")
                     .contentType(MediaType.APPLICATION_JSON)

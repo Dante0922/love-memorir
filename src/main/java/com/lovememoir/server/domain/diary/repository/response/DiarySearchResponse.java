@@ -10,20 +10,20 @@ import java.time.LocalDate;
 @NoArgsConstructor(force = true)
 public class DiarySearchResponse {
 
-    private final Long diaryId;
-    private final Boolean isMain;
+    private final long diaryId;
     private final String title;
+    private final Boolean isLove;
+    private final LocalDate startDate;
+    private final LocalDate finishDate;
     private final String profileImage;
-    private final int pageCount;
-    private final LocalDate relationshipStartedDate;
 
     @Builder
-    private DiarySearchResponse(Long diaryId, Boolean isMain, String title, String profileImage, int pageCount, LocalDate relationshipStartedDate) {
+    private DiarySearchResponse(long diaryId, String title, Boolean isLove, LocalDate startDate, LocalDate finishDate, String profileImage) {
         this.diaryId = diaryId;
-        this.isMain = isMain;
         this.title = title;
+        this.isLove = isLove;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
         this.profileImage = profileImage;
-        this.pageCount = pageCount;
-        this.relationshipStartedDate = relationshipStartedDate;
     }
 }

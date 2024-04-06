@@ -16,10 +16,10 @@ public class DiaryQueryService {
     private final DiaryQueryRepository diaryQueryRepository;
 
     public List<DiarySearchResponse> searchDiaries(final String memberKey) {
-        return diaryQueryRepository.findByMemberKey(memberKey, false);
+        return null;
     }
 
     public List<DiarySearchResponse> searchMainDiaries(final String memberKey) {
-        return diaryQueryRepository.findByMemberKey(memberKey, true);
+        return null;
     }
 }
