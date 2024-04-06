@@ -20,18 +20,26 @@ public class DiaryModifyRequest {
     private String title;
 
     @NotNull(message = NOT_NULL_IS_LOVE)
-    private Boolean isInLove;
+    private Boolean isLove;
 
-    private LocalDate relationshipStartedDate;
+    private LocalDate startedDate;
+
+    private LocalDate finishedDate;
 
     @Builder
-    private DiaryModifyRequest(String title, Boolean isInLove, LocalDate relationshipStartedDate) {
+    private DiaryModifyRequest(String title, Boolean isLove, LocalDate startedDate, LocalDate finishedDate) {
         this.title = title;
-        this.isInLove = isInLove;
-        this.relationshipStartedDate = relationshipStartedDate;
+        this.isLove = isLove;
+        this.startedDate = startedDate;
+        this.finishedDate = finishedDate;
     }
 
     public DiaryModifyServiceRequest toServiceRequest() {
-        return null;
+        return DiaryModifyServiceRequest.builder()
+            .title(title)
+            .isLove(isLove)
+            .startedDate(startedDate)
+            .finishedDate(finishedDate)
+            .build();
     }
 }

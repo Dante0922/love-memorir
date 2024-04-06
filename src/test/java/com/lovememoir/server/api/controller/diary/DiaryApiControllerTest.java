@@ -97,8 +97,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title(" ")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
+            .isLove(false)
             .build();
 
         //when //then
@@ -145,8 +144,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title("루이바오")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
+            .isLove(false)
             .build();
 
         //when //then
