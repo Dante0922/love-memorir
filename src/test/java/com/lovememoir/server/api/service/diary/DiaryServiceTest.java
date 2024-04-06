@@ -4,7 +4,6 @@ import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.api.FileStore;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
-import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest;
 import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
@@ -13,7 +12,6 @@ import com.lovememoir.server.domain.auth.ProviderType;
 import com.lovememoir.server.domain.auth.repository.AuthRepository;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.LoveInfo;
-import com.lovememoir.server.domain.diary.UploadFile;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.enumerate.Gender;
@@ -23,21 +21,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockMultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-import static com.lovememoir.server.common.message.ExceptionMessage.MAXIMUM_DIARY_COUNT;
 import static com.lovememoir.server.common.message.ExceptionMessage.NO_AUTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 class DiaryServiceTest extends IntegrationTestSupport {
 
@@ -63,7 +54,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         LocalDate currentDate = LocalDate.of(2024, 1, 1);
 
         Member member = createMember();
-        Auth auth = createAuth(member);
+        Auth auth = createAuth(member, "1234567890");
 
         DiaryCreateServiceRequest request = DiaryCreateServiceRequest.builder()
             .title("푸바오")
@@ -92,6 +83,32 @@ class DiaryServiceTest extends IntegrationTestSupport {
             .hasFieldOrPropertyWithValue("isStored", false);
     }
 
+    @DisplayName("일기장 정보 수정 시 본인의 일기장이 아니라면 예외가 발생한다.")
+    @Test
+    void modifyDiaryWithoutAuth() {
+        //given
+        LocalDate currentDate = LocalDate.of(2024, 1, 1);
+
+        Member member = createMember();
+        Auth auth = createAuth(member, "1234567890");
+        Diary diary = createDiary(member);
+
+        DiaryModifyServiceRequest request = DiaryModifyServiceRequest.builder()
+            .title("푸바오")
+            .isLove(true)
+            .startedDate(LocalDate.of(2023, 12, 25))
+            .finishedDate(null)
+            .build();
+
+        Member otherMember = createMember();
+        Auth otherAuth = createAuth(otherMember, "0987654321");
+
+        //when //then
+        assertThatThrownBy(() -> diaryService.modifyDiary(otherAuth.getProviderId(), diary.getId(), currentDate, request))
+            .isInstanceOf(AuthException.class)
+            .hasMessage(NO_AUTH);
+    }
+
     @DisplayName("회원 정보와 일기장 정보를 입력 받아 일기장 정보를 수정한다.")
     @Test
     void modifyDiary() {
@@ -99,7 +116,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         LocalDate currentDate = LocalDate.of(2024, 1, 1);
 
         Member member = createMember();
-        Auth auth = createAuth(member);
+        Auth auth = createAuth(member, "1234567890");
         Diary diary = createDiary(member);
 
         DiaryModifyServiceRequest request = DiaryModifyServiceRequest.builder()
@@ -131,7 +148,6 @@ class DiaryServiceTest extends IntegrationTestSupport {
 
     private Member createMember() {
         Member member = Member.builder()
-            .memberKey(UUID.randomUUID().toString())
             .nickname("아이바오")
             .gender(Gender.F)
             .birth("2013-07-13")
@@ -140,10 +156,10 @@ class DiaryServiceTest extends IntegrationTestSupport {
         return memberRepository.save(member);
     }
 
-    private Auth createAuth(Member member) {
+    private Auth createAuth(Member member, String providerId) {
         Auth auth = Auth.builder()
             .provider(ProviderType.KAKAO)
-            .providerId("1234567890")
+            .providerId(providerId)
             .accessToken("access.token")
             .refreshToken("refresh.token")
             .expiredAt(null)
