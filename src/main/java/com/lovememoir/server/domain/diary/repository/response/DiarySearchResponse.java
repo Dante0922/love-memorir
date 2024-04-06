@@ -14,18 +14,18 @@ public class DiarySearchResponse {
     private final Boolean isMain;
     private final String title;
     private final Boolean isLove;
-    private final LocalDate startDate;
-    private final LocalDate finishDate;
+    private final LocalDate startedDate;
+    private final LocalDate finishedDate;
     private final String profileImage;
 
     @Builder
-    private DiarySearchResponse(long diaryId, Boolean isMain, String title, Boolean isLove, LocalDate startDate, LocalDate finishDate, String profileImage) {
+    private DiarySearchResponse(long diaryId, Boolean isMain, String title, Boolean isLove, LocalDate startedDate, LocalDate finishedDate, String profileImage) {
         this.diaryId = diaryId;
         this.isMain = isMain;
         this.title = title;
         this.isLove = isLove;
-        this.startDate = startDate;
-        this.finishDate = finishDate;
+        this.startedDate = startedDate;
+        this.finishedDate = finishedDate;
         this.profileImage = profileImage;
     }
 }

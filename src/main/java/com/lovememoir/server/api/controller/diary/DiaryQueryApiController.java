@@ -3,6 +3,7 @@ package com.lovememoir.server.api.controller.diary;
 import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.api.ListResponse;
 import com.lovememoir.server.api.service.diary.DiaryQueryService;
+import com.lovememoir.server.common.auth.SecurityUtils;
 import com.lovememoir.server.domain.diary.repository.response.DiarySearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +27,9 @@ public class DiaryQueryApiController {
 
     @GetMapping
     public ApiResponse<ListResponse<DiarySearchResponse>> searchDiaries() {
-        //TODO: 2024-03-26 11:05 dong82 회원 정보 토큰 추출
-        String memberKey = UUID.randomUUID().toString();
+        String providerId = SecurityUtils.getProviderId();
 
-        List<DiarySearchResponse> content = diaryQueryService.searchDiaries(memberKey);
+        List<DiarySearchResponse> content = diaryQueryService.searchDiaries(providerId);
 
         ListResponse<DiarySearchResponse> response = ListResponse.of(content);
 
