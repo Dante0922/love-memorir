@@ -70,6 +70,10 @@ public class Diary extends BaseTimeEntity {
         this.loveInfo = loveInfo;
     }
 
+    public void modifyProfile(UploadFile profile) {
+        this.profile = profile;
+    }
+
     public boolean isNotMine(Member member) {
         return !this.member.getId().equals(member.getId());
     }
