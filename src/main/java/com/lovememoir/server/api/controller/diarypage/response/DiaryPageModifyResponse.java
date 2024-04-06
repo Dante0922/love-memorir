@@ -23,11 +23,6 @@ public class DiaryPageModifyResponse {
     }
 
     public static DiaryPageModifyResponse of(DiaryPage diaryPage) {
-        return DiaryPageModifyResponse.builder()
-            .diaryPageId(diaryPage.getId())
-            .title(diaryPage.getTitle())
-            .contentLength(diaryPage.getContent().length())
-            .diaryDate(diaryPage.getDiaryDate())
-            .build();
+        return null;
     }
 }

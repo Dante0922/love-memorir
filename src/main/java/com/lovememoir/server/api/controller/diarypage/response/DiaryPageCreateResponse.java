@@ -30,7 +30,6 @@ public class DiaryPageCreateResponse {
             .diaryPageId(diaryPage.getId())
             .title(diaryPage.getTitle())
             .contentLength(diaryPage.getContent().length())
-            .diaryDate(diaryPage.getDiaryDate())
             .createdDateTime(diaryPage.getCreatedDateTime())
             .build();
     }

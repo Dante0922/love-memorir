@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -37,9 +38,9 @@ public class DiaryPageApiController {
         //TODO: 2024-03-26 14:40 dong82 회원 정보 토큰 추출
         String memberKey = UUID.randomUUID().toString();
 
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDate currentDate = LocalDate.now();
 
-        DiaryPageCreateResponse response = diaryPageService.createDiaryPage(memberKey, diaryId, currentDateTime, request.toServiceRequest());
+        DiaryPageCreateResponse response = diaryPageService.createDiaryPage(memberKey, diaryId, currentDate, request.toServiceRequest());
 
         return ApiResponse.created(response);
     }

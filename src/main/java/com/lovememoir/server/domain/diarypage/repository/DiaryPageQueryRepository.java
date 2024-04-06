@@ -40,42 +40,10 @@ public class DiaryPageQueryRepository {
     }
 
     public List<DiaryPagesResponse> findAllByDiaryIdIn(final List<Long> diaryIds) {
-        return queryFactory
-            .select(
-                Projections.fields(
-                    DiaryPagesResponse.class,
-                    diaryPage.id.as("diaryPageId"),
-                    diaryPage.analysisResult.analysisStatus,
-                    diaryPage.analysisResult.emotionCode,
-                    diaryPage.title.as("pageTitle"),
-                    diaryPage.createdDateTime
-                )
-            )
-            .from(diaryPage)
-            .where(
-                diaryPage.id.in(diaryIds)
-            )
-            .orderBy(diaryPage.createdDateTime.desc())
-            .fetch();
+        return null;
     }
 
     public Optional<DiaryPageResponse> findById(final Long diaryPageId) {
-        DiaryPageResponse content = queryFactory
-            .select(
-                Projections.fields(
-                    DiaryPageResponse.class,
-                    Expressions.asNumber(diaryPageId).as("diaryPageId"),
-                    diaryPage.analysisResult.analysisStatus,
-                    diaryPage.analysisResult.emotionCode,
-                    diaryPage.title.as("pageTitle"),
-                    diaryPage.content.as("pageContent"),
-                    diaryPage.diaryDate,
-                    diaryPage.createdDateTime
-                )
-            )
-            .from(diaryPage)
-            .where(diaryPage.id.eq(diaryPageId))
-            .fetchFirst();
-        return Optional.ofNullable(content);
+        return Optional.empty();
     }
 }

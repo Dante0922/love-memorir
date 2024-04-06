@@ -35,7 +35,6 @@ public class DiaryPageCreateRequest {
         return DiaryPageCreateServiceRequest.builder()
             .title(title)
             .content(content)
-            .diaryDate(diaryDate)
             .build();
     }
 }

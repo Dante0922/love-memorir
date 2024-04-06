@@ -34,7 +34,7 @@ public class DiaryPageService {
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
 
-    public DiaryPageCreateResponse createDiaryPage(final String memberKey, final Long diaryId, final LocalDateTime currentDateTime, DiaryPageCreateServiceRequest request) {
+    public DiaryPageCreateResponse createDiaryPage(final String providerId, final Long diaryId, final LocalDate currentDate, DiaryPageCreateServiceRequest request) {
         return null;
     }
 
