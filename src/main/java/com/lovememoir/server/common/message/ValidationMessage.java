@@ -17,7 +17,7 @@ public abstract class ValidationMessage {
     public static final String NOT_NULL_AVATAR_GROWTH_STAGE = "아바타 성장등급을 입력하세요.";
 
     public static final String NOT_BLANK_DIARY_TITLE = "연인의 이름 또는 애칭을 입력해주세요.";
-    public static final String NOT_NULL_IS_IN_LOVE = "연애 여부를 입력하세요.";
+    public static final String NOT_NULL_IS_LOVE = "연애 여부를 입력하세요.";
     public static final String MAX_LENGTH_DIARY_TITLE = "길이는 최대 8자입니다.";
     public static final String NOT_MATCHES_PATTERN_DIARY_TITLE = "한글과 숫자만 입력하세요.";
     public static final String NOT_NULL_STARTED_DATE = "연애 시작일을 입력하세요.";

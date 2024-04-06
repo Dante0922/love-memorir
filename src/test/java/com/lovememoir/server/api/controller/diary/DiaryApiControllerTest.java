@@ -13,7 +13,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.time.LocalDate;
 
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_BLANK_DIARY_TITLE;
-import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_IS_IN_LOVE;
+import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_IS_LOVE;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -30,8 +30,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title(" ")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
+            .isLove(false)
             .build();
 
         //when //then
@@ -68,7 +67,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code").value("400"))
             .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-            .andExpect(jsonPath("$.message").value(NOT_NULL_IS_IN_LOVE))
+            .andExpect(jsonPath("$.message").value(NOT_NULL_IS_LOVE))
             .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -78,8 +77,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
         //given
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title("푸바오")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
+            .isLove(false)
             .build();
 
         //when //then
@@ -137,7 +135,7 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code").value("400"))
             .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-            .andExpect(jsonPath("$.message").value(NOT_NULL_IS_IN_LOVE))
+            .andExpect(jsonPath("$.message").value(NOT_NULL_IS_LOVE))
             .andExpect(jsonPath("$.data").isEmpty());
     }
 

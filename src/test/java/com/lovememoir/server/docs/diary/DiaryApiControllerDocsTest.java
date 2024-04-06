@@ -49,13 +49,15 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
     void createDiary() throws Exception {
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title("푸바오")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
             .build();
 
         DiaryCreateResponse response = DiaryCreateResponse.builder()
             .diaryId(1L)
             .title("푸바오와의 연애 기록")
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
             .createdDateTime(LocalDateTime.of(2024, 3, 1, 0, 0))
             .build();
 
@@ -80,9 +82,12 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                 requestFields(
                     fieldWithPath("title").type(JsonFieldType.STRING)
                         .description("신규 일기장 제목"),
-                    fieldWithPath("isInLove").type(JsonFieldType.BOOLEAN)
+                    fieldWithPath("isLove").type(JsonFieldType.BOOLEAN)
                         .description("신규 일기장 연애 여부"),
-                    fieldWithPath("relationshipStartedDate").type(JsonFieldType.ARRAY)
+                    fieldWithPath("startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("신규 일기장 연애 시작일"),
+                    fieldWithPath("finishedDate").type(JsonFieldType.ARRAY)
                         .optional()
                         .description("신규 일기장 연애 시작일")
                 ),
@@ -99,6 +104,14 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                         .description("신규 일기장 식별키"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING)
                         .description("신규 일기장 제목"),
+                    fieldWithPath("data.isLove").type(JsonFieldType.BOOLEAN)
+                        .description("신규 일기장 연애 여부"),
+                    fieldWithPath("data.startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("신규 일기장 연애 시작일"),
+                    fieldWithPath("data.finishedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("신규 일기장 연애 종료일"),
                     fieldWithPath("data.createdDateTime").type(JsonFieldType.ARRAY)
                         .description("신규 일기장 등록일시")
                 )

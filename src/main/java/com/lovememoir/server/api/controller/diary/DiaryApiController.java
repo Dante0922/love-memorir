@@ -8,6 +8,7 @@ import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.DiaryService;
+import com.lovememoir.server.common.auth.SecurityUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,13 +35,12 @@ public class DiaryApiController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<DiaryCreateResponse> createDiary(@Valid @RequestBody DiaryCreateRequest request) {
-        //TODO: 2024-03-26 00:53 dong82 회원 정보 토큰 추출
-
-        String providerId = UUID.randomUUID().toString();
+        String providerId = SecurityUtils.getProviderId();
 
         LocalDate currentDate = LocalDate.now();
 
         DiaryCreateResponse response = diaryService.createDiary(providerId, currentDate, request.toServiceRequest());
+
         return ApiResponse.created(response);
     }
 
