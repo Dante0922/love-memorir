@@ -11,6 +11,7 @@ import java.time.LocalDate;
 public class DiarySearchResponse {
 
     private final long diaryId;
+    private final Boolean isMain;
     private final String title;
     private final Boolean isLove;
     private final LocalDate startDate;
@@ -18,8 +19,9 @@ public class DiarySearchResponse {
     private final String profileImage;
 
     @Builder
-    private DiarySearchResponse(long diaryId, String title, Boolean isLove, LocalDate startDate, LocalDate finishDate, String profileImage) {
+    private DiarySearchResponse(long diaryId, Boolean isMain, String title, Boolean isLove, LocalDate startDate, LocalDate finishDate, String profileImage) {
         this.diaryId = diaryId;
+        this.isMain = isMain;
         this.title = title;
         this.isLove = isLove;
         this.startDate = startDate;

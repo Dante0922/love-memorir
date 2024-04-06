@@ -15,11 +15,7 @@ public class DiaryQueryService {
 
     private final DiaryQueryRepository diaryQueryRepository;
 
-    public List<DiarySearchResponse> searchDiaries(final String memberKey) {
-        return null;
-    }
-
-    public List<DiarySearchResponse> searchMainDiaries(final String memberKey) {
+    public List<DiarySearchResponse> searchDiaries(final String providerId) {
         return null;
     }
 }

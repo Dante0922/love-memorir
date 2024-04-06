@@ -2,6 +2,7 @@ package com.lovememoir.server.domain.diary.repository;
 
 import com.lovememoir.server.domain.diary.repository.response.DiarySearchResponse;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
@@ -19,11 +20,12 @@ public class DiaryQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public List<DiarySearchResponse> findAllByMemberId(final long memberId) {
+    public List<DiarySearchResponse> findAllByMemberId(final long memberId, final boolean isContainsMain) {
         return queryFactory.select(
                 Projections.fields(
                     DiarySearchResponse.class,
                     diary.id.as("diaryId"),
+                    diary.isMain,
                     diary.title,
                     diary.loveInfo.isLove,
                     diary.loveInfo.startedDate,
@@ -34,11 +36,15 @@ public class DiaryQueryRepository {
             .from(diary)
             .where(
                 diary.isDeleted.isFalse(),
-                diary.isMain.isFalse(),
+                mainIsTrue(isContainsMain),
                 diary.isStored.isFalse(),
                 diary.member.id.eq(memberId)
             )
             .orderBy(diary.createdDateTime.desc())
             .fetch();
+    }
+
+    private BooleanExpression mainIsTrue(final boolean isContainsMain) {
+        return isContainsMain ? diary.isMain.isTrue() : diary.isMain.isFalse();
     }
 }

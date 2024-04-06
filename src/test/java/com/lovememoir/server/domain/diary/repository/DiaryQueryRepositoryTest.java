@@ -28,9 +28,9 @@ class DiaryQueryRepositoryTest extends IntegrationTestSupport {
     @Autowired
     private DiaryRepository diaryRepository;
 
-    @DisplayName("회원 식별키로 일기장 목록을 조회한다.")
+    @DisplayName("회원 식별키로 일반 일기장 목록을 조회한다.")
     @Test
-    void findAllByMemberId() {
+    void findAllByMemberIdIsNotContainsMain() {
         //given
         Member member = createMember();
         Diary diary1 = createDiary(member, false, false, false, "푸바오");
@@ -41,7 +41,7 @@ class DiaryQueryRepositoryTest extends IntegrationTestSupport {
         Diary diary6 = createDiary(member, false, false, false, "후이바오");
 
         //when
-        List<DiarySearchResponse> content = diaryQueryRepository.findAllByMemberId(member.getId());
+        List<DiarySearchResponse> content = diaryQueryRepository.findAllByMemberId(member.getId(), false);
 
         //then
         assertThat(content).hasSize(3)
@@ -49,6 +49,26 @@ class DiaryQueryRepositoryTest extends IntegrationTestSupport {
             .containsExactly(
                 tuple(diary6.getId(), "후이바오"),
                 tuple(diary4.getId(), "루이바오"),
+                tuple(diary1.getId(), "푸바오")
+            );
+    }
+
+    @DisplayName("회원 식별키로 메인 일기장 목록을 조회한다.")
+    @Test
+    void findAllByMemberIdIsContainsMain() {
+        //given
+        Member member = createMember();
+        Diary diary1 = createDiary(member, false, true, false, "푸바오");
+        Diary diary2 = createDiary(member, true, true, false, "루이바오");
+        Diary diary3 = createDiary(member, false, false, false, "후이바오");
+
+        //when
+        List<DiarySearchResponse> content = diaryQueryRepository.findAllByMemberId(member.getId(), true);
+
+        //then
+        assertThat(content).hasSize(1)
+            .extracting("diaryId", "title")
+            .containsExactly(
                 tuple(diary1.getId(), "푸바오")
             );
     }
