@@ -8,6 +8,7 @@ import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest
 import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
+import com.lovememoir.server.domain.diary.LoveInfo;
 import com.lovememoir.server.domain.diary.UploadFile;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.member.Member;
@@ -19,12 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
-import static com.lovememoir.server.api.service.diary.DiaryValidator.validateRelationshipStartedDate;
+import static com.lovememoir.server.api.service.diary.DiaryValidator.validateLoveInfo;
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateTitle;
-import static com.lovememoir.server.common.constant.GlobalConstant.MAX_DIARY_COUNT;
 import static com.lovememoir.server.common.message.ExceptionMessage.*;
 
 @RequiredArgsConstructor
@@ -36,90 +36,115 @@ public class DiaryService {
     private final MemberRepository memberRepository;
     private final FileStore fileStore;
 
-    public DiaryCreateResponse createDiary(final String memberKey, final LocalDateTime currentDateTime, DiaryCreateServiceRequest request) {
-        final String title = validateTitle(request.getTitle());
-        final LocalDate relationshipStartedDate = validateRelationshipStartedDate(request.isInLove(), request.getRelationshipStartedDate(), currentDateTime);
+    public DiaryCreateResponse createDiary(final String providerId, final LocalDate currentDate, DiaryCreateServiceRequest request) {
+        String title = validateTitle(request.getTitle());
+        LoveInfo loveInfo = validateLoveInfo(request.isLove(), request.getStartedDate(), request.getFinishedDate(), currentDate);
 
-        final Member member = getMember(memberKey);
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
 
-        validateMaximumDiaryCount(member.getId());
-
-        final Diary savedDiary = saveDiary(title, request.isInLove(), relationshipStartedDate, member);
+        Diary diary = Diary.create(title, loveInfo, member);
+        Diary savedDiary = diaryRepository.save(diary);
 
         return DiaryCreateResponse.of(savedDiary);
     }
 
-    public DiaryModifyResponse modifyDiary(final String memberKey, final Long diaryId, final LocalDateTime currentDateTime, DiaryModifyServiceRequest request) {
-        final String title = validateTitle(request.getTitle());
-        final LocalDate relationshipStartedDate = validateRelationshipStartedDate(request.isInLove(), request.getRelationshipStartedDate(), currentDateTime);
+    public DiaryModifyResponse modifyDiary(final String providerId, final long diaryId, final LocalDate currentDate, DiaryModifyServiceRequest request) {
+        String title = validateTitle(request.getTitle());
+        LoveInfo loveInfo = validateLoveInfo(request.isLove(), request.getStartedDate(), request.getFinishedDate(), currentDate);
 
-        final Diary diary = getMyDiary(memberKey, diaryId);
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
 
-        diary.modify(generateTitle(title), request.isInLove(), relationshipStartedDate);
+        Diary diary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
 
-        return DiaryModifyResponse.of(diary);
-    }
+        if (diary.isNotMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
 
-    public DiaryModifyResponse modifyDiaryImage(final String memberKey, final Long diaryId, final MultipartFile file) {
-        Diary diary = getMyDiary(memberKey, diaryId);
-
-        UploadFile uploadFile = fileUploadToAwsS3(file);
-
-        diary.modifyFile(uploadFile);
+        diary.modify(title, loveInfo);
 
         return DiaryModifyResponse.of(diary);
     }
 
-    public DiaryRemoveResponse removeDiary(final String memberKey, final Long diaryId) {
-        final Diary diary = getMyDiary(memberKey, diaryId);
+    public DiaryModifyResponse modifyDiaryProfile(final String providerId, final long diaryId, final MultipartFile file) {
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
+
+        Diary diary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
+
+        if (diary.isNotMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        UploadFile uploadFile = cloudUploadFile(file);
+        diary.modifyProfile(uploadFile);
+
+        return DiaryModifyResponse.of(diary);
+    }
+
+    public DiaryModifyResponse modifyDiaryStoreStatus(final String providerId, final long diaryId) {
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
+
+        Diary diary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
+
+        if (diary.isNotMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        diary.modifyStoreStatus();
+
+        return DiaryModifyResponse.of(diary);
+    }
+
+    public DiaryModifyResponse modifyDiaryMainStatus(final String providerId, final long diaryId) {
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
+
+        Diary diary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
+
+        if (diary.isNotMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        Diary mainDiary = diaryRepository.findMainDiaryByMemberId(member.getId())
+            .orElse(null);
+
+        if (mainDiary != null && !mainDiary.getId().equals(diaryId)) {
+            mainDiary.modifyMainStatus();
+        }
+
+        diary.modifyMainStatus();
+
+        return DiaryModifyResponse.of(diary);
+    }
+
+    public DiaryRemoveResponse removeDiary(final String providerId, final long diaryId) {
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
+
+        Diary diary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
+
+        if (diary.isNotMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
 
         diary.remove();
 
         return DiaryRemoveResponse.of(diary);
     }
 
-    private Member getMember(final String memberKey) {
-        return memberRepository.findByMemberKey(memberKey)
-            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
-    }
-
-    private void validateMaximumDiaryCount(final Long memberId) {
-        final int diaryCount = diaryRepository.countByMemberId(memberId);
-        if (diaryCount >= MAX_DIARY_COUNT) {
-            throw new IllegalArgumentException(MAXIMUM_DIARY_COUNT);
-        }
-    }
-
-    private String generateTitle(final String title) {
-        return title + "와의 연애 기록";
-    }
-
-    private Diary saveDiary(String title, boolean inLove, LocalDate relationshipStartedDate, Member member) {
-        final Diary diary = Diary.create(generateTitle(title), inLove, relationshipStartedDate, member);
-        return diaryRepository.save(diary);
-    }
-
-    private Diary getDiary(Long diaryId) {
-        return diaryRepository.findById(diaryId)
-            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
-    }
-
-    private Diary getMyDiary(String memberKey, Long diaryId) {
-        final Member member = getMember(memberKey);
-        final Diary diary = getDiary(diaryId);
-
-        if (!diary.isMine(member)) {
-            throw new AuthException(NO_AUTH);
-        }
-
-        return diary;
-    }
-
-    private UploadFile fileUploadToAwsS3(MultipartFile file) {
+    private UploadFile cloudUploadFile(MultipartFile file) {
         try {
             return fileStore.storeFile(file);
         } catch (IOException e) {
-            throw new IllegalArgumentException(FAIL_UPLOAD_FILE, e);
+            throw new RuntimeException(e);
         }
     }
 }

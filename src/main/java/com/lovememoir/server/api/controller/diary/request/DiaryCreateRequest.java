@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_BLANK_DIARY_TITLE;
-import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_IS_IN_LOVE;
+import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_IS_LOVE;
 
 @Getter
 @NoArgsConstructor
@@ -19,23 +19,27 @@ public class DiaryCreateRequest {
     @NotBlank(message = NOT_BLANK_DIARY_TITLE)
     private String title;
 
-    @NotNull(message = NOT_NULL_IS_IN_LOVE)
-    private Boolean isInLove;
+    @NotNull(message = NOT_NULL_IS_LOVE)
+    private Boolean isLove;
 
-    private LocalDate relationshipStartedDate;
+    private LocalDate startedDate;
+
+    private LocalDate finishedDate;
 
     @Builder
-    private DiaryCreateRequest(String title, Boolean isInLove, LocalDate relationshipStartedDate) {
+    private DiaryCreateRequest(String title, Boolean isLove, LocalDate startedDate, LocalDate finishedDate) {
         this.title = title;
-        this.isInLove = isInLove;
-        this.relationshipStartedDate = relationshipStartedDate;
+        this.isLove = isLove;
+        this.startedDate = startedDate;
+        this.finishedDate = finishedDate;
     }
 
     public DiaryCreateServiceRequest toServiceRequest() {
         return DiaryCreateServiceRequest.builder()
             .title(title)
-            .isInLove(isInLove)
-            .relationshipStartedDate(relationshipStartedDate)
+            .isLove(isLove)
+            .startedDate(startedDate)
+            .finishedDate(finishedDate)
             .build();
     }
 }

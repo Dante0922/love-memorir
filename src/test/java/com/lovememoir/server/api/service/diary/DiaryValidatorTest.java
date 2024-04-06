@@ -1,22 +1,21 @@
 package com.lovememoir.server.api.service.diary;
 
+import com.lovememoir.server.domain.diary.LoveInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static com.lovememoir.server.common.message.ValidationMessage.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class DiaryValidatorTest {
 
-    @DisplayName("입력 받은 제목의 길이가 8자를 초과하면 예외가 발생한다.")
+    @DisplayName("입력 받은 제목의 길이가 8자리를 초과하면 예외가 발생한다.")
     @Test
     void validateTitleWithOutOfLength() {
         //given
-        String title = "말썽쟁이 후이바오";
+        String title = "루이바오와후이바오";
 
         //when //then
         assertThatThrownBy(() -> DiaryValidator.validateTitle(title))
@@ -24,80 +23,102 @@ class DiaryValidatorTest {
             .hasMessage(MAX_LENGTH_DIARY_TITLE);
     }
 
-    @DisplayName("입력 받은 제목의 앞 뒤 공백은 글자수에 포함되지 않는다.")
+    @DisplayName("입력 받은 제목에 한글, 숫자 이외의 문자가 포함되어 있으면 예외가 발생한다.")
     @Test
-    void validateTitleWithSpace() {
+    void validateTitleWithNotMatchesPattern() {
         //given
-        String title = " 개구쟁이 푸바오 ";
+        String title = "Pubao";
 
-        //when
-        String validatedTitle = DiaryValidator.validateTitle(title);
-
-        //then
-        assertThat(validatedTitle).isEqualTo("개구쟁이 푸바오");
+        //when //then
+        assertThatThrownBy(() -> DiaryValidator.validateTitle(title))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(NOT_MATCHES_PATTERN_DIARY_TITLE);
     }
 
-    @DisplayName("입력 받은 제목에 대해 유효성 검증된 제목을 반환한다.")
+    @DisplayName("입력 받은 제목의 데이터 유효성 검증을 한다.")
     @Test
     void validateTitle() {
         //given
-        String title = "개구쟁이 푸바오";
+        String title = "푸바오";
 
         //when
         String validatedTitle = DiaryValidator.validateTitle(title);
 
         //then
-        assertThat(validatedTitle).isEqualTo("개구쟁이 푸바오");
+        assertThat(validatedTitle).isEqualTo(title);
     }
 
-    @DisplayName("입력 받은 연애 시작일이 미래라면 예외가 발생한다.")
+    @DisplayName("연애중일때 입력 받은 연애 시작일이 null이면 예외가 발생한다.")
     @Test
-    void validateRelationshipStartedDateWithFuture() {
+    void validateLoveInfoIsLoveTrueWithoutStartedDate() {
         //given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 10, 23, 59);
-        LocalDate relationshipStartedDate = LocalDate.of(2024, 3, 11);
+        LocalDate currentDate = LocalDate.of(2024, 4, 6);
 
         //when //then
-        assertThatThrownBy(() -> DiaryValidator.validateRelationshipStartedDate(true, relationshipStartedDate, currentDateTime))
+        assertThatThrownBy(() -> DiaryValidator.validateLoveInfo(true, null, null, currentDate))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(FUTURE_RELATIONSHIP_STARTED_DATE);
+            .hasMessage(NOT_NULL_STARTED_DATE);
     }
 
-    @DisplayName("연애중일 때 연애 시작일이 null이면 예외가 발생한다.")
+    @DisplayName("입력 받은 연애 시작일이 현재 날짜보다 미래라면 예외가 발생한다.")
     @Test
-    void validateRelationshipStartedDateWithoutDate() {
+    void validateLoveInfoStartedDateIsFuture() {
         //given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 10, 23, 59);
+        LocalDate currentDate = LocalDate.of(2024, 4, 6);
+        LocalDate startedDate = LocalDate.of(2024, 4, 7);
 
         //when //then
-        assertThatThrownBy(() -> DiaryValidator.validateRelationshipStartedDate(true, null, currentDateTime))
+        assertThatThrownBy(() -> DiaryValidator.validateLoveInfo(true, startedDate, null, currentDate))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(NOT_NULL_RELATIONSHIP_STARTED_DATE);
+            .hasMessage(IS_FUTURE_DATE);
     }
 
-    @DisplayName("연애중이 아니라면 연애 시작일에 대한 유효성 검증을 하지 않는다.")
+    @DisplayName("입력 받은 연애 종료일이 현재 날짜보다 미래라면 예외가 발생한다.")
     @Test
-    void validateRelationshipStartedDateWithIsNotInLove() {
+    void validateLoveInfoFinishedDateIsFuture() {
         //given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 10, 23, 59);
-        //when
-        LocalDate validatedRelationshipStartedDate = DiaryValidator.validateRelationshipStartedDate(false, null, currentDateTime);
+        LocalDate currentDate = LocalDate.of(2024, 4, 6);
+        LocalDate startedDate = LocalDate.of(2024, 4, 1);
+        LocalDate finishedDate = LocalDate.of(2024, 4, 7);
 
-        //then
-        assertThat(validatedRelationshipStartedDate).isNull();
+
+        //when //then
+        assertThatThrownBy(() -> DiaryValidator.validateLoveInfo(false, startedDate, finishedDate, currentDate))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(IS_FUTURE_DATE);
     }
 
-    @DisplayName("입력 받은 연애 시작일에 대해 유효성 검증된 연애 시작일을 반환한다.")
+    @DisplayName("입력 받은 연애 시작일이 연애 종료일보다 미래라면 예외가 발생한다.")
     @Test
-    void validateRelationshipStartedDate() {
+    void validateLoveInfoDateIsFuture() {
         //given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 10, 0, 0);
-        LocalDate relationshipStartedDate = LocalDate.of(2024, 3, 10);
+        LocalDate currentDate = LocalDate.of(2024, 4, 6);
+        LocalDate startedDate = LocalDate.of(2024, 4, 5);
+        LocalDate finishedDate = LocalDate.of(2024, 4, 4);
+
+
+        //when //then
+        assertThatThrownBy(() -> DiaryValidator.validateLoveInfo(false, startedDate, finishedDate, currentDate))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(IS_FUTURE_DATE);
+    }
+
+    @DisplayName("입력 받은 연애 정보의 데이터 유효성 검증을 한다")
+    @Test
+    void validateLoveInfo() {
+        //given
+        LocalDate currentDate = LocalDate.of(2024, 4, 6);
+        LocalDate startedDate = LocalDate.of(2024, 4, 6);
+        LocalDate finishedDate = LocalDate.of(2024, 4, 6);
 
         //when
-        LocalDate validatedRelationshipStartedDate = DiaryValidator.validateRelationshipStartedDate(true, relationshipStartedDate, currentDateTime);
+        LoveInfo loveInfo = DiaryValidator.validateLoveInfo(false, startedDate, finishedDate, currentDate);
 
         //then
-        assertThat(validatedRelationshipStartedDate).isEqualTo(LocalDate.of(2024, 3, 10));
+        assertThat(loveInfo)
+            .isNotNull()
+            .hasFieldOrPropertyWithValue("isLove", false)
+            .hasFieldOrPropertyWithValue("startedDate", LocalDate.of(2024, 4, 6))
+            .hasFieldOrPropertyWithValue("finishedDate", LocalDate.of(2024, 4, 6));
     }
 }

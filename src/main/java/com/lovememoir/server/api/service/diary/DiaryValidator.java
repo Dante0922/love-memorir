@@ -1,7 +1,8 @@
 package com.lovememoir.server.api.service.diary;
 
+import com.lovememoir.server.domain.diary.LoveInfo;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static com.lovememoir.server.common.message.ValidationMessage.*;
 
@@ -9,41 +10,39 @@ public abstract class DiaryValidator {
 
     private static final int TITLE_MAXIMUM_LENGTH = 8;
 
-    public static String validateTitle(String title) {
-        title = removeSpace(title);
+    private static final String TITLE_REGEX = "^[가-핳0-9]*$";
 
-        if (isTitleLengthGraterThan(title)) {
+    public static String validateTitle(String title) {
+        title = title.strip();
+
+        if (title.length() > TITLE_MAXIMUM_LENGTH) {
             throw new IllegalArgumentException(MAX_LENGTH_DIARY_TITLE);
+        }
+
+        if (!title.matches(TITLE_REGEX)) {
+            throw new IllegalArgumentException(NOT_MATCHES_PATTERN_DIARY_TITLE);
         }
 
         return title;
     }
 
-    public static LocalDate validateRelationshipStartedDate(boolean isInLove, final LocalDate relationshipStartedDate, final LocalDateTime currentDateTime) {
-        if (!isInLove) {
-            return relationshipStartedDate;
+    public static LoveInfo validateLoveInfo(boolean isLove, final LocalDate startedDate, final LocalDate finishedDate, final LocalDate currentDate) {
+        if (isLove && startedDate == null) {
+            throw new IllegalArgumentException(NOT_NULL_STARTED_DATE);
         }
 
-        if (relationshipStartedDate == null) {
-            throw new IllegalArgumentException(NOT_NULL_RELATIONSHIP_STARTED_DATE);
+        if (startedDate != null && currentDate.isBefore(startedDate)) {
+            throw new IllegalArgumentException(IS_FUTURE_DATE);
         }
 
-        if (isFuture(currentDateTime, relationshipStartedDate)) {
-            throw new IllegalArgumentException(FUTURE_RELATIONSHIP_STARTED_DATE);
+        if (finishedDate != null && currentDate.isBefore(finishedDate)) {
+            throw new IllegalArgumentException(IS_FUTURE_DATE);
         }
 
-        return relationshipStartedDate;
-    }
+        if (startedDate != null && finishedDate != null && finishedDate.isBefore(startedDate)) {
+            throw new IllegalArgumentException(IS_FUTURE_DATE);
+        }
 
-    private static String removeSpace(final String text) {
-        return text.strip();
-    }
-
-    private static boolean isTitleLengthGraterThan(final String title) {
-        return title.length() > TITLE_MAXIMUM_LENGTH;
-    }
-
-    private static boolean isFuture(final LocalDateTime currentDateTime, final LocalDate relationshipStartedDate) {
-        return currentDateTime.isBefore(relationshipStartedDate.atStartOfDay());
+        return LoveInfo.create(isLove, startedDate, finishedDate);
     }
 }

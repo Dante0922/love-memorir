@@ -32,9 +32,10 @@ include::api/avatar/search-avatar.adoc[]
 
 include::api/diary/create-diary.adoc[]
 include::api/diary/search-diaries.adoc[]
-include::api/diary/search-main-diaries.adoc[]
 include::api/diary/modify-diary.adoc[]
 include::api/diary/modify-diary-image.adoc[]
+include::api/diary/modify-diary-store-status.adoc[]
+include::api/diary/modify-diary-main-status.adoc[]
 include::api/diary/remove-diary.adoc[]
 
 [[Diary-Page-API]]

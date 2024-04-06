@@ -1,0 +1,13 @@
+[[modify-diary-store-status]]
+=== 일기장 보관/해제 API
+
+==== HTTP Request
+
+include::{snippets}/modify-diary-store-status/http-request.adoc[]
+include::{snippets}/modify-diary-store-status/request-headers.adoc[]
+include::{snippets}/modify-diary-store-status/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/modify-diary-store-status/http-response.adoc[]
+include::{snippets}/modify-diary-store-status/response-fields.adoc[]

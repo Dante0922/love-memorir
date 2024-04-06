@@ -49,13 +49,15 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
     void createDiary() throws Exception {
         DiaryCreateRequest request = DiaryCreateRequest.builder()
             .title("푸바오")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
             .build();
 
         DiaryCreateResponse response = DiaryCreateResponse.builder()
             .diaryId(1L)
             .title("푸바오와의 연애 기록")
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
             .createdDateTime(LocalDateTime.of(2024, 3, 1, 0, 0))
             .build();
 
@@ -80,9 +82,12 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                 requestFields(
                     fieldWithPath("title").type(JsonFieldType.STRING)
                         .description("신규 일기장 제목"),
-                    fieldWithPath("isInLove").type(JsonFieldType.BOOLEAN)
+                    fieldWithPath("isLove").type(JsonFieldType.BOOLEAN)
                         .description("신규 일기장 연애 여부"),
-                    fieldWithPath("relationshipStartedDate").type(JsonFieldType.ARRAY)
+                    fieldWithPath("startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("신규 일기장 연애 시작일"),
+                    fieldWithPath("finishedDate").type(JsonFieldType.ARRAY)
                         .optional()
                         .description("신규 일기장 연애 시작일")
                 ),
@@ -99,6 +104,14 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                         .description("신규 일기장 식별키"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING)
                         .description("신규 일기장 제목"),
+                    fieldWithPath("data.isLove").type(JsonFieldType.BOOLEAN)
+                        .description("신규 일기장 연애 여부"),
+                    fieldWithPath("data.startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("신규 일기장 연애 시작일"),
+                    fieldWithPath("data.finishedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("신규 일기장 연애 종료일"),
                     fieldWithPath("data.createdDateTime").type(JsonFieldType.ARRAY)
                         .description("신규 일기장 등록일시")
                 )
@@ -110,13 +123,15 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
     void modifyDiary() throws Exception {
         DiaryModifyRequest request = DiaryModifyRequest.builder()
             .title("루이바오")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2024, 1, 1))
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
             .build();
 
         DiaryModifyResponse response = DiaryModifyResponse.builder()
             .diaryId(1L)
-            .title("루이바오와의 연애 기록")
+            .title("루이바오")
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
             .build();
 
         given(diaryService.modifyDiary(anyString(), anyLong(), any(), any()))
@@ -144,11 +159,14 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                 requestFields(
                     fieldWithPath("title").type(JsonFieldType.STRING)
                         .description("수정할 일기장 제목"),
-                    fieldWithPath("isInLove").type(JsonFieldType.BOOLEAN)
+                    fieldWithPath("isLove").type(JsonFieldType.BOOLEAN)
                         .description("수정할 일기장 연애 여부"),
-                    fieldWithPath("relationshipStartedDate").type(JsonFieldType.ARRAY)
+                    fieldWithPath("startedDate").type(JsonFieldType.ARRAY)
                         .optional()
-                        .description("수정할 일기장 연애 시작일")
+                        .description("수정할 일기장 연애 시작일"),
+                    fieldWithPath("finishedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정할 일기장 연애 종료일")
                 ),
                 responseFields(
                     fieldWithPath("code").type(JsonFieldType.NUMBER)
@@ -162,7 +180,15 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                     fieldWithPath("data.diaryId").type(JsonFieldType.NUMBER)
                         .description("수정된 일기장 식별키"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING)
-                        .description("수정된 일기장 제목")
+                        .description("수정된 일기장 제목"),
+                    fieldWithPath("data.isLove").type(JsonFieldType.BOOLEAN)
+                        .description("수정된 일기장 연애 여부"),
+                    fieldWithPath("data.startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 시작일"),
+                    fieldWithPath("data.finishedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 종료일")
                 )
             ));
     }
@@ -183,10 +209,12 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
 
         DiaryModifyResponse response = DiaryModifyResponse.builder()
             .diaryId(1L)
-            .title("루이바오와의 연애 기록")
+            .title("루이바오")
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
             .build();
 
-        given(diaryService.modifyDiaryImage(anyString(), anyLong(), any()))
+        given(diaryService.modifyDiaryProfile(anyString(), anyLong(), any()))
             .willReturn(response);
 
         mockMvc.perform(
@@ -225,7 +253,127 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                     fieldWithPath("data.diaryId").type(JsonFieldType.NUMBER)
                         .description("수정된 일기장 식별키"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING)
-                        .description("수정된 일기장 제목")
+                        .description("수정된 일기장 제목"),
+                    fieldWithPath("data.isLove").type(JsonFieldType.BOOLEAN)
+                        .description("수정된 일기장 연애 여부"),
+                    fieldWithPath("data.startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 시작일"),
+                    fieldWithPath("data.finishedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 종료일")
+                )
+            ));
+    }
+
+    @DisplayName("일기장 보관 상태 수정 API")
+    @Test
+    void modifyDiaryStoreStatus() throws Exception {
+        DiaryModifyResponse response = DiaryModifyResponse.builder()
+            .diaryId(1L)
+            .title("루이바오")
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
+            .build();
+
+        given(diaryService.modifyDiaryStoreStatus(anyString(), anyLong()))
+            .willReturn(response);
+
+        mockMvc.perform(
+                patch(BASE_URL + "/{diaryId}/store-status", 1L)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("modify-diary-store-status",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION)
+                        .description("회원 인증 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("diaryId")
+                        .description("일기장 식별키")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.diaryId").type(JsonFieldType.NUMBER)
+                        .description("수정된 일기장 식별키"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING)
+                        .description("수정된 일기장 제목"),
+                    fieldWithPath("data.isLove").type(JsonFieldType.BOOLEAN)
+                        .description("수정된 일기장 연애 여부"),
+                    fieldWithPath("data.startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 시작일"),
+                    fieldWithPath("data.finishedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 종료일")
+                )
+            ));
+    }
+
+    @DisplayName("일기장 메인 상태 수정 API")
+    @Test
+    void modifyDiaryMainStatus() throws Exception {
+        DiaryModifyResponse response = DiaryModifyResponse.builder()
+            .diaryId(1L)
+            .title("루이바오")
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
+            .build();
+
+        given(diaryService.modifyDiaryMainStatus(anyString(), anyLong()))
+            .willReturn(response);
+
+        mockMvc.perform(
+                patch(BASE_URL + "/{diaryId}/main-status", 1L)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("modify-diary-main-status",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION)
+                        .description("회원 인증 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("diaryId")
+                        .description("일기장 식별키")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.diaryId").type(JsonFieldType.NUMBER)
+                        .description("수정된 일기장 식별키"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING)
+                        .description("수정된 일기장 제목"),
+                    fieldWithPath("data.isLove").type(JsonFieldType.BOOLEAN)
+                        .description("수정된 일기장 연애 여부"),
+                    fieldWithPath("data.startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 시작일"),
+                    fieldWithPath("data.finishedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 종료일")
                 )
             ));
     }
@@ -235,7 +383,9 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
     void removeDiary() throws Exception {
         DiaryRemoveResponse response = DiaryRemoveResponse.builder()
             .diaryId(1L)
-            .title("후이바오")
+            .title("루이바오")
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
             .build();
 
         given(diaryService.removeDiary(anyString(), anyLong()))
@@ -271,7 +421,15 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                     fieldWithPath("data.diaryId").type(JsonFieldType.NUMBER)
                         .description("삭제된 일기장 식별키"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING)
-                        .description("삭제된 일기장 제목")
+                        .description("삭제된 일기장 제목"),
+                    fieldWithPath("data.isLove").type(JsonFieldType.BOOLEAN)
+                        .description("삭제된 일기장 연애 여부"),
+                    fieldWithPath("data.startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("삭제된 일기장 연애 시작일"),
+                    fieldWithPath("data.finishedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("삭제된 일기장 연애 종료일")
                 )
             ));
     }

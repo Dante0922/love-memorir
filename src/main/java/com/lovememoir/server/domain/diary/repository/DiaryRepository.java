@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
-    @Query("select count(d.id) from Diary d where d.isDeleted = false and d.member.id = :memberId")
-    int countByMemberId(@Param("memberId") Long memberId);
+    @Query("select d from Diary d where d.member.id = :memberId and d.isDeleted = false and d.isMain = true")
+    Optional<Diary> findMainDiaryByMemberId(Long memberId);
 }

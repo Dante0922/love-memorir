@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.lovememoir.server.domain.diary.QDiary.diary;
-import static com.lovememoir.server.domain.member.QMember.member;
 
 @Repository
 public class DiaryQueryRepository {
@@ -21,31 +20,31 @@ public class DiaryQueryRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public List<DiarySearchResponse> findByMemberKey(final String memberKey, final boolean mainOnly) {
-        return queryFactory
-            .select(
+    public List<DiarySearchResponse> findAllByMemberId(final long memberId, final boolean isContainsMain) {
+        return queryFactory.select(
                 Projections.fields(
                     DiarySearchResponse.class,
                     diary.id.as("diaryId"),
-                    diary.isFixed.as("isMain"),
+                    diary.isMain,
                     diary.title,
-                    diary.file.storeFileUrl.as("profileImage"),
-                    diary.pageCount,
-                    diary.relationshipStartedDate
+                    diary.loveInfo.isLove,
+                    diary.loveInfo.startedDate,
+                    diary.loveInfo.finishedDate,
+                    diary.profile.storeFileUrl.as("profileImage")
                 )
             )
             .from(diary)
-            .join(diary.member, member)
             .where(
                 diary.isDeleted.isFalse(),
-                member.memberKey.eq(memberKey),
-                isFixedIsTrue(mainOnly)
+                mainIsTrue(isContainsMain),
+                diary.isStored.isFalse(),
+                diary.member.id.eq(memberId)
             )
             .orderBy(diary.createdDateTime.desc())
             .fetch();
     }
 
-    private BooleanExpression isFixedIsTrue(final boolean mainOnly) {
-        return mainOnly ? diary.isFixed.isTrue() : null;
+    private BooleanExpression mainIsTrue(final boolean isContainsMain) {
+        return isContainsMain ? diary.isMain.isTrue() : diary.isMain.isFalse();
     }
 }
