@@ -266,6 +266,62 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
             ));
     }
 
+    @DisplayName("일기장 보관 상태 수정 API")
+    @Test
+    void modifyDiaryStoreStatus() throws Exception {
+        DiaryModifyResponse response = DiaryModifyResponse.builder()
+            .diaryId(1L)
+            .title("루이바오")
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
+            .build();
+
+        given(diaryService.modifyDiaryStoreStatus(anyString(), anyLong()))
+            .willReturn(response);
+
+        mockMvc.perform(
+                patch(BASE_URL + "/{diaryId}/store-status", 1L)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("modify-diary-store-status",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION)
+                        .description("회원 인증 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("diaryId")
+                        .description("일기장 식별키")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.diaryId").type(JsonFieldType.NUMBER)
+                        .description("수정된 일기장 식별키"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING)
+                        .description("수정된 일기장 제목"),
+                    fieldWithPath("data.isLove").type(JsonFieldType.BOOLEAN)
+                        .description("수정된 일기장 연애 여부"),
+                    fieldWithPath("data.startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 시작일"),
+                    fieldWithPath("data.finishedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 종료일")
+                )
+            ));
+    }
+
     @DisplayName("일기장 삭제 API")
     @Test
     void removeDiary() throws Exception {

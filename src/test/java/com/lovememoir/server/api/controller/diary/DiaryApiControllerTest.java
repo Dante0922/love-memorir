@@ -185,6 +185,19 @@ class DiaryApiControllerTest extends ControllerTestSupport {
             .andExpect(status().isOk());
     }
 
+    @DisplayName("일기장을 보관 상태를 수정한다.")
+    @Test
+    void modifyDiaryStoreStatus() throws Exception {
+        //given //when //then
+        mockMvc.perform(
+                delete(BASE_URL + "/{diaryId}", 1L)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
+
     @DisplayName("일기장을 삭제한다.")
     @Test
     void removeDiary() throws Exception {
