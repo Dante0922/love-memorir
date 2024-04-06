@@ -2,8 +2,11 @@ package com.lovememoir.server.api.service.diarypage;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.lovememoir.server.common.message.ValidationMessage.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,5 +65,46 @@ class DiaryPageValidatorTest {
 
         //then
         assertThat(validatedRecordDate).isEqualTo(LocalDate.of(2024, 4, 6));
+    }
+
+    @DisplayName("입력 받은 이미지가 3개를 초과하면 예외가 발생한다.")
+    @Test
+    void validateImageCountWithOutOfSize() {
+        //given
+        MockMultipartFile image1 = createMockMultipartFile();
+        MockMultipartFile image2 = createMockMultipartFile();
+        MockMultipartFile image3 = createMockMultipartFile();
+        MockMultipartFile image4 = createMockMultipartFile();
+        List<MultipartFile> images = List.of(image1, image2, image3, image4);
+
+        //when //then
+        assertThatThrownBy(() -> DiaryPageValidator.validateImageCount(images))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(MAX_COUNT_IMAGES);
+    }
+
+    @DisplayName("입력 받은 이미지의 갯수를 검증한다.")
+    @Test
+    void validateImageCount() {
+        //given
+        MockMultipartFile image1 = createMockMultipartFile();
+        MockMultipartFile image2 = createMockMultipartFile();
+        MockMultipartFile image3 = createMockMultipartFile();
+        List<MultipartFile> images = List.of(image1, image2, image3);
+
+        //when
+        List<MultipartFile> validatedImages = DiaryPageValidator.validateImageCount(images);
+
+        //then
+        assertThat(validatedImages).hasSize(3);
+    }
+
+    private MockMultipartFile createMockMultipartFile() {
+        return new MockMultipartFile(
+            "images",
+            "diary-page-attached-image1.jpg",
+            "image/jpg",
+            "image data".getBytes()
+        );
     }
 }

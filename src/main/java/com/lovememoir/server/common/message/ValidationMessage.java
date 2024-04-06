@@ -27,5 +27,5 @@ public abstract class ValidationMessage {
     public static final String NOT_BLANK_DIARY_PAGE_CONTENT = "일기 내용을 입력하세요.";
     public static final String NOT_NULL_DIARY_PAGE_DATE = "일자를 입력하세요.";
     public static final String MAX_LENGTH_DIARY_PAGE_TITLE = "일기 제목의 길이는 최대 10자입니다.";
-    public static final String FUTURE_DIARY_DATE = "일기 날짜를 올바르게 입력해주세요.";
+    public static final String MAX_COUNT_IMAGES = "이미지 첨부는 최대 3개입니다.";
 }
