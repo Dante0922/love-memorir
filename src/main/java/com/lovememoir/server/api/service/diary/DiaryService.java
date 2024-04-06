@@ -6,6 +6,7 @@ import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest;
 import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
+import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.LoveInfo;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
@@ -22,7 +23,7 @@ import java.util.NoSuchElementException;
 
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateLoveInfo;
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateTitle;
-import static com.lovememoir.server.common.message.ExceptionMessage.NO_SUCH_MEMBER;
+import static com.lovememoir.server.common.message.ExceptionMessage.*;
 
 @RequiredArgsConstructor
 @Service
@@ -47,7 +48,22 @@ public class DiaryService {
     }
 
     public DiaryModifyResponse modifyDiary(final String providerId, final long diaryId, final LocalDate currentDate, DiaryModifyServiceRequest request) {
-        return null;
+        String title = validateTitle(request.getTitle());
+        LoveInfo loveInfo = validateLoveInfo(request.isLove(), request.getStartedDate(), request.getFinishedDate(), currentDate);
+
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
+
+        Diary diary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
+
+        if (diary.isNotMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        diary.modify(title, loveInfo);
+
+        return DiaryModifyResponse.of(diary);
     }
 
     public DiaryModifyResponse modifyDiaryImage(final String memberKey, final Long diaryId, final MultipartFile file) {
