@@ -383,7 +383,9 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
     void removeDiary() throws Exception {
         DiaryRemoveResponse response = DiaryRemoveResponse.builder()
             .diaryId(1L)
-            .title("후이바오")
+            .title("루이바오")
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
             .build();
 
         given(diaryService.removeDiary(anyString(), anyLong()))
@@ -419,7 +421,15 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                     fieldWithPath("data.diaryId").type(JsonFieldType.NUMBER)
                         .description("삭제된 일기장 식별키"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING)
-                        .description("삭제된 일기장 제목")
+                        .description("삭제된 일기장 제목"),
+                    fieldWithPath("data.isLove").type(JsonFieldType.BOOLEAN)
+                        .description("삭제된 일기장 연애 여부"),
+                    fieldWithPath("data.startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("삭제된 일기장 연애 시작일"),
+                    fieldWithPath("data.finishedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("삭제된 일기장 연애 종료일")
                 )
             ));
     }

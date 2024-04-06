@@ -89,10 +89,9 @@ public class DiaryApiController {
 
     @DeleteMapping("/{diaryId}")
     public ApiResponse<DiaryRemoveResponse> removeDiary(@PathVariable Long diaryId) {
-        //TODO: 2024-03-26 10:30 dong82 회원 정보 토큰 추출
-        String memberKey = UUID.randomUUID().toString();
+        String providerId = SecurityUtils.getProviderId();
 
-        DiaryRemoveResponse response = diaryService.removeDiary(memberKey, diaryId);
+        DiaryRemoveResponse response = diaryService.removeDiary(providerId, diaryId);
 
         return ApiResponse.ok(response);
     }
