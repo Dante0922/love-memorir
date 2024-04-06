@@ -125,7 +125,19 @@ public class DiaryService {
     }
 
     public DiaryRemoveResponse removeDiary(final String providerId, final long diaryId) {
-        return null;
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
+
+        Diary diary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
+
+        if (diary.isNotMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        diary.remove();
+
+        return DiaryRemoveResponse.of(diary);
     }
 
     private UploadFile cloudUploadFile(MultipartFile file) {
