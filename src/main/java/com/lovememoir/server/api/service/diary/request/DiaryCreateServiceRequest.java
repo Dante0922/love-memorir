@@ -9,13 +9,15 @@ import java.time.LocalDate;
 public class DiaryCreateServiceRequest {
 
     private final String title;
-    private final boolean isInLove;
-    private final LocalDate relationshipStartedDate;
+    private final boolean isLove;
+    private final LocalDate startedDate;
+    private final LocalDate finishedDate;
 
     @Builder
-    private DiaryCreateServiceRequest(String title, boolean isInLove, LocalDate relationshipStartedDate) {
+    private DiaryCreateServiceRequest(String title, boolean isLove, LocalDate startedDate, LocalDate finishedDate) {
         this.title = title;
-        this.isInLove = isInLove;
-        this.relationshipStartedDate = relationshipStartedDate;
+        this.isLove = isLove;
+        this.startedDate = startedDate;
+        this.finishedDate = finishedDate;
     }
 }

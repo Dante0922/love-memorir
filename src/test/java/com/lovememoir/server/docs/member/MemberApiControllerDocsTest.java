@@ -131,6 +131,7 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
                         .description("멤버 수정 성별 (M 또는 F)"),
                     fieldWithPath("birth").type(JsonFieldType.STRING)
                         .description("멤버 수정 생년월일")
+
                 ),
                 responseFields(
                     fieldWithPath("code").type(JsonFieldType.NUMBER)

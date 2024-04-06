@@ -35,76 +35,14 @@ public class DiaryPageService {
     private final DiaryRepository diaryRepository;
 
     public DiaryPageCreateResponse createDiaryPage(final String memberKey, final Long diaryId, final LocalDateTime currentDateTime, DiaryPageCreateServiceRequest request) {
-        String title = validateTitle(request.getTitle());
-        LocalDate diaryDate = validateDiaryDate(currentDateTime, request.getDiaryDate());
-
-        Diary diary = getMyDiary(memberKey, diaryId);
-
-        DiaryPage savedDiaryPage = saveDiaryPage(request, title, diaryDate, diary);
-
-        return DiaryPageCreateResponse.of(savedDiaryPage);
+        return null;
     }
 
     public DiaryPageModifyResponse modifyDiaryPage(final String memberKey, final Long diaryPageId, final LocalDateTime currentDateTime, DiaryPageModifyServiceRequest request) {
-        String title = validateTitle(request.getTitle());
-        LocalDate diaryDate = validateDiaryDate(currentDateTime, request.getDiaryDate());
-
-        DiaryPage diaryPage = getMyDiaryPage(memberKey, diaryPageId);
-
-        diaryPage.modify(title, request.getContent(), diaryDate);
-
-        return DiaryPageModifyResponse.of(diaryPage);
+        return null;
     }
 
     public DiaryPageRemoveResponse removeDiaryPage(final List<Long> diaryPageId) {
-        List<DiaryPage> diaryPages = diaryPageRepository.findAllByIdIn(diaryPageId);
-
-        for (DiaryPage diaryPage : diaryPages) {
-            diaryPage.remove();
-        }
-
-        return DiaryPageRemoveResponse.of(diaryPages.size());
-    }
-
-    private Member getMember(final String memberKey) {
-        return memberRepository.findByMemberKey(memberKey)
-            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
-    }
-
-    private Diary getDiary(final Long diaryId) {
-        return diaryRepository.findById(diaryId)
-            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
-    }
-
-    private Diary getMyDiary(final String memberKey, final Long diaryId) {
-        final Member member = getMember(memberKey);
-        final Diary diary = getDiary(diaryId);
-
-        if (!diary.isMine(member)) {
-            throw new AuthException(NO_AUTH);
-        }
-
-        return diary;
-    }
-
-    private DiaryPage saveDiaryPage(DiaryPageCreateServiceRequest request, String title, LocalDate diaryDate, Diary diary) {
-        DiaryPage diaryPage = DiaryPage.create(title, request.getContent(), diaryDate, diary);
-        return diaryPageRepository.save(diaryPage);
-    }
-
-    private DiaryPage getDiaryPage(final Long diaryPageId) {
-        return diaryPageRepository.findByIdWithDiary(diaryPageId)
-            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY_PAGE));
-    }
-
-    private DiaryPage getMyDiaryPage(final String memberKey, final Long diaryPageId) {
-        final Member member = getMember(memberKey);
-        final DiaryPage diaryPage = getDiaryPage(diaryPageId);
-
-        if (!diaryPage.getDiary().isMine(member)) {
-            throw new AuthException(NO_AUTH);
-        }
-
-        return diaryPage;
+        return null;
     }
 }

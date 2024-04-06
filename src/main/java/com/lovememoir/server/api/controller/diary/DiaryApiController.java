@@ -8,13 +8,14 @@ import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.DiaryService;
+import com.lovememoir.server.common.auth.SecurityUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 /**
@@ -33,13 +34,12 @@ public class DiaryApiController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<DiaryCreateResponse> createDiary(@Valid @RequestBody DiaryCreateRequest request) {
-        //TODO: 2024-03-26 00:53 dong82 회원 정보 토큰 추출
+        String providerId = SecurityUtils.getProviderId();
 
-        String memberKey = UUID.randomUUID().toString();
+        LocalDate currentDate = LocalDate.now();
 
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        DiaryCreateResponse response = diaryService.createDiary(providerId, currentDate, request.toServiceRequest());
 
-        DiaryCreateResponse response = diaryService.createDiary(memberKey, currentDateTime, request.toServiceRequest());
         return ApiResponse.created(response);
     }
 
@@ -48,35 +48,50 @@ public class DiaryApiController {
         @PathVariable Long diaryId,
         @Valid @RequestBody DiaryModifyRequest request
     ) {
-        //TODO: 2024-03-26 02:19 dong82 회원 정보 토큰 추출
-        String memberKey = UUID.randomUUID().toString();
+        String providerId = SecurityUtils.getProviderId();
 
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDate currentDate = LocalDate.now();
 
-        DiaryModifyResponse response = diaryService.modifyDiary(memberKey, diaryId, currentDateTime, request.toServiceRequest());
+        DiaryModifyResponse response = diaryService.modifyDiary(providerId, diaryId, currentDate, request.toServiceRequest());
 
         return ApiResponse.ok(response);
     }
 
     @PostMapping("/{diaryId}")
-    public ApiResponse<DiaryModifyResponse> modifyDiaryImage(
+    public ApiResponse<DiaryModifyResponse> modifyDiaryProfile(
         @PathVariable Long diaryId,
         @Valid @ModelAttribute DiaryImageModifyRequest request
     ) {
-        //TODO: 2024-03-27 00:23 dong82 회원 정보 토큰 추출
-        String memberKey = UUID.randomUUID().toString();
+        String providerId = SecurityUtils.getProviderId();
 
-        DiaryModifyResponse response = diaryService.modifyDiaryImage(memberKey, diaryId, request.getProfile());
+        DiaryModifyResponse response = diaryService.modifyDiaryProfile(providerId, diaryId, request.getProfile());
+
+        return ApiResponse.ok(response);
+    }
+
+    @PatchMapping("/{diaryId}/store-status")
+    public ApiResponse<DiaryModifyResponse> modifyDiaryStoreStatus(@PathVariable Long diaryId) {
+        String providerId = SecurityUtils.getProviderId();
+
+        DiaryModifyResponse response = diaryService.modifyDiaryStoreStatus(providerId, diaryId);
+
+        return ApiResponse.ok(response);
+    }
+
+    @PatchMapping("/{diaryId}/main-status")
+    public ApiResponse<DiaryModifyResponse> modifyDiaryMainStatus(@PathVariable Long diaryId) {
+        String providerId = SecurityUtils.getProviderId();
+
+        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(providerId, diaryId);
 
         return ApiResponse.ok(response);
     }
 
     @DeleteMapping("/{diaryId}")
     public ApiResponse<DiaryRemoveResponse> removeDiary(@PathVariable Long diaryId) {
-        //TODO: 2024-03-26 10:30 dong82 회원 정보 토큰 추출
-        String memberKey = UUID.randomUUID().toString();
+        String providerId = SecurityUtils.getProviderId();
 
-        DiaryRemoveResponse response = diaryService.removeDiary(memberKey, diaryId);
+        DiaryRemoveResponse response = diaryService.removeDiary(providerId, diaryId);
 
         return ApiResponse.ok(response);
     }
