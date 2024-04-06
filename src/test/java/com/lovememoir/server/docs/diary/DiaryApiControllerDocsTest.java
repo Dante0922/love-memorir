@@ -212,7 +212,7 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
             .title("루이바오와의 연애 기록")
             .build();
 
-        given(diaryService.modifyDiaryImage(anyString(), anyLong(), any()))
+        given(diaryService.modifyDiaryProfile(anyString(), anyLong(), any()))
             .willReturn(response);
 
         mockMvc.perform(

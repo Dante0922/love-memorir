@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateLoveInfo;
@@ -66,7 +65,7 @@ public class DiaryService {
         return DiaryModifyResponse.of(diary);
     }
 
-    public DiaryModifyResponse modifyDiaryImage(final String memberKey, final Long diaryId, final MultipartFile file) {
+    public DiaryModifyResponse modifyDiaryProfile(final String providerId, final long diaryId, final MultipartFile file) {
         return null;
     }
 

@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -66,7 +65,7 @@ public class DiaryApiController {
         //TODO: 2024-03-27 00:23 dong82 회원 정보 토큰 추출
         String memberKey = UUID.randomUUID().toString();
 
-        DiaryModifyResponse response = diaryService.modifyDiaryImage(memberKey, diaryId, request.getProfile());
+        DiaryModifyResponse response = diaryService.modifyDiaryProfile(memberKey, diaryId, request.getProfile());
 
         return ApiResponse.ok(response);
     }

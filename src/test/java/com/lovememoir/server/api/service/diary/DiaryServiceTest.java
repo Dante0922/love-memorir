@@ -12,6 +12,7 @@ import com.lovememoir.server.domain.auth.ProviderType;
 import com.lovememoir.server.domain.auth.repository.AuthRepository;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.LoveInfo;
+import com.lovememoir.server.domain.diary.UploadFile;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.enumerate.Gender;
@@ -19,9 +20,12 @@ import com.lovememoir.server.domain.member.enumerate.RoleType;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -29,6 +33,7 @@ import static com.lovememoir.server.common.message.ExceptionMessage.NO_AUTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
 
 class DiaryServiceTest extends IntegrationTestSupport {
 
@@ -143,6 +148,73 @@ class DiaryServiceTest extends IntegrationTestSupport {
             .hasFieldOrPropertyWithValue("pageCount", 0)
             .hasFieldOrPropertyWithValue("profile.uploadFileName", null)
             .hasFieldOrPropertyWithValue("profile.storeFileUrl", null)
+            .hasFieldOrPropertyWithValue("isStored", false);
+    }
+
+    @DisplayName("일기장 프로필 이미지 수정 시 본인의 일기장이 아니라면 예외가 발생한다.")
+    @Test
+    void modifyDiaryProfileWithoutAuth() {
+        //given
+        Member member = createMember();
+        Auth auth = createAuth(member, "1234567890");
+        Diary diary = createDiary(member);
+
+        MockMultipartFile file = new MockMultipartFile(
+            "profile",
+            "diary-profile-upload-image.jpg",
+            "image/jpg",
+            "image data".getBytes()
+        );
+
+        Member otherMember = createMember();
+        Auth otherAuth = createAuth(otherMember, "0987654321");
+
+        //when //then
+        assertThatThrownBy(() -> diaryService.modifyDiaryProfile(otherAuth.getProviderId(), diary.getId(), file))
+            .isInstanceOf(AuthException.class)
+            .hasMessage(NO_AUTH);
+    }
+
+    @DisplayName("회원 정보와 일기장 정보를 입력 받아 일기장 프로필 이미지를 수정한다.")
+    @Test
+    void modifyDiaryProfile() throws IOException {
+        //given
+        Member member = createMember();
+        Auth auth = createAuth(member, "1234567890");
+        Diary diary = createDiary(member);
+
+        MockMultipartFile file = new MockMultipartFile(
+            "profile",
+            "diary-profile-upload-image.jpg",
+            "image/jpg",
+            "image data".getBytes()
+        );
+
+        UploadFile uploadFile = UploadFile.builder()
+            .uploadFileName("diary-profile-upload-image.jpg")
+            .storeFileUrl("diary-profile-store-image.jpg")
+            .build();
+
+        given(fileStore.storeFile(any()))
+            .willReturn(uploadFile);
+
+        //when
+        DiaryModifyResponse response = diaryService.modifyDiaryProfile(auth.getProviderId(), diary.getId(), file);
+
+        //then
+        assertThat(response).isNotNull();
+
+        Optional<Diary> findDiary = diaryRepository.findById(response.getDiaryId());
+        assertThat(findDiary).isPresent();
+        assertThat(findDiary.get())
+            .hasFieldOrPropertyWithValue("isMain", false)
+            .hasFieldOrPropertyWithValue("title", "후이바오")
+            .hasFieldOrPropertyWithValue("loveInfo.isLove", false)
+            .hasFieldOrPropertyWithValue("loveInfo.startedDate", null)
+            .hasFieldOrPropertyWithValue("loveInfo.finishedDate", null)
+            .hasFieldOrPropertyWithValue("pageCount", 0)
+            .hasFieldOrPropertyWithValue("profile.uploadFileName", "diary-profile-upload-image.jpg")
+            .hasFieldOrPropertyWithValue("profile.storeFileUrl", "diary-profile-store-image.jpg")
             .hasFieldOrPropertyWithValue("isStored", false);
     }
 
