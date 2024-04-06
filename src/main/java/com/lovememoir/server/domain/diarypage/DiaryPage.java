@@ -23,30 +23,30 @@ public class DiaryPage extends BaseTimeEntity {
     @Column(name = "diary_page_id")
     private Long id;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 20)
     private String title;
 
     @Lob
     @Column(nullable = false, columnDefinition = "text")
     private String content;
 
-    @Column(nullable = false)
-    private LocalDate diaryDate;
+    @Column(nullable = false, columnDefinition = "date")
+    private LocalDate recordDate;
 
     @Embedded
-    private AnalysisResult analysisResult;
+    private AnalysisResult analysis;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
     @Builder
-    private DiaryPage(boolean isDeleted, String title, String content, LocalDate diaryDate, AnalysisResult analysisResult, Diary diary) {
+    private DiaryPage(boolean isDeleted, String title, String content, LocalDate recordDate, AnalysisResult analysis, Diary diary) {
         super(isDeleted);
         this.title = title;
         this.content = content;
-        this.diaryDate = diaryDate;
-        this.analysisResult = analysisResult;
+        this.recordDate = recordDate;
+        this.analysis = analysis;
         this.diary = diary;
     }
 }
