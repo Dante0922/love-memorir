@@ -6,12 +6,17 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.lovememoir.server.common.message.ValidationMessage.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class DiaryPageCreateRequest {
 
@@ -21,20 +26,25 @@ public class DiaryPageCreateRequest {
     @NotBlank(message = NOT_BLANK_DIARY_PAGE_CONTENT)
     private String content;
 
-    @NotNull(message = NOT_BLANK_DIARY_PAGE_DATE)
-    private LocalDate diaryDate;
+    @NotNull(message = NOT_NULL_DIARY_PAGE_DATE)
+    private LocalDate recordDate;
+
+    private List<MultipartFile> images = new ArrayList<>();
 
     @Builder
-    private DiaryPageCreateRequest(String title, String content, LocalDate diaryDate) {
+    private DiaryPageCreateRequest(String title, String content, LocalDate recordDate, List<MultipartFile> images) {
         this.title = title;
         this.content = content;
-        this.diaryDate = diaryDate;
+        this.recordDate = recordDate;
+        this.images = images;
     }
 
     public DiaryPageCreateServiceRequest toServiceRequest() {
         return DiaryPageCreateServiceRequest.builder()
             .title(title)
             .content(content)
+            .recordDate(recordDate)
+            .images(images)
             .build();
     }
 }

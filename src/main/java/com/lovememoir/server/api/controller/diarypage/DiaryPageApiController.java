@@ -8,6 +8,7 @@ import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateRe
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
 import com.lovememoir.server.api.service.diarypage.DiaryPageService;
+import com.lovememoir.server.common.auth.SecurityUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,14 +34,13 @@ public class DiaryPageApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<DiaryPageCreateResponse> createDiaryPage(
         @PathVariable Long diaryId,
-        @Valid @RequestBody DiaryPageCreateRequest request
+        @Valid @ModelAttribute DiaryPageCreateRequest request
     ) {
-        //TODO: 2024-03-26 14:40 dong82 회원 정보 토큰 추출
-        String memberKey = UUID.randomUUID().toString();
+        String providerId = SecurityUtils.getProviderId();
 
         LocalDate currentDate = LocalDate.now();
 
-        DiaryPageCreateResponse response = diaryPageService.createDiaryPage(memberKey, diaryId, currentDate, request.toServiceRequest());
+        DiaryPageCreateResponse response = diaryPageService.createDiaryPage(providerId, diaryId, currentDate, request.toServiceRequest());
 
         return ApiResponse.created(response);
     }

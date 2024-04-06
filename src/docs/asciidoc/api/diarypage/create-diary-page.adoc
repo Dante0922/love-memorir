@@ -6,7 +6,7 @@
 include::{snippets}/create-diary-page/http-request.adoc[]
 include::{snippets}/create-diary-page/request-headers.adoc[]
 include::{snippets}/create-diary-page/path-parameters.adoc[]
-include::{snippets}/create-diary-page/request-fields.adoc[]
+include::{snippets}/create-diary-page/request-parts.adoc[]
 
 ==== HTTP Response
 

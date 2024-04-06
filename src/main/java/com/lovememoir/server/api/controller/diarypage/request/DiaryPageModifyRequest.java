@@ -21,7 +21,7 @@ public class DiaryPageModifyRequest {
     @NotBlank(message = NOT_BLANK_DIARY_PAGE_CONTENT)
     private String content;
 
-    @NotNull(message = NOT_BLANK_DIARY_PAGE_DATE)
+    @NotNull(message = NOT_NULL_DIARY_PAGE_DATE)
     private LocalDate diaryDate;
 
     @Builder
