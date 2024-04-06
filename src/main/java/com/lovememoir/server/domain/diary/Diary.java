@@ -51,4 +51,17 @@ public class Diary extends BaseTimeEntity {
         this.isStored = isStored;
         this.member = member;
     }
+
+    public static Diary create(String title, LoveInfo loveInfo, Member member) {
+        return Diary.builder()
+            .isDeleted(false)
+            .isMain(false)
+            .title(title)
+            .loveInfo(loveInfo)
+            .pageCount(0)
+            .profile(null)
+            .isStored(false)
+            .member(member)
+            .build();
+    }
 }

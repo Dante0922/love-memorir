@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -37,9 +38,9 @@ public class DiaryApiController {
 
         String providerId = UUID.randomUUID().toString();
 
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDate currentDate = LocalDate.now();
 
-        DiaryCreateResponse response = diaryService.createDiary(providerId, currentDateTime, request.toServiceRequest());
+        DiaryCreateResponse response = diaryService.createDiary(providerId, currentDate, request.toServiceRequest());
         return ApiResponse.created(response);
     }
 

@@ -59,7 +59,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
     @Test
     void createDiary() {
         //given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 1, 1, 0, 0);
+        LocalDate currentDate = LocalDate.of(2024, 1, 1);
 
         Member member = createMember();
         Auth auth = createAuth(member);
@@ -72,7 +72,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        DiaryCreateResponse response = diaryService.createDiary(auth.getProviderId(), currentDateTime, request);
+        DiaryCreateResponse response = diaryService.createDiary(auth.getProviderId(), currentDate, request);
 
         //then
         assertThat(response).isNotNull();
