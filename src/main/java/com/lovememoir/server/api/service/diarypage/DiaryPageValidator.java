@@ -5,12 +5,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.lovememoir.server.common.message.ValidationMessage.IS_FUTURE_DATE;
-import static com.lovememoir.server.common.message.ValidationMessage.MAX_LENGTH_DIARY_PAGE_TITLE;
+import static com.lovememoir.server.common.message.ValidationMessage.*;
 
 public abstract class DiaryPageValidator {
 
     private static final int TITLE_MAXIMUM_LENGTH = 20;
+    private static final int IMAGE_MAXIMUM_COUNT = 3;
 
     public static String validateTitle(String title) {
         title = title.strip();
@@ -30,6 +30,9 @@ public abstract class DiaryPageValidator {
     }
 
     public static List<MultipartFile> validateImageCount(List<MultipartFile> images) {
-        return null;
+        if (images.size() > IMAGE_MAXIMUM_COUNT) {
+            throw new IllegalArgumentException(MAX_COUNT_IMAGES);
+        }
+        return images;
     }
 }
