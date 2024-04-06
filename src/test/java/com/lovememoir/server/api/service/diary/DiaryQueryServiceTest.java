@@ -80,7 +80,7 @@ class DiaryQueryServiceTest extends IntegrationTestSupport {
             .providerId("0123456789")
             .accessToken("access.token")
             .refreshToken("refresh.token")
-            .expiredAt(null)
+            .expiredDateTime(null)
             .member(member)
             .build();
         return authRepository.save(auth);

@@ -14,7 +14,7 @@ public class WithAuthUserSecurityContextFactory implements WithSecurityContextFa
     @Override
     public SecurityContext createSecurityContext(WithAuthUser annotation) {
         String providerId = annotation.providerId();
-        String role = annotation.role();
+        String role = annotation.roles();
         User principal = new User(providerId, "", List.of(new SimpleGrantedAuthority(role)));
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(principal, "password", List.of(new SimpleGrantedAuthority(role)));

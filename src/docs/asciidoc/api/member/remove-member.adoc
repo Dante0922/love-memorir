@@ -5,7 +5,6 @@
 
 include::{snippets}/remove-member/http-request.adoc[]
 include::{snippets}/remove-member/request-headers.adoc[]
-include::{snippets}/remove-member/path-parameters.adoc[]
 
 ==== HTTP Response
 

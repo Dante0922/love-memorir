@@ -393,7 +393,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
             .providerId(providerId)
             .accessToken("access.token")
             .refreshToken("refresh.token")
-            .expiredAt(null)
+            .expiredDateTime(null)
             .member(member)
             .build();
         return authRepository.save(auth);

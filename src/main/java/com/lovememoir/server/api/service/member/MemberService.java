@@ -36,32 +36,17 @@ public class MemberService {
         String nickname = validateNickname(request.getNickname());
         Gender gender = Gender.valueOf(request.getGender());
         Auth currentAuth = authQueryRepository.findByProviderId(request.getProviderId());
-        Member member = memberQueryRepository.findByProviderId(request.getProviderId());
 
-        if (member != null) {
-            throw new IllegalArgumentException(ALREADY_REGISTERED_USER);
-        }
+        validateDuplicateMember(request.getProviderId());
 
-        Member newMember = Member.builder()
-            .nickname(nickname)
-            .email(request.getEmail())
-            .gender(gender)
-            .birth(request.getBirth())
-            .roleType(RoleType.USER)
-            .auth(currentAuth)
-            .build();
+        Member savedMember = saveMember(nickname, gender, request.getBirth(), RoleType.USER, currentAuth);
 
-        Member createdMember = memberRepository.save(newMember);
-        return MemberCreateResponse.of(createdMember);
+        return MemberCreateResponse.of(savedMember);
     }
 
     public MemberModifyResponse modifyMember(MemberModifyServiceRequest request) {
         Auth currentAuth = authQueryRepository.findByProviderId(request.getProviderId());
-        Member member = memberQueryRepository.findByProviderId(request.getProviderId());
-
-        if (member == null) {
-            throw new IllegalArgumentException(USER_NOT_FOUND);
-        }
+        Member member = validateMemberExistence(request.getProviderId());
 
         String nickname = validateNickname(request.getNickname());
         String birth = request.getBirth();
@@ -70,6 +55,33 @@ public class MemberService {
         member.modify(nickname, birth, gender);
 
         return MemberModifyResponse.of(member);
+    }
+
+    private void validateDuplicateMember(String providerId) {
+        Member member = memberQueryRepository.findByProviderId(providerId);
+        if (member != null) {
+            throw new IllegalArgumentException(ALREADY_REGISTERED_USER);
+        }
+    }
+
+    private Member validateMemberExistence(String providerId) {
+        Member member = memberQueryRepository.findByProviderId(providerId);
+        if (member == null) {
+            throw new IllegalArgumentException(USER_NOT_FOUND);
+        }
+        return member;
+    }
+
+    private Member saveMember(String nickname, Gender gender, String birth, RoleType roleType, Auth auth) {
+        final Member member = Member.builder()
+            .nickname(nickname)
+            .gender(gender)
+            .birth(birth)
+            .roleType(roleType)
+            .auth(auth)
+            .build();
+        return memberRepository.save(member);
+
     }
 }
 
