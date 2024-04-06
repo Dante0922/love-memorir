@@ -27,4 +27,8 @@ public class LoveInfo {
         this.startedDate = startedDate;
         this.finishedDate = finishedDate;
     }
+
+    public static LoveInfo create(boolean isLove, LocalDate startedDate, LocalDate finishedDate) {
+        return new LoveInfo(isLove, startedDate, finishedDate);
+    }
 }
