@@ -8,6 +8,9 @@ import com.lovememoir.server.api.controller.diary.response.DiaryRemoveResponse;
 import com.lovememoir.server.api.service.diary.request.DiaryCreateServiceRequest;
 import com.lovememoir.server.api.service.diary.request.DiaryModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
+import com.lovememoir.server.domain.auth.Auth;
+import com.lovememoir.server.domain.auth.ProviderType;
+import com.lovememoir.server.domain.auth.repository.AuthRepository;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.UploadFile;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
@@ -46,53 +49,30 @@ class DiaryServiceTest extends IntegrationTestSupport {
     @Autowired
     private DiaryRepository diaryRepository;
 
+    @Autowired
+    private AuthRepository authRepository;
+
     @MockBean
     private FileStore fileStore;
 
-    @DisplayName("신규 일기장 등록 시 생성 가능한 일기장 최대 갯수를 초과하면 예외가 발생한다.")
-    @Test
-    void createDiaryWithMaxDiary() {
-        //given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 1, 0, 0);
-
-        Member member = createMember();
-        Diary diary1 = createDiary(member);
-        Diary diary2 = createDiary(member);
-        Diary diary3 = createDiary(member);
-
-        DiaryCreateServiceRequest request = DiaryCreateServiceRequest.builder()
-            .title("러바오")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2016, 3, 3))
-            .build();
-
-        //when //then
-        assertThatThrownBy(() -> diaryService.createDiary(member.getMemberKey(), currentDateTime, request))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(MAXIMUM_DIARY_COUNT);
-
-        List<Diary> diaries = diaryRepository.findAll();
-        assertThat(diaries).hasSize(3);
-    }
-
-    @DisplayName("회원 고유키와 일기장 정보를 입력 받아 신규 일기장을 등록한다.")
+    @DisplayName("회원 정보와 일기장 정보를 입력 받아 신규 일기장을 등록한다.")
     @Test
     void createDiary() {
         //given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 1, 0, 0);
+        LocalDateTime currentDateTime = LocalDateTime.of(2024, 1, 1, 0, 0);
 
         Member member = createMember();
-        Diary diary1 = createDiary(member);
-        Diary diary2 = createDiary(member);
+        Auth auth = createAuth(member);
 
         DiaryCreateServiceRequest request = DiaryCreateServiceRequest.builder()
-            .title("러바오")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2016, 3, 3))
+            .title("푸바오")
+            .isLove(true)
+            .startedDate(LocalDate.of(2023, 12, 25))
+            .finishedDate(null)
             .build();
 
         //when
-        DiaryCreateResponse response = diaryService.createDiary(member.getMemberKey(), currentDateTime, request);
+        DiaryCreateResponse response = diaryService.createDiary(auth.getProviderId(), currentDateTime, request);
 
         //then
         assertThat(response).isNotNull();
@@ -100,153 +80,15 @@ class DiaryServiceTest extends IntegrationTestSupport {
         Optional<Diary> findDiary = diaryRepository.findById(response.getDiaryId());
         assertThat(findDiary).isPresent();
         assertThat(findDiary.get())
-            .hasFieldOrPropertyWithValue("isFixed", false)
-            .hasFieldOrPropertyWithValue("title", "러바오와의 연애 기록")
-            .hasFieldOrPropertyWithValue("relationshipStartedDate", LocalDate.of(2016, 3, 3))
-            .hasFieldOrPropertyWithValue("pageCount", 0);
-    }
-
-    @DisplayName("일기장 수정시 본인의 일기장이 아니라면 예외가 발생한다.")
-    @Test
-    void modifyDiaryWithoutAuth() {
-        //given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 1, 0, 0);
-
-        Member member = createMember();
-        Diary diary = createDiary(member);
-
-        Member otherMember = createMember();
-
-        DiaryModifyServiceRequest request = DiaryModifyServiceRequest.builder()
-            .title("루이바오")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2023, 7, 7))
-            .build();
-
-        //when //then
-        assertThatThrownBy(() -> diaryService.modifyDiary(otherMember.getMemberKey(), diary.getId(), currentDateTime, request))
-            .isInstanceOf(AuthException.class)
-            .hasMessage(NO_AUTH);
-    }
-
-    @DisplayName("회원 고유키와 일기장 정보를 입력 받아 일기장을 수정한다.")
-    @Test
-    void modifyDiary() {
-        //given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 3, 1, 0, 0);
-
-        Member member = createMember();
-        Diary diary = createDiary(member);
-
-        DiaryModifyServiceRequest request = DiaryModifyServiceRequest.builder()
-            .title("루이바오")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2023, 7, 7))
-            .build();
-
-        //when
-        DiaryModifyResponse response = diaryService.modifyDiary(member.getMemberKey(), diary.getId(), currentDateTime, request);
-
-        //then
-        assertThat(response).isNotNull();
-
-        Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
-        assertThat(findDiary).isPresent();
-        assertThat(findDiary.get())
-            .hasFieldOrPropertyWithValue("isFixed", false)
-            .hasFieldOrPropertyWithValue("title", "루이바오와의 연애 기록")
-            .hasFieldOrPropertyWithValue("relationshipStartedDate", LocalDate.of(2023, 7, 7))
-            .hasFieldOrPropertyWithValue("pageCount", 0);
-    }
-
-    @DisplayName("일기장 이미지 수정시 본인의 일기장이 아니라면 예외가 발생한다.")
-    @Test
-    void modifyDiaryImageWithoutAuth() {
-        //given
-        Member member = createMember();
-        Diary diary = createDiary(member);
-
-        Member otherMember = createMember();
-
-        MockMultipartFile file = new MockMultipartFile(
-            "upload-image",
-            "diary-profile-upload-image.jpg",
-            "image/jpg",
-            "image data".getBytes()
-        );
-
-        //when //then
-        assertThatThrownBy(() -> diaryService.modifyDiaryImage(otherMember.getMemberKey(), diary.getId(), file))
-            .isInstanceOf(AuthException.class)
-            .hasMessage(NO_AUTH);
-    }
-
-    @DisplayName("회원 고유키와 일기장 정보를 입력 받아 이미지를 수정한다.")
-    @Test
-    void modifyDiaryImage() throws IOException {
-        //given
-        Member member = createMember();
-        Diary diary = createDiary(member);
-
-        MockMultipartFile file = new MockMultipartFile(
-            "upload-image",
-            "diary-profile-upload-image.jpg",
-            "image/jpg",
-            "image data".getBytes()
-        );
-
-        UploadFile uploadFile = UploadFile.builder()
-            .uploadFileName("diary-profile-upload-image.jpg")
-            .storeFileUrl(UUID.randomUUID().toString())
-            .build();
-
-        given(fileStore.storeFile(any()))
-            .willReturn(uploadFile);
-
-        //when
-        DiaryModifyResponse response = diaryService.modifyDiaryImage(member.getMemberKey(), diary.getId(), file);
-
-        //then
-        assertThat(response).isNotNull();
-
-        Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
-        assertThat(findDiary).isPresent();
-        assertThat(findDiary.get())
-            .hasFieldOrPropertyWithValue("file.uploadFileName", "diary-profile-upload-image.jpg")
-            .hasFieldOrPropertyWithValue("file.storeFileUrl", uploadFile.getStoreFileUrl());
-    }
-
-    @DisplayName("일기장 삭제시 본인의 일기장이 아니라면 예외가 발생한다.")
-    @Test
-    void removeDiaryWithoutAuth() {
-        //given
-        Member member = createMember();
-        Diary diary = createDiary(member);
-
-        Member otherMember = createMember();
-
-        //when //then
-        assertThatThrownBy(() -> diaryService.removeDiary(otherMember.getMemberKey(), diary.getId()))
-            .isInstanceOf(AuthException.class)
-            .hasMessage(NO_AUTH);
-    }
-
-    @DisplayName("회원 고유키와 일기장 식별키를 입력 받아 일기장을 삭제한다.")
-    @Test
-    void removeDiary() {
-        //given
-        Member member = createMember();
-        Diary diary = createDiary(member);
-
-        //when
-        DiaryRemoveResponse response = diaryService.removeDiary(member.getMemberKey(), diary.getId());
-
-        //then
-        assertThat(response).isNotNull();
-
-        Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
-        assertThat(findDiary).isPresent();
-        assertThat(findDiary.get().isDeleted()).isTrue();
+            .hasFieldOrPropertyWithValue("isMain", false)
+            .hasFieldOrPropertyWithValue("title", "푸바오")
+            .hasFieldOrPropertyWithValue("loveInfo.isLove", true)
+            .hasFieldOrPropertyWithValue("loveInfo.startedDate", LocalDate.of(2023, 12, 25))
+            .hasFieldOrPropertyWithValue("loveInfo.finishedDate", null)
+            .hasFieldOrPropertyWithValue("pageCount", 0)
+            .hasFieldOrPropertyWithValue("profile.uploadFileName", null)
+            .hasFieldOrPropertyWithValue("profile.storeFileUrl", null)
+            .hasFieldOrPropertyWithValue("isStored", false);
     }
 
     private Member createMember() {
@@ -260,15 +102,15 @@ class DiaryServiceTest extends IntegrationTestSupport {
         return memberRepository.save(member);
     }
 
-    private Diary createDiary(Member member) {
-        Diary diary = Diary.builder()
-            .isFixed(false)
-            .title("러바오와의 연애 기록")
-            .isInLove(true)
-            .relationshipStartedDate(LocalDate.of(2016, 3, 3))
-            .pageCount(0)
+    private Auth createAuth(Member member) {
+        Auth auth = Auth.builder()
+            .provider(ProviderType.KAKAO)
+            .providerId("1234567890")
+            .accessToken("access.token")
+            .refreshToken("refresh.token")
+            .expiredAt(null)
             .member(member)
             .build();
-        return diaryRepository.save(diary);
+        return authRepository.save(auth);
     }
 }

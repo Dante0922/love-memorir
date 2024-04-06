@@ -22,30 +22,6 @@ public class DiaryQueryRepository {
     }
 
     public List<DiarySearchResponse> findByMemberKey(final String memberKey, final boolean mainOnly) {
-        return queryFactory
-            .select(
-                Projections.fields(
-                    DiarySearchResponse.class,
-                    diary.id.as("diaryId"),
-                    diary.isFixed.as("isMain"),
-                    diary.title,
-                    diary.file.storeFileUrl.as("profileImage"),
-                    diary.pageCount,
-                    diary.relationshipStartedDate
-                )
-            )
-            .from(diary)
-            .join(diary.member, member)
-            .where(
-                diary.isDeleted.isFalse(),
-                member.memberKey.eq(memberKey),
-                isFixedIsTrue(mainOnly)
-            )
-            .orderBy(diary.createdDateTime.desc())
-            .fetch();
-    }
-
-    private BooleanExpression isFixedIsTrue(final boolean mainOnly) {
-        return mainOnly ? diary.isFixed.isTrue() : null;
+        return null;
     }
 }

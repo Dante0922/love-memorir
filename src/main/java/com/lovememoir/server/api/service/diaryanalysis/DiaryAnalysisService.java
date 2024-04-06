@@ -54,6 +54,6 @@ public class DiaryAnalysisService {
 
         DiaryAnalysis maxWeightEmotion = savedDiaryAnalyses.get(0);
 
-        diaryPage.successAnalysis(maxWeightEmotion.getEmotionCode());
+//        diaryPage.successAnalysis(maxWeightEmotion.getEmotionCode());
     }
 }

@@ -8,8 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,64 +19,36 @@ public class Diary extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false, columnDefinition = "boolean default false")
-    private boolean isFixed;
+    private boolean isMain;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 8)
     private String title;
 
-    @Column(nullable = false)
-    private Boolean isInLove;
-
-    private LocalDate relationshipStartedDate;
+    @Embedded
+    private LoveInfo loveInfo;
 
     @Column(nullable = false, columnDefinition = "int default 0")
     private int pageCount;
 
     @Embedded
-    private UploadFile file;
+    private UploadFile profile;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isStored;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
-    private Diary(boolean isDeleted, boolean isFixed, String title, Boolean isInLove, LocalDate relationshipStartedDate, int pageCount, UploadFile file, Member member) {
+    private Diary(boolean isDeleted, boolean isMain, String title, LoveInfo loveInfo, int pageCount, UploadFile profile, boolean isStored, Member member) {
         super(isDeleted);
-        this.isFixed = isFixed;
+        this.isMain = isMain;
         this.title = title;
-        this.isInLove = isInLove;
-        this.relationshipStartedDate = relationshipStartedDate;
+        this.loveInfo = loveInfo;
         this.pageCount = pageCount;
-        this.file = file;
+        this.profile = profile;
+        this.isStored = isStored;
         this.member = member;
-    }
-
-    public static Diary create(String title, boolean inLove, LocalDate relationshipStartedDate, Member member) {
-        return Diary.builder()
-            .isFixed(false)
-            .title(title)
-            .isInLove(inLove)
-            .relationshipStartedDate(relationshipStartedDate)
-            .pageCount(0)
-            .member(member)
-            .build();
-    }
-
-    public void modify(String title, boolean inLove, LocalDate relationshipStartedDate) {
-        this.title = title;
-        this.isInLove = inLove;
-        this.relationshipStartedDate = relationshipStartedDate;
-    }
-
-    public void modifyFile(UploadFile file) {
-        this.file = file;
-    }
-
-    public boolean isMine(Member member) {
-        return this.member.getId().equals(member.getId());
-    }
-
-    public void increasePageCount() {
-        pageCount += 1;
     }
 }

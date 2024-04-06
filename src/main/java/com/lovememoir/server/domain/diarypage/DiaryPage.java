@@ -49,26 +49,4 @@ public class DiaryPage extends BaseTimeEntity {
         this.analysisResult = analysisResult;
         this.diary = diary;
     }
-
-    public static DiaryPage create(String title, String content, LocalDate diaryDate, Diary diary) {
-        diary.increasePageCount();
-
-        return DiaryPage.builder()
-            .title(title)
-            .content(content)
-            .diaryDate(diaryDate)
-            .analysisResult(init())
-            .diary(diary)
-            .build();
-    }
-
-    public void modify(String title, String content, LocalDate diaryDate) {
-        this.title = title;
-        this.content = content;
-        this.diaryDate = diaryDate;
-    }
-
-    public void successAnalysis(int emotionCode) {
-        analysisResult = success(emotionCode);
-    }
 }

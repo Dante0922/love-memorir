@@ -32,10 +32,6 @@ public class DiaryCreateRequest {
     }
 
     public DiaryCreateServiceRequest toServiceRequest() {
-        return DiaryCreateServiceRequest.builder()
-            .title(title)
-            .isInLove(isInLove)
-            .relationshipStartedDate(relationshipStartedDate)
-            .build();
+        return null;
     }
 }

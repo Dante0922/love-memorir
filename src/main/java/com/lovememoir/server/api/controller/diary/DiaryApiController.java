@@ -35,11 +35,11 @@ public class DiaryApiController {
     public ApiResponse<DiaryCreateResponse> createDiary(@Valid @RequestBody DiaryCreateRequest request) {
         //TODO: 2024-03-26 00:53 dong82 회원 정보 토큰 추출
 
-        String memberKey = UUID.randomUUID().toString();
+        String providerId = UUID.randomUUID().toString();
 
         LocalDateTime currentDateTime = LocalDateTime.now();
 
-        DiaryCreateResponse response = diaryService.createDiary(memberKey, currentDateTime, request.toServiceRequest());
+        DiaryCreateResponse response = diaryService.createDiary(providerId, currentDateTime, request.toServiceRequest());
         return ApiResponse.created(response);
     }
 
