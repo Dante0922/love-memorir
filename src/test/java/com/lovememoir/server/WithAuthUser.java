@@ -10,5 +10,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @WithSecurityContext(factory = WithAuthUserSecurityContextFactory.class)
 public @interface WithAuthUser {
     String providerId() default "1234567890";
-    String role() default "USER";
+    String roles() default "USER";
 }

@@ -17,6 +17,9 @@ public class MemberQueryRepository {
 
     @Transactional(readOnly = true)
     public Member findByProviderId(String id) {
+        if (id == null) {
+            return null;
+        }
         return jpaQueryFactory
             .select(auth.member)
             .from(auth)

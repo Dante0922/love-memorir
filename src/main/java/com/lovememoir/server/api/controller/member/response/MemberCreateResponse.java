@@ -20,4 +20,5 @@ public class MemberCreateResponse {
             .nickname(member.getNickname())
             .build();
     }
+
 }

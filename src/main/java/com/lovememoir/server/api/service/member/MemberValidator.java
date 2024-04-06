@@ -9,22 +9,18 @@ public abstract class MemberValidator {
     private static final String NICKNAME_PATTERN = "[가-힣0-9]+$";
 
     public static String validateNickname(String nickname) {
-        String strippedNickname = removeSpace(nickname);
 
-        if (isNicknameLengthGraterThan(strippedNickname)) {
+        if (isNicknameLengthGraterThan(nickname)) {
             throw new IllegalArgumentException(MAX_LENGTH_NICKNAME);
         }
 
-        if (!isValidNicknamePattern(strippedNickname)) {
+        if (!isValidNicknamePattern(nickname)) {
             throw new IllegalArgumentException(INVALID_NICKNAME_PATTERN);
         }
 
-        return strippedNickname;
+        return nickname;
     }
 
-    private static String removeSpace(final String text) {
-        return text.strip();
-    }
 
     private static boolean isNicknameLengthGraterThan(final String nickname) {
         return nickname.length() > NICKNAME_MAXIMUM_LENGTH;

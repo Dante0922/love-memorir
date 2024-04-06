@@ -17,6 +17,10 @@ public class AuthQueryRepository {
 
     @Transactional(readOnly = true)
     public Auth findByProviderId(String id) {
+        if (id == null) {
+            return null;
+        }
+
         return jpaQueryFactory
             .select(auth)
             .from(auth)
