@@ -67,6 +67,44 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
     @MockBean
     private FileStore fileStore;
 
+    @DisplayName("신규 일기 등록 시 본인의 일기장이 아니라면 예외가 발생한다.")
+    @Test
+    void createDiaryPageWithoutAuth() throws IOException {
+        //given
+        LocalDate currentDate = LocalDate.of(2024, 4, 6);
+
+        Member member = createMember();
+        Auth auth = createAuth(member);
+        Diary diary = createDiary(member);
+        MockMultipartFile image1 = new MockMultipartFile(
+            "image",
+            "diary-page-attached-image1.jpg",
+            "image/jpg",
+            "image data".getBytes()
+        );
+        MockMultipartFile image2 = new MockMultipartFile(
+            "image",
+            "diary-page-attached-image2.jpg",
+            "image/jpg",
+            "image data".getBytes()
+        );
+
+        DiaryPageCreateServiceRequest request = DiaryPageCreateServiceRequest.builder()
+            .title("푸바오가 출국한 날")
+            .content("푸바오가 오늘 중국으로 출국했다...")
+            .recordDate(LocalDate.of(2024, 4, 3))
+            .images(List.of(image1, image2))
+            .build();
+
+        Member otherMember = createMember();
+        Auth otherAuth = createAuth(otherMember);
+
+        //when //then
+        assertThatThrownBy(() -> diaryPageService.createDiaryPage(otherAuth.getProviderId(), diary.getId(), currentDate, request))
+            .isInstanceOf(AuthException.class)
+            .hasMessage(NO_AUTH);
+    }
+
     @DisplayName("회원 정보와 일기 정보를 입력 받아 신규 일기를 등록한다.")
     @Test
     void createDiaryPage() throws IOException {
