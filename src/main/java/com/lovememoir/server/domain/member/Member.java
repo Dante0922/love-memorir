@@ -67,10 +67,9 @@ public class Member extends BaseTimeEntity {
         }
     }
 
-    public static Member create(String nickname, String memberKey, String email, Gender gender, String birth, RoleType roleType, Auth auth) {
+    public static Member create(String nickname, Gender gender, String birth, RoleType roleType, Auth auth) {
         return Member.builder()
             .nickname(nickname)
-            .email(email)
             .gender(gender)
             .birth(birth)
             .roleType(roleType)

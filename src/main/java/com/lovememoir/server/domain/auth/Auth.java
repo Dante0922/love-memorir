@@ -17,6 +17,7 @@ public class Auth extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "auth_id")
     public Long id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -33,26 +34,26 @@ public class Auth extends BaseTimeEntity {
 
     private String refreshToken;
 
-    private LocalDateTime expiredAt;
+    private LocalDateTime expiredDateTime;
 
     @Builder
-    private Auth(Member member, ProviderType provider, String providerId, String accessToken, String refreshToken, LocalDateTime expiredAt) {
+    private Auth(Member member, ProviderType provider, String providerId, String accessToken, String refreshToken, LocalDateTime expiredDateTime) {
         this.member = member;
         this.provider = provider;
         this.providerId = providerId;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.expiredAt = expiredAt;
+        this.expiredDateTime = expiredDateTime;
     }
 
-    public static Auth create(Member member, ProviderType provider, String providerId, String accessToken, String refreshToken, LocalDateTime expiredAt) {
+    public static Auth create(Member member, ProviderType provider, String providerId, String accessToken, String refreshToken, LocalDateTime expiredDateTime) {
         return Auth.builder()
             .member(member)
             .provider(provider)
             .providerId(providerId)
             .accessToken(accessToken)
             .refreshToken(refreshToken)
-            .expiredAt(expiredAt)
+            .expiredDateTime(expiredDateTime)
             .build();
     }
 
