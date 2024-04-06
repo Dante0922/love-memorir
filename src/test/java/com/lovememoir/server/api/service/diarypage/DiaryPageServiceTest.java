@@ -69,7 +69,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
 
     @DisplayName("신규 일기 등록 시 본인의 일기장이 아니라면 예외가 발생한다.")
     @Test
-    void createDiaryPageWithoutAuth() throws IOException {
+    void createDiaryPageWithoutAuth() {
         //given
         LocalDate currentDate = LocalDate.of(2024, 4, 6);
 
@@ -103,6 +103,12 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> diaryPageService.createDiaryPage(otherAuth.getProviderId(), diary.getId(), currentDate, request))
             .isInstanceOf(AuthException.class)
             .hasMessage(NO_AUTH);
+
+        List<DiaryPage> diaryPages = diaryPageRepository.findAll();
+        assertThat(diaryPages).isEmpty();
+
+        List<AttachedImage> attachedImages = attachedImageRepository.findAll();
+        assertThat(attachedImages).isEmpty();
     }
 
     @DisplayName("회원 정보와 일기 정보를 입력 받아 신규 일기를 등록한다.")
