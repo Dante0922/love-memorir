@@ -100,6 +100,10 @@ public class DiaryService {
         return DiaryModifyResponse.of(diary);
     }
 
+    public DiaryModifyResponse modifyDiaryMainStatus(final String providerId, final long diaryId) {
+        return null;
+    }
+
     public DiaryRemoveResponse removeDiary(final String memberKey, final Long diaryId) {
         return null;
     }

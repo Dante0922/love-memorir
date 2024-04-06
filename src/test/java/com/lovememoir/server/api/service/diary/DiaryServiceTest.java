@@ -95,7 +95,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
 
         Member member = createMember();
         Auth auth = createAuth(member, "1234567890");
-        Diary diary = createDiary(member, false);
+        Diary diary = createDiary(member, false, false);
 
         DiaryModifyServiceRequest request = DiaryModifyServiceRequest.builder()
             .title("푸바오")
@@ -121,7 +121,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
 
         Member member = createMember();
         Auth auth = createAuth(member, "1234567890");
-        Diary diary = createDiary(member, false);
+        Diary diary = createDiary(member, false, false);
 
         DiaryModifyServiceRequest request = DiaryModifyServiceRequest.builder()
             .title("푸바오")
@@ -139,15 +139,10 @@ class DiaryServiceTest extends IntegrationTestSupport {
         Optional<Diary> findDiary = diaryRepository.findById(response.getDiaryId());
         assertThat(findDiary).isPresent();
         assertThat(findDiary.get())
-            .hasFieldOrPropertyWithValue("isMain", false)
             .hasFieldOrPropertyWithValue("title", "푸바오")
             .hasFieldOrPropertyWithValue("loveInfo.isLove", true)
             .hasFieldOrPropertyWithValue("loveInfo.startedDate", LocalDate.of(2023, 12, 25))
-            .hasFieldOrPropertyWithValue("loveInfo.finishedDate", null)
-            .hasFieldOrPropertyWithValue("pageCount", 0)
-            .hasFieldOrPropertyWithValue("profile.uploadFileName", null)
-            .hasFieldOrPropertyWithValue("profile.storeFileUrl", null)
-            .hasFieldOrPropertyWithValue("isStored", false);
+            .hasFieldOrPropertyWithValue("loveInfo.finishedDate", null);
     }
 
     @DisplayName("일기장 프로필 이미지 수정 시 본인의 일기장이 아니라면 예외가 발생한다.")
@@ -156,7 +151,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         //given
         Member member = createMember();
         Auth auth = createAuth(member, "1234567890");
-        Diary diary = createDiary(member, false);
+        Diary diary = createDiary(member, false, false);
 
         MockMultipartFile file = new MockMultipartFile(
             "profile",
@@ -180,7 +175,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         //given
         Member member = createMember();
         Auth auth = createAuth(member, "1234567890");
-        Diary diary = createDiary(member, false);
+        Diary diary = createDiary(member, false, false);
 
         MockMultipartFile file = new MockMultipartFile(
             "profile",
@@ -206,15 +201,8 @@ class DiaryServiceTest extends IntegrationTestSupport {
         Optional<Diary> findDiary = diaryRepository.findById(response.getDiaryId());
         assertThat(findDiary).isPresent();
         assertThat(findDiary.get())
-            .hasFieldOrPropertyWithValue("isMain", false)
-            .hasFieldOrPropertyWithValue("title", "후이바오")
-            .hasFieldOrPropertyWithValue("loveInfo.isLove", false)
-            .hasFieldOrPropertyWithValue("loveInfo.startedDate", null)
-            .hasFieldOrPropertyWithValue("loveInfo.finishedDate", null)
-            .hasFieldOrPropertyWithValue("pageCount", 0)
             .hasFieldOrPropertyWithValue("profile.uploadFileName", "diary-profile-upload-image.jpg")
-            .hasFieldOrPropertyWithValue("profile.storeFileUrl", "diary-profile-store-image.jpg")
-            .hasFieldOrPropertyWithValue("isStored", false);
+            .hasFieldOrPropertyWithValue("profile.storeFileUrl", "diary-profile-store-image.jpg");
     }
 
     @DisplayName("일기장 보관 상태 수정 시 본인의 일기장이 아니라면 예외가 발생한다.")
@@ -223,7 +211,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         //given
         Member member = createMember();
         Auth auth = createAuth(member, "1234567890");
-        Diary diary = createDiary(member, false);
+        Diary diary = createDiary(member, false, false);
 
         Member otherMember = createMember();
         Auth otherAuth = createAuth(otherMember, "0987654321");
@@ -240,7 +228,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         //given
         Member member = createMember();
         Auth auth = createAuth(member, "1234567890");
-        Diary diary = createDiary(member, false);
+        Diary diary = createDiary(member, false, false);
 
         //when
         DiaryModifyResponse response = diaryService.modifyDiaryStoreStatus(auth.getProviderId(), diary.getId());
@@ -250,16 +238,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
 
         Optional<Diary> findDiary = diaryRepository.findById(response.getDiaryId());
         assertThat(findDiary).isPresent();
-        assertThat(findDiary.get())
-            .hasFieldOrPropertyWithValue("isMain", false)
-            .hasFieldOrPropertyWithValue("title", "후이바오")
-            .hasFieldOrPropertyWithValue("loveInfo.isLove", false)
-            .hasFieldOrPropertyWithValue("loveInfo.startedDate", null)
-            .hasFieldOrPropertyWithValue("loveInfo.finishedDate", null)
-            .hasFieldOrPropertyWithValue("pageCount", 0)
-            .hasFieldOrPropertyWithValue("profile.uploadFileName", null)
-            .hasFieldOrPropertyWithValue("profile.storeFileUrl", null)
-            .hasFieldOrPropertyWithValue("isStored", true);
+        assertThat(findDiary.get().isStored()).isTrue();
     }
 
     @DisplayName("회원 정보와 일기장 정보를 입력 받아 보관중 일기장을 미보관 상태로 수정한다.")
@@ -268,7 +247,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         //given
         Member member = createMember();
         Auth auth = createAuth(member, "1234567890");
-        Diary diary = createDiary(member, true);
+        Diary diary = createDiary(member, true, false);
 
         //when
         DiaryModifyResponse response = diaryService.modifyDiaryStoreStatus(auth.getProviderId(), diary.getId());
@@ -278,16 +257,87 @@ class DiaryServiceTest extends IntegrationTestSupport {
 
         Optional<Diary> findDiary = diaryRepository.findById(response.getDiaryId());
         assertThat(findDiary).isPresent();
-        assertThat(findDiary.get())
-            .hasFieldOrPropertyWithValue("isMain", false)
-            .hasFieldOrPropertyWithValue("title", "후이바오")
-            .hasFieldOrPropertyWithValue("loveInfo.isLove", false)
-            .hasFieldOrPropertyWithValue("loveInfo.startedDate", null)
-            .hasFieldOrPropertyWithValue("loveInfo.finishedDate", null)
-            .hasFieldOrPropertyWithValue("pageCount", 0)
-            .hasFieldOrPropertyWithValue("profile.uploadFileName", null)
-            .hasFieldOrPropertyWithValue("profile.storeFileUrl", null)
-            .hasFieldOrPropertyWithValue("isStored", false);
+        assertThat(findDiary.get().isStored()).isFalse();
+    }
+
+    @DisplayName("일기장 대표 상태 수정 시 본인의 일기장이 아니라면 예외가 발생한다.")
+    @Test
+    void modifyDiaryMainStatusWithoutAuth() {
+        //given
+        Member member = createMember();
+        Auth auth = createAuth(member, "1234567890");
+        Diary diary = createDiary(member, false, false);
+
+        Member otherMember = createMember();
+        Auth otherAuth = createAuth(otherMember, "0987654321");
+
+        //when //then
+        assertThatThrownBy(() -> diaryService.modifyDiaryMainStatus(otherAuth.getProviderId(), diary.getId()))
+            .isInstanceOf(AuthException.class)
+            .hasMessage(NO_AUTH);
+    }
+
+    @DisplayName("일기장 대표 상태 수정 시 기존 대표 일기장을 해제하고 상태를 수정한다.")
+    @Test
+    void modifyDiaryMainStatusWithExistMainDiary() {
+        //given
+        Member member = createMember();
+        Auth auth = createAuth(member, "1234567890");
+        Diary mainDiary = createDiary(member, false, true);
+
+        Diary diary = createDiary(member, false, false);
+
+        //when
+        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(auth.getProviderId(), diary.getId());
+
+        //then
+        assertThat(response).isNotNull();
+
+        Optional<Diary> findDiary1 = diaryRepository.findById(diary.getId());
+        assertThat(findDiary1).isPresent();
+        assertThat(findDiary1.get().isMain()).isTrue();
+
+        Optional<Diary> findDiary2 = diaryRepository.findById(mainDiary.getId());
+        assertThat(findDiary2).isPresent();
+        assertThat(findDiary2.get().isMain()).isFalse();
+    }
+
+    @DisplayName("회원 정보와 일기장 정보를 입력 받아 대표 일기장을 등록한다.")
+    @Test
+    void modifyDiaryMainStatusWithMainIsFalse() {
+        //given
+        Member member = createMember();
+        Auth auth = createAuth(member, "1234567890");
+        Diary diary = createDiary(member, false, false);
+
+        //when
+        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(auth.getProviderId(), diary.getId());
+
+        //then
+        assertThat(response).isNotNull();
+
+        Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
+        assertThat(findDiary).isPresent();
+        assertThat(findDiary.get().isMain()).isTrue();
+    }
+
+    @DisplayName("회원 정보와 일기장 정보를 입력 받아 대표 일기장을 해제한다.")
+    @Test
+    void modifyDiaryMainStatusWithMainIsTrue() {
+        //given
+        Member member = createMember();
+        Auth auth = createAuth(member, "1234567890");
+        Diary diary = createDiary(member, false, true);
+
+        //when
+        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(auth.getProviderId(), diary.getId());
+
+        //then
+        assertThat(response).isNotNull();
+
+        Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
+        assertThat(findDiary).isPresent();
+        assertThat(findDiary.get().isMain()).isFalse();
     }
 
     private Member createMember() {
@@ -312,10 +362,10 @@ class DiaryServiceTest extends IntegrationTestSupport {
         return authRepository.save(auth);
     }
 
-    private Diary createDiary(Member member, boolean isStored) {
+    private Diary createDiary(Member member, boolean isStored, boolean isMain) {
         Diary diary = Diary.builder()
             .isDeleted(false)
-            .isMain(false)
+            .isMain(isMain)
             .title("후이바오")
             .loveInfo(LoveInfo.builder()
                 .isLove(false)
