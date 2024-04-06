@@ -66,7 +66,7 @@ public class DiaryPageService {
         return DiaryPageCreateResponse.of(savedDiaryPage, savedAttachedImages);
     }
 
-    public DiaryPageModifyResponse modifyDiaryPage(final String memberKey, final Long diaryPageId, final LocalDateTime currentDateTime, DiaryPageModifyServiceRequest request) {
+    public DiaryPageModifyResponse modifyDiaryPage(final String providerId, final long diaryPageId, final LocalDate currentDate, DiaryPageModifyServiceRequest request) {
         return null;
     }
 

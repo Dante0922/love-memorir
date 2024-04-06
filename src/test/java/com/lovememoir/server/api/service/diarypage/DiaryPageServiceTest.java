@@ -3,7 +3,9 @@ package com.lovememoir.server.api.service.diarypage;
 import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.api.FileStore;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
+import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageCreateServiceRequest;
+import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.attachedimage.AttachedImage;
 import com.lovememoir.server.domain.attachedimage.repository.AttachedImageRepository;
@@ -14,6 +16,7 @@ import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.LoveInfo;
 import com.lovememoir.server.domain.diary.UploadFile;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
+import com.lovememoir.server.domain.diarypage.AnalysisResult;
 import com.lovememoir.server.domain.diarypage.AnalysisStatus;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
@@ -165,6 +168,63 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         assertThat(attachedImages).hasSize(2);
     }
 
+    @DisplayName("일기 수정 시 본인의 일기장이 아니라면 예외가 발생한다.")
+    @Test
+    void modifyDiaryPageWithoutAuth() {
+        //given
+        LocalDate currentDate = LocalDate.of(2024, 4, 6);
+
+        Member member = createMember();
+        Auth auth = createAuth(member, "0123456789");
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage = createDiaryPage(diary);
+
+        DiaryPageModifyServiceRequest request = DiaryPageModifyServiceRequest.builder()
+            .title("푸바오가 출국한 날")
+            .content("푸바오가 오늘 중국으로 출국했다...")
+            .recordDate(LocalDate.of(2024, 4, 3))
+            .build();
+
+        Member otherMember = createMember();
+        Auth otherAuth = createAuth(otherMember, "9876543210");
+
+        //when //then
+        assertThatThrownBy(() -> diaryPageService.modifyDiaryPage(otherAuth.getProviderId(), diaryPage.getId(), currentDate, request))
+            .isInstanceOf(AuthException.class)
+            .hasMessage(NO_AUTH);
+    }
+
+    @DisplayName("회원 정보와 일기 정보를 입력 받아 일기를 수정한다.")
+    @Test
+    void modifyDiaryPage() {
+        //given
+        LocalDate currentDate = LocalDate.of(2024, 4, 6);
+
+        Member member = createMember();
+        Auth auth = createAuth(member, "0123456789");
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage = createDiaryPage(diary);
+
+        DiaryPageModifyServiceRequest request = DiaryPageModifyServiceRequest.builder()
+            .title("푸바오가 출국한 날")
+            .content("푸바오가 오늘 중국으로 출국했다...")
+            .recordDate(LocalDate.of(2024, 4, 3))
+            .build();
+
+        //when
+        DiaryPageModifyResponse response = diaryPageService.modifyDiaryPage(auth.getProviderId(), diaryPage.getId(), currentDate, request);
+
+        //then
+        assertThat(response).isNotNull();
+
+        Optional<DiaryPage> findDiaryPage = diaryPageRepository.findById(response.getDiaryPageId());
+        assertThat(findDiaryPage).isPresent();
+        assertThat(findDiaryPage.get())
+            .hasFieldOrPropertyWithValue("title", "푸바오가 출국한 날")
+            .hasFieldOrPropertyWithValue("content", "푸바오가 오늘 중국으로 출국했다...")
+            .hasFieldOrPropertyWithValue("recordDate", LocalDate.of(2024, 4, 3));
+    }
+
     private Member createMember() {
         Member member = Member.builder()
             .nickname("아이바오")
@@ -203,5 +263,19 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
             .member(member)
             .build();
         return diaryRepository.save(diary);
+    }
+
+    private DiaryPage createDiaryPage(Diary diary) {
+        DiaryPage diaryPage = DiaryPage.builder()
+            .isDeleted(false)
+            .title("장난꾸러기 후이바오")
+            .content("우리의 후쪽이")
+            .recordDate(LocalDate.of(2024, 3, 20))
+            .analysis(AnalysisResult.builder()
+                .analysisStatus(AnalysisStatus.BEFORE)
+                .build())
+            .diary(diary)
+            .build();
+        return diaryPageRepository.save(diaryPage);
     }
 }
