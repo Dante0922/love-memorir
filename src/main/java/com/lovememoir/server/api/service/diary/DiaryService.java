@@ -85,7 +85,19 @@ public class DiaryService {
     }
 
     public DiaryModifyResponse modifyDiaryStoreStatus(final String providerId, final long diaryId) {
-        return null;
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
+
+        Diary diary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
+
+        if (diary.isNotMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        diary.modifyStoreStatus();
+
+        return DiaryModifyResponse.of(diary);
     }
 
     public DiaryRemoveResponse removeDiary(final String memberKey, final Long diaryId) {

@@ -74,6 +74,10 @@ public class Diary extends BaseTimeEntity {
         this.profile = profile;
     }
 
+    public void modifyStoreStatus() {
+        isStored = !isStored;
+    }
+
     public boolean isNotMine(Member member) {
         return !this.member.getId().equals(member.getId());
     }

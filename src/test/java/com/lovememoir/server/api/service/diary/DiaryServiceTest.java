@@ -287,7 +287,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
             .hasFieldOrPropertyWithValue("pageCount", 0)
             .hasFieldOrPropertyWithValue("profile.uploadFileName", null)
             .hasFieldOrPropertyWithValue("profile.storeFileUrl", null)
-            .hasFieldOrPropertyWithValue("isStored", true);
+            .hasFieldOrPropertyWithValue("isStored", false);
     }
 
     private Member createMember() {
