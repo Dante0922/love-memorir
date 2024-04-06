@@ -78,6 +78,15 @@ public class DiaryApiController {
         return ApiResponse.ok(response);
     }
 
+    @PatchMapping("/{diaryId}/main-status")
+    public ApiResponse<DiaryModifyResponse> modifyDiaryMainStatus(@PathVariable Long diaryId) {
+        String providerId = SecurityUtils.getProviderId();
+
+        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(providerId, diaryId);
+
+        return ApiResponse.ok(response);
+    }
+
     @DeleteMapping("/{diaryId}")
     public ApiResponse<DiaryRemoveResponse> removeDiary(@PathVariable Long diaryId) {
         //TODO: 2024-03-26 10:30 dong82 회원 정보 토큰 추출

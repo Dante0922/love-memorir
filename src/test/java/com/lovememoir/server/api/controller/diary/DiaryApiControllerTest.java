@@ -190,7 +190,20 @@ class DiaryApiControllerTest extends ControllerTestSupport {
     void modifyDiaryStoreStatus() throws Exception {
         //given //when //then
         mockMvc.perform(
-                delete(BASE_URL + "/{diaryId}", 1L)
+                patch(BASE_URL + "/{diaryId}/store-status", 1L)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf())
+            )
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
+
+    @DisplayName("일기장을 메인 상태를 수정한다.")
+    @Test
+    void modifyDiaryMainStatus() throws Exception {
+        //given //when //then
+        mockMvc.perform(
+                patch(BASE_URL + "/{diaryId}/main-status", 1L)
                     .contentType(MediaType.APPLICATION_JSON)
                     .with(csrf())
             )
