@@ -209,7 +209,9 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
 
         DiaryModifyResponse response = DiaryModifyResponse.builder()
             .diaryId(1L)
-            .title("루이바오와의 연애 기록")
+            .title("루이바오")
+            .isLove(true)
+            .startedDate(LocalDate.of(2024, 1, 1))
             .build();
 
         given(diaryService.modifyDiaryProfile(anyString(), anyLong(), any()))
@@ -251,7 +253,15 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                     fieldWithPath("data.diaryId").type(JsonFieldType.NUMBER)
                         .description("수정된 일기장 식별키"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING)
-                        .description("수정된 일기장 제목")
+                        .description("수정된 일기장 제목"),
+                    fieldWithPath("data.isLove").type(JsonFieldType.BOOLEAN)
+                        .description("수정된 일기장 연애 여부"),
+                    fieldWithPath("data.startedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 시작일"),
+                    fieldWithPath("data.finishedDate").type(JsonFieldType.ARRAY)
+                        .optional()
+                        .description("수정된 일기장 연애 종료일")
                 )
             ));
     }

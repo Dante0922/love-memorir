@@ -58,14 +58,13 @@ public class DiaryApiController {
     }
 
     @PostMapping("/{diaryId}")
-    public ApiResponse<DiaryModifyResponse> modifyDiaryImage(
+    public ApiResponse<DiaryModifyResponse> modifyDiaryProfile(
         @PathVariable Long diaryId,
         @Valid @ModelAttribute DiaryImageModifyRequest request
     ) {
-        //TODO: 2024-03-27 00:23 dong82 회원 정보 토큰 추출
-        String memberKey = UUID.randomUUID().toString();
+        String providerId = SecurityUtils.getProviderId();
 
-        DiaryModifyResponse response = diaryService.modifyDiaryProfile(memberKey, diaryId, request.getProfile());
+        DiaryModifyResponse response = diaryService.modifyDiaryProfile(providerId, diaryId, request.getProfile());
 
         return ApiResponse.ok(response);
     }
