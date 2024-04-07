@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -45,6 +44,7 @@ public class DiaryPageService {
     public DiaryPageCreateResponse createDiaryPage(final String providerId, final Long diaryId, final LocalDate currentDate, DiaryPageCreateServiceRequest request) {
         String title = validateTitle(request.getTitle());
         LocalDate recordDate = validateRecordDate(request.getRecordDate(), currentDate);
+        List<MultipartFile> files = validateImageCount(request.getImages());
 
         Member member = memberRepository.findByProviderId(providerId)
             .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
@@ -56,7 +56,7 @@ public class DiaryPageService {
             throw new AuthException(NO_AUTH);
         }
 
-        List<UploadFile> images = cloudUploadFiles(request.getImages());
+        List<UploadFile> images = cloudUploadFiles(files);
         DiaryPage diaryPage = DiaryPage.create(title, request.getContent(), recordDate, diary);
         DiaryPage savedDiaryPage = diaryPageRepository.save(diaryPage);
 
@@ -66,8 +66,24 @@ public class DiaryPageService {
         return DiaryPageCreateResponse.of(savedDiaryPage, savedAttachedImages);
     }
 
+    //todo: 2024-04-07 dong82 이미지 수정 여부
     public DiaryPageModifyResponse modifyDiaryPage(final String providerId, final long diaryPageId, final LocalDate currentDate, DiaryPageModifyServiceRequest request) {
-        return null;
+        String title = validateTitle(request.getTitle());
+        LocalDate recordDate = validateRecordDate(request.getRecordDate(), currentDate);
+
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
+
+        DiaryPage diaryPage = diaryPageRepository.findWithDiaryById(diaryPageId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY_PAGE));
+
+        if (diaryPage.getDiary().isNotMine(member)) {
+            throw new AuthException(NO_AUTH);
+        }
+
+        diaryPage.modify(title, request.getContent(), recordDate);
+
+        return DiaryPageModifyResponse.of(diaryPage);
     }
 
     public DiaryPageRemoveResponse removeDiaryPage(final List<Long> diaryPageId) {
