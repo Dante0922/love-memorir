@@ -137,12 +137,15 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
         DiaryPageModifyRequest request = DiaryPageModifyRequest.builder()
             .title("햇살미소 뿜뿜하는 루이후이")
             .content("루이는 판생이 즐거운 미소천사 해피판다!")
+            .recordDate(LocalDate.of(2024, 3, 1))
             .build();
 
         DiaryPageModifyResponse response = DiaryPageModifyResponse.builder()
             .diaryPageId(1L)
             .title("햇살미소 뿜뿜하는 루이후이")
             .contentLength("루이는 판생이 즐거운 미소천사 해피판다!".length())
+            .recordDate(LocalDate.of(2024, 3, 1))
+            .modifiedDateTime(LocalDateTime.of(2024, 4, 7, 20, 50))
             .build();
 
         given(diaryPageService.modifyDiaryPage(anyString(), anyLong(), any(), any()))
@@ -174,7 +177,7 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
                         .description("수정할 일기 제목"),
                     fieldWithPath("content").type(JsonFieldType.STRING)
                         .description("수정할 일기 내용"),
-                    fieldWithPath("diaryDate").type(JsonFieldType.ARRAY)
+                    fieldWithPath("recordDate").type(JsonFieldType.ARRAY)
                         .description("수정할 일기 날짜")
                 ),
                 responseFields(
@@ -192,8 +195,10 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
                         .description("수정된 일기 제목"),
                     fieldWithPath("data.contentLength").type(JsonFieldType.NUMBER)
                         .description("수정된 일기 내용의 길이"),
-                    fieldWithPath("data.diaryDate").type(JsonFieldType.ARRAY)
-                        .description("수정된 일기 일자")
+                    fieldWithPath("data.recordDate").type(JsonFieldType.ARRAY)
+                        .description("수정된 일기 일자"),
+                    fieldWithPath("data.modifiedDateTime").type(JsonFieldType.ARRAY)
+                        .description("일기 수정 일시")
                 )
             ));
     }

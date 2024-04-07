@@ -51,12 +51,11 @@ public class DiaryPageApiController {
         @PathVariable Long diaryPageId,
         @Valid @RequestBody DiaryPageModifyRequest request
     ) {
-        //TODO: 2024-03-26 17:49 dong82 회원 정보 토큰 추출
-        String memberKey = UUID.randomUUID().toString();
+        String providerId = SecurityUtils.getProviderId();
 
         LocalDate currentDate = LocalDate.now();
 
-        DiaryPageModifyResponse response = diaryPageService.modifyDiaryPage(memberKey, diaryPageId, currentDate, request.toServiceRequest());
+        DiaryPageModifyResponse response = diaryPageService.modifyDiaryPage(providerId, diaryPageId, currentDate, request.toServiceRequest());
 
         return ApiResponse.ok(response);
     }

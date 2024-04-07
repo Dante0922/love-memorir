@@ -137,7 +137,7 @@ class DiaryPageApiControllerTest extends ControllerTestSupport {
         DiaryPageModifyRequest request = DiaryPageModifyRequest.builder()
             .title(" ")
             .content("루이는 판생이 즐거운 미소천사 해피판다!")
-            .diaryDate(LocalDate.of(2024, 3, 3))
+            .recordDate(LocalDate.of(2024, 3, 3))
             .build();
 
         //when //then
@@ -162,7 +162,7 @@ class DiaryPageApiControllerTest extends ControllerTestSupport {
         DiaryPageModifyRequest request = DiaryPageModifyRequest.builder()
             .title("햇살미소 뿜뿜하는 루이후이")
             .content(" ")
-            .diaryDate(LocalDate.of(2024, 3, 3))
+            .recordDate(LocalDate.of(2024, 3, 3))
             .build();
 
         //when //then
@@ -211,7 +211,7 @@ class DiaryPageApiControllerTest extends ControllerTestSupport {
         DiaryPageModifyRequest request = DiaryPageModifyRequest.builder()
             .title("햇살미소 뿜뿜하는 루이후이")
             .content("루이는 판생이 즐거운 미소천사 해피판다!")
-            .diaryDate(LocalDate.of(2024, 3, 3))
+            .recordDate(LocalDate.of(2024, 3, 3))
             .build();
 
         //when //then

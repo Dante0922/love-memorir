@@ -22,20 +22,20 @@ public class DiaryPageModifyRequest {
     private String content;
 
     @NotNull(message = NOT_NULL_DIARY_PAGE_DATE)
-    private LocalDate diaryDate;
+    private LocalDate recordDate;
 
     @Builder
-    private DiaryPageModifyRequest(String title, String content, LocalDate diaryDate) {
+    private DiaryPageModifyRequest(String title, String content, LocalDate recordDate) {
         this.title = title;
         this.content = content;
-        this.diaryDate = diaryDate;
+        this.recordDate = recordDate;
     }
 
     public DiaryPageModifyServiceRequest toServiceRequest() {
         return DiaryPageModifyServiceRequest.builder()
             .title(title)
             .content(content)
-            .recordDate(diaryDate)
+            .recordDate(recordDate)
             .build();
     }
 }
