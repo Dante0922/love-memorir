@@ -15,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Diary Page Command Api Controller
@@ -62,7 +60,7 @@ public class DiaryPageApiController {
 
     @PatchMapping("/delete")
     public ApiResponse<DiaryPageRemoveResponse> removeDiaryPage(@PathVariable Long diaryId, @RequestBody DiaryPageRemoveRequest request) {
-        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPage(request.getDiaryPageIds());
+        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPages(request.getDiaryPageIds());
 
         return ApiResponse.ok(response);
     }

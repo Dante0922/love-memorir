@@ -4,6 +4,7 @@ import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.api.FileStore;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
+import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageCreateServiceRequest;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
@@ -36,8 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.lovememoir.server.common.message.ExceptionMessage.NO_AUTH;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 class DiaryPageServiceTest extends IntegrationTestSupport {
@@ -223,6 +223,34 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
             .hasFieldOrPropertyWithValue("title", "푸바오가 출국한 날")
             .hasFieldOrPropertyWithValue("content", "푸바오가 오늘 중국으로 출국했다...")
             .hasFieldOrPropertyWithValue("recordDate", LocalDate.of(2024, 4, 3));
+    }
+
+    @DisplayName("일기 식별키 목록을 입력 받아 일기를 삭제한다.")
+    @Test
+    void removeDiaryPages() {
+        //given
+        Member member = createMember();
+        Auth auth = createAuth(member, "0123456789");
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage1 = createDiaryPage(diary);
+        DiaryPage diaryPage2 = createDiaryPage(diary);
+        List<Long> diaryPageIds = List.of(diaryPage1.getId(), diaryPage2.getId());
+
+        //when
+        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPages(diaryPageIds);
+
+        //then
+        assertThat(response)
+            .isNotNull()
+            .hasFieldOrPropertyWithValue("removedPageCount", 2);
+
+        List<DiaryPage> findDiaryPages = diaryPageRepository.findAllByIdIn(diaryPageIds);
+        assertThat(findDiaryPages).hasSize(2)
+            .extracting("id", "isDeleted")
+            .containsExactlyInAnyOrder(
+                tuple(diaryPage1.getId(), true),
+                tuple(diaryPage2.getId(), true)
+            );
     }
 
     private Member createMember() {

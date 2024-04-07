@@ -7,6 +7,7 @@ import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveRe
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageCreateServiceRequest;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
+import com.lovememoir.server.domain.BaseTimeEntity;
 import com.lovememoir.server.domain.attachedimage.AttachedImage;
 import com.lovememoir.server.domain.attachedimage.repository.AttachedImageRepository;
 import com.lovememoir.server.domain.diary.Diary;
@@ -86,8 +87,12 @@ public class DiaryPageService {
         return DiaryPageModifyResponse.of(diaryPage);
     }
 
-    public DiaryPageRemoveResponse removeDiaryPage(final List<Long> diaryPageId) {
-        return null;
+    public DiaryPageRemoveResponse removeDiaryPages(final List<Long> diaryPageIds) {
+        List<DiaryPage> diaryPages = diaryPageRepository.findAllByIdIn(diaryPageIds);
+
+        diaryPages.forEach(BaseTimeEntity::remove);
+
+        return DiaryPageRemoveResponse.of(diaryPages.size());
     }
 
     private List<UploadFile> cloudUploadFiles(List<MultipartFile> files) {
