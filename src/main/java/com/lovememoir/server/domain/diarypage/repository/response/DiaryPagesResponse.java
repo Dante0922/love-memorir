@@ -14,15 +14,15 @@ public class DiaryPagesResponse {
     private final Long diaryPageId;
     private final AnalysisStatus analysisStatus;
     private final Integer emotionCode;
-    private final String pageTitle;
+    private final String title;
     private final LocalDateTime createdDateTime;
 
     @Builder
-    private DiaryPagesResponse(Long diaryPageId, AnalysisStatus analysisStatus, Integer emotionCode, String pageTitle, LocalDateTime createdDateTime) {
+    private DiaryPagesResponse(Long diaryPageId, AnalysisStatus analysisStatus, Integer emotionCode, String title, LocalDateTime createdDateTime) {
         this.diaryPageId = diaryPageId;
         this.analysisStatus = analysisStatus;
         this.emotionCode = emotionCode;
-        this.pageTitle = pageTitle;
+        this.title = title;
         this.createdDateTime = createdDateTime;
     }
 }

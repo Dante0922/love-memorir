@@ -33,14 +33,34 @@ public class DiaryPageQueryRepository {
                 diaryPage.isDeleted.isFalse(),
                 diaryPage.diary.id.eq(diaryId)
             )
-            .orderBy(diaryPage.createdDateTime.desc())
+            .orderBy(
+                diaryPage.recordDate.desc(),
+                diaryPage.createdDateTime.desc()
+            )
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize() + 1)
             .fetch();
     }
 
     public List<DiaryPagesResponse> findAllByDiaryIdIn(final List<Long> diaryIds) {
-        return null;
+        return queryFactory
+            .select(
+                Projections.fields(
+                    DiaryPagesResponse.class,
+                    diaryPage.id.as("diaryPageId"),
+                    diaryPage.analysis.analysisStatus,
+                    diaryPage.analysis.emotionCode,
+                    diaryPage.title,
+                    diaryPage.createdDateTime
+                )
+            )
+            .from(diaryPage)
+            .where(diaryPage.id.in(diaryIds))
+            .orderBy(
+                diaryPage.recordDate.desc(),
+                diaryPage.createdDateTime.desc()
+            )
+            .fetch();
     }
 
     public Optional<DiaryPageResponse> findById(final Long diaryPageId) {

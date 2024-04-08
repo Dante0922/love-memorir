@@ -50,19 +50,19 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
         DiaryPagesResponse response1 = DiaryPagesResponse.builder()
             .diaryPageId(1L)
             .analysisStatus(AnalysisStatus.BEFORE)
-            .pageTitle("푸바오와 마지막 인사")
+//            .pageTitle("푸바오와 마지막 인사")
             .createdDateTime(LocalDateTime.of(2024, 3, 3, 0, 0))
             .build();
         DiaryPagesResponse response2 = DiaryPagesResponse.builder()
             .diaryPageId(2L)
             .analysisStatus(AnalysisStatus.BEFORE)
-            .pageTitle("루이바오의 먹방")
+//            .pageTitle("루이바오의 먹방")
             .createdDateTime(LocalDateTime.of(2024, 3, 4, 0, 0))
             .build();
         DiaryPagesResponse response3 = DiaryPagesResponse.builder()
             .diaryPageId(3L)
             .analysisStatus(AnalysisStatus.BEFORE)
-            .pageTitle("후쪽이 후이바오")
+//            .pageTitle("후쪽이 후이바오")
             .createdDateTime(LocalDateTime.of(2024, 3, 5, 0, 0))
             .build();
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
