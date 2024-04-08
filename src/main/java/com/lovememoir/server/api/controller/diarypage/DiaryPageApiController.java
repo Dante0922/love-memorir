@@ -60,7 +60,7 @@ public class DiaryPageApiController {
 
     @PatchMapping("/delete")
     public ApiResponse<DiaryPageRemoveResponse> removeDiaryPage(@PathVariable Long diaryId, @RequestBody DiaryPageRemoveRequest request) {
-        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPages(request.getDiaryPageIds());
+        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPages(diaryId, request.getDiaryPageIds());
 
         return ApiResponse.ok(response);
     }

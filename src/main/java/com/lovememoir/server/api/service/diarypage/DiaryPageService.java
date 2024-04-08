@@ -64,6 +64,8 @@ public class DiaryPageService {
         List<AttachedImage> attachedImages = AttachedImage.create(images, savedDiaryPage);
         List<AttachedImage> savedAttachedImages = attachedImageRepository.saveAll(attachedImages);
 
+        diary.pageCountUp();
+
         return DiaryPageCreateResponse.of(savedDiaryPage, savedAttachedImages);
     }
 
@@ -87,10 +89,15 @@ public class DiaryPageService {
         return DiaryPageModifyResponse.of(diaryPage);
     }
 
-    public DiaryPageRemoveResponse removeDiaryPages(final List<Long> diaryPageIds) {
+    public DiaryPageRemoveResponse removeDiaryPages(final long diaryId, final List<Long> diaryPageIds) {
+        Diary diary = diaryRepository.findById(diaryId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY));
+
         List<DiaryPage> diaryPages = diaryPageRepository.findAllByIdIn(diaryPageIds);
 
         diaryPages.forEach(BaseTimeEntity::remove);
+
+        diary.pageCountDown(diaryPages.size());
 
         return DiaryPageRemoveResponse.of(diaryPages.size());
     }

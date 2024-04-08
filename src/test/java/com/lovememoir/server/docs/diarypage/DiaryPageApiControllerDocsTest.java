@@ -214,7 +214,7 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
             .removedPageCount(3)
             .build();
 
-        given(diaryPageService.removeDiaryPages(anyList()))
+        given(diaryPageService.removeDiaryPages(anyLong(), anyList()))
             .willReturn(response);
 
         mockMvc.perform(

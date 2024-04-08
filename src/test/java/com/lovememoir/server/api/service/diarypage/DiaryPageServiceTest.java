@@ -245,7 +245,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         List<Long> diaryPageIds = List.of(diaryPage1.getId(), diaryPage2.getId());
 
         //when
-        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPages(diaryPageIds);
+        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPages(diary.getId(), diaryPageIds);
 
         //then
         assertThat(response)

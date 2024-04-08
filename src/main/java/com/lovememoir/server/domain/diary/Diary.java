@@ -82,6 +82,18 @@ public class Diary extends BaseTimeEntity {
         isMain = !isMain;
     }
 
+    public void pageCountUp() {
+        pageCount += 1;
+    }
+
+    public void pageCountDown(int downCount) {
+        int result = pageCount - downCount;
+        if (result < 0) {
+            throw new IllegalArgumentException();
+        }
+        pageCount = result;
+    }
+
     public boolean isNotMine(Member member) {
         return !this.member.getId().equals(member.getId());
     }
