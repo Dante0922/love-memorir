@@ -1,6 +1,6 @@
 package com.lovememoir.server.domain.diarypage.repository;
 
-import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -33,7 +33,10 @@ public class DiaryPageQueryRepository {
                 diaryPage.isDeleted.isFalse(),
                 diaryPage.diary.id.eq(diaryId)
             )
-            .orderBy(diaryPage.createdDateTime.desc())
+            .orderBy(
+                diaryPage.recordDate.desc(),
+                diaryPage.createdDateTime.desc()
+            )
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize() + 1)
             .fetch();
@@ -45,31 +48,32 @@ public class DiaryPageQueryRepository {
                 Projections.fields(
                     DiaryPagesResponse.class,
                     diaryPage.id.as("diaryPageId"),
-                    diaryPage.analysisResult.analysisStatus,
-                    diaryPage.analysisResult.emotionCode,
-                    diaryPage.title.as("pageTitle"),
+                    diaryPage.analysis.analysisStatus,
+                    diaryPage.analysis.emotionCode,
+                    diaryPage.title,
                     diaryPage.createdDateTime
                 )
             )
             .from(diaryPage)
-            .where(
-                diaryPage.id.in(diaryIds)
+            .where(diaryPage.id.in(diaryIds))
+            .orderBy(
+                diaryPage.recordDate.desc(),
+                diaryPage.createdDateTime.desc()
             )
-            .orderBy(diaryPage.createdDateTime.desc())
             .fetch();
     }
 
-    public Optional<DiaryPageResponse> findById(final Long diaryPageId) {
-        DiaryPageResponse content = queryFactory
+    public Optional<DiaryPageDto> findById(final long diaryPageId) {
+        DiaryPageDto content = queryFactory
             .select(
                 Projections.fields(
-                    DiaryPageResponse.class,
+                    DiaryPageDto.class,
                     Expressions.asNumber(diaryPageId).as("diaryPageId"),
-                    diaryPage.analysisResult.analysisStatus,
-                    diaryPage.analysisResult.emotionCode,
-                    diaryPage.title.as("pageTitle"),
-                    diaryPage.content.as("pageContent"),
-                    diaryPage.diaryDate,
+                    diaryPage.analysis.analysisStatus,
+                    diaryPage.analysis.emotionCode,
+                    diaryPage.title,
+                    diaryPage.content,
+                    diaryPage.recordDate,
                     diaryPage.createdDateTime
                 )
             )

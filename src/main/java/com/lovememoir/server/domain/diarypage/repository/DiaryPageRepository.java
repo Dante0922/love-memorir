@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface DiaryPageRepository extends JpaRepository<DiaryPage, Long> {
 
     @Query("select dp from DiaryPage dp join fetch dp.diary d where dp.id = :diaryPageId")
-    Optional<DiaryPage> findByIdWithDiary(@Param("diaryPageId") Long diaryPageId);
+    Optional<DiaryPage> findWithDiaryById(@Param("diaryPageId") Long diaryPageId);
 
     List<DiaryPage> findAllByIdIn(List<Long> diaryPageIds);
 }

@@ -8,13 +8,13 @@ import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateRe
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
 import com.lovememoir.server.api.service.diarypage.DiaryPageService;
+import com.lovememoir.server.common.auth.SecurityUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.time.LocalDate;
 
 /**
  * Diary Page Command Api Controller
@@ -32,14 +32,13 @@ public class DiaryPageApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<DiaryPageCreateResponse> createDiaryPage(
         @PathVariable Long diaryId,
-        @Valid @RequestBody DiaryPageCreateRequest request
+        @Valid @ModelAttribute DiaryPageCreateRequest request
     ) {
-        //TODO: 2024-03-26 14:40 dong82 회원 정보 토큰 추출
-        String memberKey = UUID.randomUUID().toString();
+        String providerId = SecurityUtils.getProviderId();
 
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDate currentDate = LocalDate.now();
 
-        DiaryPageCreateResponse response = diaryPageService.createDiaryPage(memberKey, diaryId, currentDateTime, request.toServiceRequest());
+        DiaryPageCreateResponse response = diaryPageService.createDiaryPage(providerId, diaryId, currentDate, request.toServiceRequest());
 
         return ApiResponse.created(response);
     }
@@ -50,19 +49,18 @@ public class DiaryPageApiController {
         @PathVariable Long diaryPageId,
         @Valid @RequestBody DiaryPageModifyRequest request
     ) {
-        //TODO: 2024-03-26 17:49 dong82 회원 정보 토큰 추출
-        String memberKey = UUID.randomUUID().toString();
+        String providerId = SecurityUtils.getProviderId();
 
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDate currentDate = LocalDate.now();
 
-        DiaryPageModifyResponse response = diaryPageService.modifyDiaryPage(memberKey, diaryPageId, currentDateTime, request.toServiceRequest());
+        DiaryPageModifyResponse response = diaryPageService.modifyDiaryPage(providerId, diaryPageId, currentDate, request.toServiceRequest());
 
         return ApiResponse.ok(response);
     }
 
     @PatchMapping("/delete")
     public ApiResponse<DiaryPageRemoveResponse> removeDiaryPage(@PathVariable Long diaryId, @RequestBody DiaryPageRemoveRequest request) {
-        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPage(request.getDiaryPageIds());
+        DiaryPageRemoveResponse response = diaryPageService.removeDiaryPages(diaryId, request.getDiaryPageIds());
 
         return ApiResponse.ok(response);
     }

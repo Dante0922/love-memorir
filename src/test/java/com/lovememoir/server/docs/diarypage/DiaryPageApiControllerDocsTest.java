@@ -13,6 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDate;
@@ -25,12 +27,10 @@ import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,17 +47,26 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
     @DisplayName("신규 일기 등록 API")
     @Test
     void createDiaryPage() throws Exception {
+        MockMultipartFile image = new MockMultipartFile(
+            "images",
+            "diary-page-attached-image1.jpg",
+            "image/jpg",
+            "image data".getBytes()
+        );
+
         DiaryPageCreateRequest request = DiaryPageCreateRequest.builder()
             .title("푸바오가 떠나는 날")
             .content("푸바오를 볼 수 있는 마지막날 에버랜드에서 오픈런했다.")
-            .diaryDate(LocalDate.of(2024, 3, 3))
+            .recordDate(LocalDate.of(2024, 3, 3))
+            .images(List.of(image))
             .build();
 
         DiaryPageCreateResponse response = DiaryPageCreateResponse.builder()
             .diaryPageId(1L)
             .title("푸바오가 떠나는 날")
             .contentLength("푸바오를 볼 수 있는 마지막날 에버랜드에서 오픈런했다.".length())
-            .diaryDate(LocalDate.of(2024, 3, 3))
+            .recordDate(LocalDate.of(2024, 3, 3))
+            .imageCount(1)
             .createdDateTime(LocalDateTime.of(2024, 3, 5, 16, 0))
             .build();
 
@@ -65,10 +74,13 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
             .willReturn(response);
 
         mockMvc.perform(
-                post(BASE_URL, 1)
-                    .content(objectMapper.writeValueAsString(request))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+                multipart(BASE_URL, 1L)
+                    .file(image)
+                    .part(new MockPart("title", request.getTitle().getBytes()))
+                    .part(new MockPart("content", request.getContent().getBytes()))
+                    .part(new MockPart("recordDate", request.getRecordDate().toString().getBytes()))
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer jwt.access.token")
             )
             .andDo(print())
             .andExpect(status().isCreated())
@@ -83,13 +95,16 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
                     parameterWithName("diaryId")
                         .description("일기장 식별키")
                 ),
-                requestFields(
-                    fieldWithPath("title").type(JsonFieldType.STRING)
+                requestParts(
+                    partWithName("title")
                         .description("신규 일기 제목"),
-                    fieldWithPath("content").type(JsonFieldType.STRING)
+                    partWithName("content")
                         .description("신규 일기 내용"),
-                    fieldWithPath("diaryDate").type(JsonFieldType.ARRAY)
-                        .description("신규 일기 날짜")
+                    partWithName("recordDate")
+                        .description("신규 일기 기록일"),
+                    partWithName("images")
+                        .optional()
+                        .description("신규 일기 첨부 이미지")
                 ),
                 responseFields(
                     fieldWithPath("code").type(JsonFieldType.NUMBER)
@@ -106,8 +121,10 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
                         .description("신규 일기 제목"),
                     fieldWithPath("data.contentLength").type(JsonFieldType.NUMBER)
                         .description("신규 일기 내용의 길이"),
-                    fieldWithPath("data.diaryDate").type(JsonFieldType.ARRAY)
+                    fieldWithPath("data.recordDate").type(JsonFieldType.ARRAY)
                         .description("신규 일기 일자"),
+                    fieldWithPath("data.imageCount").type(JsonFieldType.NUMBER)
+                        .description("신규 일기 첨부 이미지 수"),
                     fieldWithPath("data.createdDateTime").type(JsonFieldType.ARRAY)
                         .description("신규 일기 등록일시")
                 )
@@ -120,14 +137,15 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
         DiaryPageModifyRequest request = DiaryPageModifyRequest.builder()
             .title("햇살미소 뿜뿜하는 루이후이")
             .content("루이는 판생이 즐거운 미소천사 해피판다!")
-            .diaryDate(LocalDate.of(2024, 3, 3))
+            .recordDate(LocalDate.of(2024, 3, 1))
             .build();
 
         DiaryPageModifyResponse response = DiaryPageModifyResponse.builder()
             .diaryPageId(1L)
             .title("햇살미소 뿜뿜하는 루이후이")
             .contentLength("루이는 판생이 즐거운 미소천사 해피판다!".length())
-            .diaryDate(LocalDate.of(2024, 3, 3))
+            .recordDate(LocalDate.of(2024, 3, 1))
+            .modifiedDateTime(LocalDateTime.of(2024, 4, 7, 20, 50))
             .build();
 
         given(diaryPageService.modifyDiaryPage(anyString(), anyLong(), any(), any()))
@@ -159,7 +177,7 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
                         .description("수정할 일기 제목"),
                     fieldWithPath("content").type(JsonFieldType.STRING)
                         .description("수정할 일기 내용"),
-                    fieldWithPath("diaryDate").type(JsonFieldType.ARRAY)
+                    fieldWithPath("recordDate").type(JsonFieldType.ARRAY)
                         .description("수정할 일기 날짜")
                 ),
                 responseFields(
@@ -177,8 +195,10 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
                         .description("수정된 일기 제목"),
                     fieldWithPath("data.contentLength").type(JsonFieldType.NUMBER)
                         .description("수정된 일기 내용의 길이"),
-                    fieldWithPath("data.diaryDate").type(JsonFieldType.ARRAY)
-                        .description("수정된 일기 일자")
+                    fieldWithPath("data.recordDate").type(JsonFieldType.ARRAY)
+                        .description("수정된 일기 일자"),
+                    fieldWithPath("data.modifiedDateTime").type(JsonFieldType.ARRAY)
+                        .description("일기 수정 일시")
                 )
             ));
     }
@@ -194,7 +214,7 @@ public class DiaryPageApiControllerDocsTest extends RestDocsSupport {
             .removedPageCount(3)
             .build();
 
-        given(diaryPageService.removeDiaryPage(anyList()))
+        given(diaryPageService.removeDiaryPages(anyLong(), anyList()))
             .willReturn(response);
 
         mockMvc.perform(

@@ -30,10 +30,7 @@ public class AnalysisResult {
     }
 
     public static AnalysisResult init() {
-        return AnalysisResult.builder()
-            .analysisStatus(BEFORE)
-            .emotionCode(null)
-            .build();
+        return new AnalysisResult(BEFORE, null);
     }
 
     public static AnalysisResult success(int emotionCode) {

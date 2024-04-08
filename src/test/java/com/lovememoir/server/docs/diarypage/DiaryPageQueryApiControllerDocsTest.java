@@ -3,9 +3,11 @@ package com.lovememoir.server.docs.diarypage;
 import com.lovememoir.server.api.SliceResponse;
 import com.lovememoir.server.api.controller.diarypage.DiaryPageQueryApiController;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
+import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
 import com.lovememoir.server.docs.RestDocsSupport;
+import com.lovememoir.server.domain.attachedimage.repository.response.AttachedImageResponse;
 import com.lovememoir.server.domain.diarypage.AnalysisStatus;
-import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,19 +52,19 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
         DiaryPagesResponse response1 = DiaryPagesResponse.builder()
             .diaryPageId(1L)
             .analysisStatus(AnalysisStatus.BEFORE)
-            .pageTitle("푸바오와 마지막 인사")
+            .title("푸바오와 마지막 인사")
             .createdDateTime(LocalDateTime.of(2024, 3, 3, 0, 0))
             .build();
         DiaryPagesResponse response2 = DiaryPagesResponse.builder()
             .diaryPageId(2L)
             .analysisStatus(AnalysisStatus.BEFORE)
-            .pageTitle("루이바오의 먹방")
+            .title("루이바오의 먹방")
             .createdDateTime(LocalDateTime.of(2024, 3, 4, 0, 0))
             .build();
         DiaryPagesResponse response3 = DiaryPagesResponse.builder()
             .diaryPageId(3L)
             .analysisStatus(AnalysisStatus.BEFORE)
-            .pageTitle("후쪽이 후이바오")
+            .title("후쪽이 후이바오")
             .createdDateTime(LocalDateTime.of(2024, 3, 5, 0, 0))
             .build();
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
@@ -104,18 +106,18 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
                     fieldWithPath("data.content").type(JsonFieldType.ARRAY)
-                        .description("조회된 일기 페이지 데이터"),
+                        .description("조회된 일기 데이터"),
                     fieldWithPath("data.content[].diaryPageId").type(JsonFieldType.NUMBER)
-                        .description("일기 페이지 식별키"),
+                        .description("일기 식별키"),
                     fieldWithPath("data.content[].analysisStatus").type(JsonFieldType.STRING)
                         .description("일기 감정 분석 상태"),
                     fieldWithPath("data.content[].emotionCode").type(JsonFieldType.STRING)
                         .optional()
                         .description("일기 감정 코드"),
-                    fieldWithPath("data.content[].pageTitle").type(JsonFieldType.STRING)
-                        .description("일기 페이지 제목"),
+                    fieldWithPath("data.content[].title").type(JsonFieldType.STRING)
+                        .description("일기 제목"),
                     fieldWithPath("data.content[].createdDateTime").type(JsonFieldType.ARRAY)
-                        .description("일기 페이지 작성 일시"),
+                        .description("일기 작성 일시"),
                     fieldWithPath("data.currentPage").type(JsonFieldType.NUMBER)
                         .description("현재 페이지 번호"),
                     fieldWithPath("data.size").type(JsonFieldType.NUMBER)
@@ -131,12 +133,17 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
     @DisplayName("일기 상세 조회 API")
     @Test
     void searchDiaryPage() throws Exception {
+        AttachedImageResponse image = AttachedImageResponse.builder()
+            .imageId(1)
+            .url("huibao.jpg")
+            .build();
         DiaryPageResponse response = DiaryPageResponse.builder()
             .diaryPageId(1L)
             .analysisStatus(AnalysisStatus.BEFORE)
-            .pageTitle("엄마 음식 훔쳐간 후이바오")
-            .pageContent("후이바오는 엄마의 음식을 훔치는 것을 좋아합니다ㅋㅋㅋ")
-            .diaryDate(LocalDate.of(2024, 3, 5))
+            .title("엄마 음식 훔쳐간 후이바오")
+            .content("후이바오는 엄마의 음식을 훔치는 것을 좋아합니다ㅋㅋㅋ")
+            .recordDate(LocalDate.of(2024, 3, 5))
+            .images(List.of(image))
             .createdDateTime(LocalDateTime.of(2024, 3, 21, 17, 22))
             .build();
 
@@ -172,20 +179,26 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
                     fieldWithPath("data.diaryPageId").type(JsonFieldType.NUMBER)
-                        .description("일기 페이지 식별키"),
+                        .description("일기 식별키"),
                     fieldWithPath("data.analysisStatus").type(JsonFieldType.STRING)
                         .description("일기 감정 분석 상태"),
                     fieldWithPath("data.emotionCode").type(JsonFieldType.STRING)
                         .optional()
                         .description("일기 감정 코드"),
-                    fieldWithPath("data.pageTitle").type(JsonFieldType.STRING)
-                        .description("일기 페이지 제목"),
-                    fieldWithPath("data.pageContent").type(JsonFieldType.STRING)
-                        .description("일기 페이지 내용"),
-                    fieldWithPath("data.diaryDate").type(JsonFieldType.ARRAY)
-                        .description("일기 페이지 일자"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING)
+                        .description("일기 제목"),
+                    fieldWithPath("data.content").type(JsonFieldType.STRING)
+                        .description("일기 내용"),
+                    fieldWithPath("data.recordDate").type(JsonFieldType.ARRAY)
+                        .description("일기 기록일자"),
+                    fieldWithPath("data.images").type(JsonFieldType.ARRAY)
+                        .description("일기 이미지 데이터"),
+                    fieldWithPath("data.images[].imageId").type(JsonFieldType.NUMBER)
+                        .description("일기 이미지 식별키"),
+                    fieldWithPath("data.images[].url").type(JsonFieldType.STRING)
+                        .description("일기 이미지 주소"),
                     fieldWithPath("data.createdDateTime").type(JsonFieldType.ARRAY)
-                        .description("일기 페이지 작성 일시")
+                        .description("일기 작성 일시")
                 )
             ));
     }

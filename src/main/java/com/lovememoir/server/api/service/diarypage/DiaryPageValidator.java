@@ -1,42 +1,38 @@
 package com.lovememoir.server.api.service.diarypage;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import org.springframework.web.multipart.MultipartFile;
 
-import static com.lovememoir.server.common.message.ValidationMessage.FUTURE_DIARY_DATE;
-import static com.lovememoir.server.common.message.ValidationMessage.MAX_LENGTH_DIARY_PAGE_TITLE;
+import java.time.LocalDate;
+import java.util.List;
+
+import static com.lovememoir.server.common.message.ValidationMessage.*;
 
 public abstract class DiaryPageValidator {
 
-    private static final int TITLE_MAXIMUM_LENGTH = 10;
+    private static final int TITLE_MAXIMUM_LENGTH = 20;
+    private static final int IMAGE_MAXIMUM_COUNT = 3;
 
     public static String validateTitle(String title) {
-        title = removeSpace(title);
+        title = title.strip();
 
-        if (isTitleLengthGraterThan(title)) {
+        if (title.length() > TITLE_MAXIMUM_LENGTH) {
             throw new IllegalArgumentException(MAX_LENGTH_DIARY_PAGE_TITLE);
         }
 
         return title;
     }
 
-    public static LocalDate validateDiaryDate(LocalDateTime currentDateTime, LocalDate diaryDate) {
-        if (isFuture(currentDateTime, diaryDate)) {
-            throw new IllegalArgumentException(FUTURE_DIARY_DATE);
+    public static LocalDate validateRecordDate(LocalDate recordDate, LocalDate currentDate) {
+        if (currentDate.isBefore(recordDate)) {
+            throw new IllegalArgumentException(IS_FUTURE_DATE);
         }
-
-        return diaryDate;
+        return recordDate;
     }
 
-    private static String removeSpace(final String text) {
-        return text.strip();
-    }
-
-    private static boolean isTitleLengthGraterThan(final String title) {
-        return title.length() > TITLE_MAXIMUM_LENGTH;
-    }
-
-    private static boolean isFuture(final LocalDateTime currentDateTime, final LocalDate diaryDate) {
-        return currentDateTime.isBefore(diaryDate.atStartOfDay());
+    public static List<MultipartFile> validateImageCount(List<MultipartFile> images) {
+        if (images.size() > IMAGE_MAXIMUM_COUNT) {
+            throw new IllegalArgumentException(MAX_COUNT_IMAGES);
+        }
+        return images;
     }
 }
