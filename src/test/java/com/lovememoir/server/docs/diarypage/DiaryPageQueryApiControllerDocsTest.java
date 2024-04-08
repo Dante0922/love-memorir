@@ -134,9 +134,9 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
         DiaryPageResponse response = DiaryPageResponse.builder()
             .diaryPageId(1L)
             .analysisStatus(AnalysisStatus.BEFORE)
-            .pageTitle("엄마 음식 훔쳐간 후이바오")
-            .pageContent("후이바오는 엄마의 음식을 훔치는 것을 좋아합니다ㅋㅋㅋ")
-            .diaryDate(LocalDate.of(2024, 3, 5))
+            .title("엄마 음식 훔쳐간 후이바오")
+            .content("후이바오는 엄마의 음식을 훔치는 것을 좋아합니다ㅋㅋㅋ")
+            .recordDate(LocalDate.of(2024, 3, 5))
             .createdDateTime(LocalDateTime.of(2024, 3, 21, 17, 22))
             .build();
 
@@ -178,11 +178,11 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
                     fieldWithPath("data.emotionCode").type(JsonFieldType.STRING)
                         .optional()
                         .description("일기 감정 코드"),
-                    fieldWithPath("data.pageTitle").type(JsonFieldType.STRING)
+                    fieldWithPath("data.title").type(JsonFieldType.STRING)
                         .description("일기 페이지 제목"),
-                    fieldWithPath("data.pageContent").type(JsonFieldType.STRING)
+                    fieldWithPath("data.content").type(JsonFieldType.STRING)
                         .description("일기 페이지 내용"),
-                    fieldWithPath("data.diaryDate").type(JsonFieldType.ARRAY)
+                    fieldWithPath("data.recordDate").type(JsonFieldType.ARRAY)
                         .description("일기 페이지 일자"),
                     fieldWithPath("data.createdDateTime").type(JsonFieldType.ARRAY)
                         .description("일기 페이지 작성 일시")

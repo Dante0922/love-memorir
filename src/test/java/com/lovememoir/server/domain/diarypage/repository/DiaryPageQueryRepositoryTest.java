@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,6 +78,29 @@ class DiaryPageQueryRepositoryTest extends IntegrationTestSupport {
         assertThat(content).hasSize(3)
             .extracting("diaryPageId")
             .containsExactly(diaryPage3.getId(), diaryPage5.getId(), diaryPage4.getId());
+    }
+
+    @DisplayName("일기 식별키로 일기를 조회한다.")
+    @Test
+    void findById() {
+        //given
+        Member member = createMember();
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage = createDiaryPage(diary, false, LocalDate.of(2024, 3, 22));
+
+        //when
+        Optional<DiaryPage> findDiaryPage = diaryPageRepository.findById(diary.getId());
+
+        //then
+        assertThat(findDiaryPage).isPresent();
+        assertThat(findDiaryPage.get())
+            .hasFieldOrPropertyWithValue("diaryPageId", diaryPage.getId())
+            .hasFieldOrPropertyWithValue("analysisStatus", AnalysisStatus.BEFORE)
+            .hasFieldOrPropertyWithValue("emotionCode", null)
+            .hasFieldOrPropertyWithValue("title", "장난꾸러기 후이바오")
+            .hasFieldOrPropertyWithValue("content", "우리의 후쪽이")
+            .hasFieldOrPropertyWithValue("recordDate", LocalDate.of(2024, 3, 22))
+            .hasFieldOrPropertyWithValue("createdDateTime", diaryPage.getCreatedDateTime());
     }
 
     private Member createMember() {

@@ -15,19 +15,19 @@ public class DiaryPageResponse {
     private final Long diaryPageId;
     private final AnalysisStatus analysisStatus;
     private final Integer emotionCode;
-    private final String pageTitle;
-    private final String pageContent;
-    private final LocalDate diaryDate;
+    private final String title;
+    private final String content;
+    private final LocalDate recordDate;
     private final LocalDateTime createdDateTime;
 
     @Builder
-    private DiaryPageResponse(Long diaryPageId, AnalysisStatus analysisStatus, Integer emotionCode, String pageTitle, String pageContent, LocalDate diaryDate, LocalDateTime createdDateTime) {
+    private DiaryPageResponse(Long diaryPageId, AnalysisStatus analysisStatus, Integer emotionCode, String title, String content, LocalDate recordDate, LocalDateTime createdDateTime) {
         this.diaryPageId = diaryPageId;
         this.analysisStatus = analysisStatus;
         this.emotionCode = emotionCode;
-        this.pageTitle = pageTitle;
-        this.pageContent = pageContent;
-        this.diaryDate = diaryDate;
+        this.title = title;
+        this.content = content;
+        this.recordDate = recordDate;
         this.createdDateTime = createdDateTime;
     }
 }
