@@ -63,7 +63,23 @@ public class DiaryPageQueryRepository {
             .fetch();
     }
 
-    public Optional<DiaryPageResponse> findById(final Long diaryPageId) {
-        return Optional.empty();
+    public Optional<DiaryPageResponse> findById(final long diaryPageId) {
+        DiaryPageResponse content = queryFactory
+            .select(
+                Projections.fields(
+                    DiaryPageResponse.class,
+                    Expressions.asNumber(diaryPageId).as("diaryPageId"),
+                    diaryPage.analysis.analysisStatus,
+                    diaryPage.analysis.emotionCode,
+                    diaryPage.title,
+                    diaryPage.content,
+                    diaryPage.recordDate,
+                    diaryPage.createdDateTime
+                )
+            )
+            .from(diaryPage)
+            .where(diaryPage.id.eq(diaryPageId))
+            .fetchFirst();
+        return Optional.ofNullable(content);
     }
 }
