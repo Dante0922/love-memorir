@@ -23,7 +23,7 @@ public class DiaryPageQueryService {
 
     private final DiaryPageQueryRepository diaryPageQueryRepository;
 
-    public SliceResponse<DiaryPagesResponse> searchDiaryPages(Long diaryId, Pageable pageable) {
+    public SliceResponse<DiaryPagesResponse> searchDiaryPages(long diaryId, Pageable pageable) {
         List<Long> diaryIds = diaryPageQueryRepository.findAllIdByDiaryId(diaryId, pageable);
 
         if (CollectionUtils.isEmpty(diaryIds)) {

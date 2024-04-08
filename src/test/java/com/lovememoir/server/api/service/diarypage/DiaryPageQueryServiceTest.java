@@ -3,6 +3,7 @@ package com.lovememoir.server.api.service.diarypage;
 import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.api.SliceResponse;
 import com.lovememoir.server.domain.diary.Diary;
+import com.lovememoir.server.domain.diary.LoveInfo;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.diarypage.AnalysisResult;
 import com.lovememoir.server.domain.diarypage.AnalysisStatus;
@@ -38,4 +39,96 @@ class DiaryPageQueryServiceTest extends IntegrationTestSupport {
     @Autowired
     private DiaryPageRepository diaryPageRepository;
 
+    @DisplayName("일기장에 등록된 일기가 없는 경우 빈 리스트를 반환한다.")
+    @Test
+    void searchDiaryPagesIsEmpty() {
+        //given
+        Member member = createMember();
+        Diary diary = createDiary(member);
+
+        PageRequest pageRequest = PageRequest.of(0, 3);
+
+        //when
+        SliceResponse<DiaryPagesResponse> response = diaryPageQueryService.searchDiaryPages(diary.getId(), pageRequest);
+
+        //then
+        assertThat(response)
+            .hasFieldOrPropertyWithValue("currentPage", 1)
+            .hasFieldOrPropertyWithValue("size", 3)
+            .hasFieldOrPropertyWithValue("isFirst", true)
+            .hasFieldOrPropertyWithValue("isLast", true);
+
+        assertThat(response.getContent()).isEmpty();
+    }
+
+    @DisplayName("일기장 식별키로 일기 목록을 조회할 수 있다.")
+    @Test
+    void searchDiaryPages() {
+        //given
+        Member member = createMember();
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage1 = createDiaryPage(diary, false, LocalDate.of(2024, 3, 20));
+        DiaryPage diaryPage2 = createDiaryPage(diary, true, LocalDate.of(2024, 3, 20));
+        DiaryPage diaryPage3 = createDiaryPage(diary, false, LocalDate.of(2024, 3, 22));
+        DiaryPage diaryPage4 = createDiaryPage(diary, false, LocalDate.of(2024, 3, 21));
+        DiaryPage diaryPage5 = createDiaryPage(diary, false, LocalDate.of(2024, 3, 21));
+        DiaryPage diaryPage6 = createDiaryPage(diary, false, LocalDate.of(2024, 3, 20));
+        PageRequest pageRequest = PageRequest.of(0, 3);
+
+        //when
+        SliceResponse<DiaryPagesResponse> response = diaryPageQueryService.searchDiaryPages(diary.getId(), pageRequest);
+
+        //then
+        assertThat(response)
+            .hasFieldOrPropertyWithValue("currentPage", 1)
+            .hasFieldOrPropertyWithValue("size", 3)
+            .hasFieldOrPropertyWithValue("isFirst", true)
+            .hasFieldOrPropertyWithValue("isLast", false);
+
+        assertThat(response.getContent()).hasSize(3)
+            .extracting("diaryPageId")
+            .containsExactly(diaryPage3.getId(), diaryPage5.getId(), diaryPage4.getId());
+    }
+
+    private Member createMember() {
+        Member member = Member.builder()
+            .nickname("아이바오")
+            .gender(Gender.F)
+            .birth("2013-07-13")
+            .roleType(RoleType.USER)
+            .build();
+        return memberRepository.save(member);
+    }
+
+    private Diary createDiary(Member member) {
+        Diary diary = Diary.builder()
+            .isDeleted(false)
+            .isMain(true)
+            .title("후이바오")
+            .loveInfo(LoveInfo.builder()
+                .isLove(false)
+                .startedDate(null)
+                .finishedDate(null)
+                .build())
+            .pageCount(0)
+            .profile(null)
+            .isStored(false)
+            .member(member)
+            .build();
+        return diaryRepository.save(diary);
+    }
+
+    private DiaryPage createDiaryPage(Diary diary, boolean isDeleted, LocalDate recordDate) {
+        DiaryPage diaryPage = DiaryPage.builder()
+            .isDeleted(isDeleted)
+            .title("장난꾸러기 후이바오")
+            .content("우리의 후쪽이")
+            .recordDate(recordDate)
+            .analysis(AnalysisResult.builder()
+                .analysisStatus(AnalysisStatus.BEFORE)
+                .build())
+            .diary(diary)
+            .build();
+        return diaryPageRepository.save(diaryPage);
+    }
 }
