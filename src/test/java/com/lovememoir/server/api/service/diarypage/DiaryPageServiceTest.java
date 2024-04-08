@@ -71,7 +71,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
 
         Member member = createMember();
         Auth auth = createAuth(member, "0123456789");
-        Diary diary = createDiary(member);
+        Diary diary = createDiary(member, 0);
         MockMultipartFile image1 = new MockMultipartFile(
             "image",
             "diary-page-attached-image1.jpg",
@@ -105,6 +105,10 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
 
         List<AttachedImage> attachedImages = attachedImageRepository.findAll();
         assertThat(attachedImages).isEmpty();
+
+        Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
+        assertThat(findDiary).isPresent();
+        assertThat(findDiary.get().getPageCount()).isZero();
     }
 
     @DisplayName("회원 정보와 일기 정보를 입력 받아 신규 일기를 등록한다.")
@@ -115,7 +119,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
 
         Member member = createMember();
         Auth auth = createAuth(member, "0123456789");
-        Diary diary = createDiary(member);
+        Diary diary = createDiary(member, 0);
         MockMultipartFile image1 = new MockMultipartFile(
             "image",
             "diary-page-attached-image1.jpg",
@@ -166,6 +170,10 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
 
         List<AttachedImage> attachedImages = attachedImageRepository.findAll();
         assertThat(attachedImages).hasSize(2);
+
+        Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
+        assertThat(findDiary).isPresent();
+        assertThat(findDiary.get().getPageCount()).isOne();
     }
 
     @DisplayName("일기 수정 시 본인의 일기장이 아니라면 예외가 발생한다.")
@@ -176,7 +184,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
 
         Member member = createMember();
         Auth auth = createAuth(member, "0123456789");
-        Diary diary = createDiary(member);
+        Diary diary = createDiary(member, 1);
         DiaryPage diaryPage = createDiaryPage(diary);
 
         DiaryPageModifyServiceRequest request = DiaryPageModifyServiceRequest.builder()
@@ -202,7 +210,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
 
         Member member = createMember();
         Auth auth = createAuth(member, "0123456789");
-        Diary diary = createDiary(member);
+        Diary diary = createDiary(member, 1);
         DiaryPage diaryPage = createDiaryPage(diary);
 
         DiaryPageModifyServiceRequest request = DiaryPageModifyServiceRequest.builder()
@@ -231,7 +239,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         //given
         Member member = createMember();
         Auth auth = createAuth(member, "0123456789");
-        Diary diary = createDiary(member);
+        Diary diary = createDiary(member, 2);
         DiaryPage diaryPage1 = createDiaryPage(diary);
         DiaryPage diaryPage2 = createDiaryPage(diary);
         List<Long> diaryPageIds = List.of(diaryPage1.getId(), diaryPage2.getId());
@@ -251,6 +259,10 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
                 tuple(diaryPage1.getId(), true),
                 tuple(diaryPage2.getId(), true)
             );
+
+        Optional<Diary> findDiary = diaryRepository.findById(diary.getId());
+        assertThat(findDiary).isPresent();
+        assertThat(findDiary.get().getPageCount()).isZero();
     }
 
     private Member createMember() {
@@ -275,7 +287,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
         return authRepository.save(auth);
     }
 
-    private Diary createDiary(Member member) {
+    private Diary createDiary(Member member, int pageCount) {
         Diary diary = Diary.builder()
             .isDeleted(false)
             .isMain(true)
@@ -285,7 +297,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
                 .startedDate(null)
                 .finishedDate(null)
                 .build())
-            .pageCount(0)
+            .pageCount(pageCount)
             .profile(null)
             .isStored(false)
             .member(member)
