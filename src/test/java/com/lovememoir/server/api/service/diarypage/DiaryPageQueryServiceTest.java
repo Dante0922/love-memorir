@@ -2,14 +2,17 @@ package com.lovememoir.server.api.service.diarypage;
 
 import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.api.SliceResponse;
+import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
+import com.lovememoir.server.domain.attachedimage.AttachedImage;
+import com.lovememoir.server.domain.attachedimage.repository.AttachedImageRepository;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.LoveInfo;
+import com.lovememoir.server.domain.diary.UploadFile;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.diarypage.AnalysisResult;
 import com.lovememoir.server.domain.diarypage.AnalysisStatus;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
-import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.enumerate.Gender;
@@ -21,9 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 class DiaryPageQueryServiceTest extends IntegrationTestSupport {
 
@@ -38,6 +41,9 @@ class DiaryPageQueryServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private DiaryPageRepository diaryPageRepository;
+
+    @Autowired
+    private AttachedImageRepository attachedImageRepository;
 
     @DisplayName("일기장에 등록된 일기가 없는 경우 빈 리스트를 반환한다.")
     @Test
@@ -90,6 +96,38 @@ class DiaryPageQueryServiceTest extends IntegrationTestSupport {
             .containsExactly(diaryPage3.getId(), diaryPage5.getId(), diaryPage4.getId());
     }
 
+    @DisplayName("일기 식별키로 일기를 상세 조회한다.")
+    @Test
+    void searchDiaryPage() {
+        //given
+        Member member = createMember();
+        Diary diary = createDiary(member);
+        DiaryPage diaryPage = createDiaryPage(diary, false, LocalDate.of(2024, 3, 20));
+        AttachedImage attachedImage1 = createAttachedImage(diaryPage, "image1.jpg", false);
+        AttachedImage attachedImage2 = createAttachedImage(diaryPage, "image2.jpg", true);
+        AttachedImage attachedImage3 = createAttachedImage(diaryPage, "image3.jpg", false);
+
+        //when
+        DiaryPageResponse response = diaryPageQueryService.searchDiaryPage(diaryPage.getId());
+
+        //then
+        assertThat(response)
+            .hasFieldOrPropertyWithValue("diaryPageId", diaryPage.getId())
+            .hasFieldOrPropertyWithValue("analysisStatus", AnalysisStatus.BEFORE)
+            .hasFieldOrPropertyWithValue("emotionCode", null)
+            .hasFieldOrPropertyWithValue("title", "장난꾸러기 후이바오")
+            .hasFieldOrPropertyWithValue("content", "우리의 후쪽이")
+            .hasFieldOrPropertyWithValue("recordDate", LocalDate.of(2024, 3, 20))
+            .hasFieldOrPropertyWithValue("createdDateTime", diaryPage.getCreatedDateTime());
+
+        assertThat(response.getImages()).hasSize(2)
+            .extracting("imageId", "url")
+            .containsExactly(
+                tuple(attachedImage1.getId(), "image1.jpg"),
+                tuple(attachedImage3.getId(), "image3.jpg")
+            );
+    }
+
     private Member createMember() {
         Member member = Member.builder()
             .nickname("아이바오")
@@ -130,5 +168,17 @@ class DiaryPageQueryServiceTest extends IntegrationTestSupport {
             .diary(diary)
             .build();
         return diaryPageRepository.save(diaryPage);
+    }
+
+    private AttachedImage createAttachedImage(DiaryPage diaryPage, String storeFileUrl, boolean isDeleted) {
+        AttachedImage attachedImage = AttachedImage.builder()
+            .isDeleted(isDeleted)
+            .image(UploadFile.builder()
+                .uploadFileName("upload-file-name.jpg")
+                .storeFileUrl(storeFileUrl)
+                .build())
+            .diaryPage(diaryPage)
+            .build();
+        return attachedImageRepository.save(attachedImage);
     }
 }

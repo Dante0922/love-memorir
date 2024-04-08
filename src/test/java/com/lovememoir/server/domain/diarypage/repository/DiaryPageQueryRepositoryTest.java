@@ -7,7 +7,7 @@ import com.lovememoir.server.domain.diary.repository.DiaryRepository;
 import com.lovememoir.server.domain.diarypage.AnalysisResult;
 import com.lovememoir.server.domain.diarypage.AnalysisStatus;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
-import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.enumerate.Gender;
@@ -90,7 +90,7 @@ class DiaryPageQueryRepositoryTest extends IntegrationTestSupport {
         DiaryPage diaryPage = createDiaryPage(diary, false, LocalDate.of(2024, 3, 22));
 
         //when
-        Optional<DiaryPageResponse> findDiaryPage = diaryPageQueryRepository.findById(diary.getId());
+        Optional<DiaryPageDto> findDiaryPage = diaryPageQueryRepository.findById(diaryPage.getId());
 
         //then
         assertThat(findDiaryPage).isPresent();

@@ -1,6 +1,6 @@
 package com.lovememoir.server.domain.diarypage.repository;
 
-import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -63,11 +63,11 @@ public class DiaryPageQueryRepository {
             .fetch();
     }
 
-    public Optional<DiaryPageResponse> findById(final long diaryPageId) {
-        DiaryPageResponse content = queryFactory
+    public Optional<DiaryPageDto> findById(final long diaryPageId) {
+        DiaryPageDto content = queryFactory
             .select(
                 Projections.fields(
-                    DiaryPageResponse.class,
+                    DiaryPageDto.class,
                     Expressions.asNumber(diaryPageId).as("diaryPageId"),
                     diaryPage.analysis.analysisStatus,
                     diaryPage.analysis.emotionCode,

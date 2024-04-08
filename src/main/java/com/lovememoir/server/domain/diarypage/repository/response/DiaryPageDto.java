@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(force = true)
-public class DiaryPageResponse {
+public class DiaryPageDto {
 
     private final long diaryPageId;
     private final AnalysisStatus analysisStatus;
@@ -21,7 +21,7 @@ public class DiaryPageResponse {
     private final LocalDateTime createdDateTime;
 
     @Builder
-    private DiaryPageResponse(long diaryPageId, AnalysisStatus analysisStatus, Integer emotionCode, String title, String content, LocalDate recordDate, LocalDateTime createdDateTime) {
+    private DiaryPageDto(long diaryPageId, AnalysisStatus analysisStatus, Integer emotionCode, String title, String content, LocalDate recordDate, LocalDateTime createdDateTime) {
         this.diaryPageId = diaryPageId;
         this.analysisStatus = analysisStatus;
         this.emotionCode = emotionCode;

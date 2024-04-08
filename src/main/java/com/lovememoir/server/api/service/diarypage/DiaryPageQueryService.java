@@ -1,8 +1,11 @@
 package com.lovememoir.server.api.service.diarypage;
 
 import com.lovememoir.server.api.SliceResponse;
+import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
+import com.lovememoir.server.domain.attachedimage.repository.AttachedImageQueryRepository;
+import com.lovememoir.server.domain.attachedimage.repository.response.AttachedImageResponse;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageQueryRepository;
-import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +25,7 @@ import static com.lovememoir.server.common.message.ExceptionMessage.NO_SUCH_DIAR
 public class DiaryPageQueryService {
 
     private final DiaryPageQueryRepository diaryPageQueryRepository;
+    private final AttachedImageQueryRepository attachedImageQueryRepository;
 
     public SliceResponse<DiaryPagesResponse> searchDiaryPages(long diaryId, Pageable pageable) {
         List<Long> diaryIds = diaryPageQueryRepository.findAllIdByDiaryId(diaryId, pageable);
@@ -41,8 +45,12 @@ public class DiaryPageQueryService {
         return SliceResponse.of(content, pageable, hasNext);
     }
 
-    public DiaryPageResponse searchDiaryPage(Long diaryPageId) {
-        return diaryPageQueryRepository.findById(diaryPageId)
+    public DiaryPageResponse searchDiaryPage(long diaryPageId) {
+        DiaryPageDto diaryPage = diaryPageQueryRepository.findById(diaryPageId)
             .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY_PAGE));
+
+        List<AttachedImageResponse> images = attachedImageQueryRepository.findAllByDiaryPageId(diaryPageId);
+
+        return DiaryPageResponse.of(diaryPage, images);
     }
 }

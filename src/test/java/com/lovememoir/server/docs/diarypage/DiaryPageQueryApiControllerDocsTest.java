@@ -3,9 +3,11 @@ package com.lovememoir.server.docs.diarypage;
 import com.lovememoir.server.api.SliceResponse;
 import com.lovememoir.server.api.controller.diarypage.DiaryPageQueryApiController;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
+import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
 import com.lovememoir.server.docs.RestDocsSupport;
+import com.lovememoir.server.domain.attachedimage.repository.response.AttachedImageResponse;
 import com.lovememoir.server.domain.diarypage.AnalysisStatus;
-import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageResponse;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -131,12 +133,17 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
     @DisplayName("일기 상세 조회 API")
     @Test
     void searchDiaryPage() throws Exception {
+        AttachedImageResponse image = AttachedImageResponse.builder()
+            .imageId(1)
+            .url("huibao.jpg")
+            .build();
         DiaryPageResponse response = DiaryPageResponse.builder()
             .diaryPageId(1L)
             .analysisStatus(AnalysisStatus.BEFORE)
             .title("엄마 음식 훔쳐간 후이바오")
             .content("후이바오는 엄마의 음식을 훔치는 것을 좋아합니다ㅋㅋㅋ")
             .recordDate(LocalDate.of(2024, 3, 5))
+            .images(List.of(image))
             .createdDateTime(LocalDateTime.of(2024, 3, 21, 17, 22))
             .build();
 
@@ -172,20 +179,26 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
                     fieldWithPath("data.diaryPageId").type(JsonFieldType.NUMBER)
-                        .description("일기 페이지 식별키"),
+                        .description("일기 식별키"),
                     fieldWithPath("data.analysisStatus").type(JsonFieldType.STRING)
                         .description("일기 감정 분석 상태"),
                     fieldWithPath("data.emotionCode").type(JsonFieldType.STRING)
                         .optional()
                         .description("일기 감정 코드"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING)
-                        .description("일기 페이지 제목"),
+                        .description("일기 제목"),
                     fieldWithPath("data.content").type(JsonFieldType.STRING)
-                        .description("일기 페이지 내용"),
+                        .description("일기 내용"),
                     fieldWithPath("data.recordDate").type(JsonFieldType.ARRAY)
-                        .description("일기 페이지 일자"),
+                        .description("일기 기록일자"),
+                    fieldWithPath("data.images").type(JsonFieldType.ARRAY)
+                        .description("일기 이미지 데이터"),
+                    fieldWithPath("data.images[].imageId").type(JsonFieldType.NUMBER)
+                        .description("일기 이미지 식별키"),
+                    fieldWithPath("data.images[].url").type(JsonFieldType.STRING)
+                        .description("일기 이미지 주소"),
                     fieldWithPath("data.createdDateTime").type(JsonFieldType.ARRAY)
-                        .description("일기 페이지 작성 일시")
+                        .description("일기 작성 일시")
                 )
             ));
     }
