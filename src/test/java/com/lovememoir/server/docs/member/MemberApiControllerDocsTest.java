@@ -5,6 +5,7 @@ import com.lovememoir.server.api.controller.member.request.MemberCreateRequest;
 import com.lovememoir.server.api.controller.member.request.MemberModifyRequest;
 import com.lovememoir.server.api.controller.member.response.MemberCreateResponse;
 import com.lovememoir.server.api.controller.member.response.MemberModifyResponse;
+import com.lovememoir.server.api.controller.member.response.MemberRemoveResponse;
 import com.lovememoir.server.api.service.member.MemberService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
@@ -155,6 +156,15 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
     @DisplayName("멤버 탈퇴 API")
     @Test
     void removeMember() throws Exception {
+
+        MemberRemoveResponse response = MemberRemoveResponse.builder()
+            .nickname("연해말")
+            .message("탈퇴 완료")
+            .build();
+
+        given(memberService.removeMember(any()))
+            .willReturn(response);
+
         mockMvc.perform(
                 delete(BASE_URL)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -178,10 +188,10 @@ public class MemberApiControllerDocsTest extends RestDocsSupport {
                         .description("메시지"),
                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                         .description("응답 데이터"),
-                    fieldWithPath("data.memberKey").type(JsonFieldType.STRING)
-                        .description("삭제 멤버 식별키"),
                     fieldWithPath("data.nickname").type(JsonFieldType.STRING)
-                        .description("삭제 멤버 닉네임")
+                        .description("삭제 멤버 닉네임"),
+                    fieldWithPath("data.message").type(JsonFieldType.STRING)
+                        .description("삭제 완료 메세지")
                 )
             ));
     }

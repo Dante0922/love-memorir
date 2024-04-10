@@ -7,6 +7,7 @@ import com.lovememoir.server.api.controller.auth.response.KakaoUserResponse;
 import com.lovememoir.server.api.controller.member.request.MemberModifyRequest;
 import com.lovememoir.server.api.controller.member.response.MemberCreateResponse;
 import com.lovememoir.server.api.controller.member.response.MemberModifyResponse;
+import com.lovememoir.server.api.controller.member.response.MemberRemoveResponse;
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
 import com.lovememoir.server.api.service.member.request.MemberModifyServiceRequest;
 import com.lovememoir.server.common.auth.SecurityUtils;
@@ -31,7 +32,9 @@ import static com.lovememoir.server.common.message.ExceptionMessage.ALREADY_REGI
 import static com.lovememoir.server.common.message.ExceptionMessage.USER_NOT_FOUND;
 import static com.lovememoir.server.common.message.ValidationMessage.INVALID_NICKNAME_PATTERN;
 import static com.lovememoir.server.common.message.ValidationMessage.MAX_LENGTH_NICKNAME;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -164,7 +167,7 @@ public class MemberServiceTest extends IntegrationTestSupport {
         assertThat(members).hasSize(1);
     }
 
-    @DisplayName("정상 회원 가입")
+    @DisplayName("[멤버수정] 정상 수정 완료")
     @Test
     @WithAuthUser(providerId = "providerId", roles = "USER")
     void modifyMember() throws Exception {
@@ -193,7 +196,7 @@ public class MemberServiceTest extends IntegrationTestSupport {
         AssertionsForClassTypes.assertThat(savedMember.getBirth()).isEqualTo("2024-04-06");
     }
 
-    @DisplayName("[정보수정] 회원의 닉네임은 8자를 초과할 수 없다.")
+    @DisplayName("[멤버수정] 회원의 닉네임은 8자를 초과할 수 없다.")
     @Test
     @WithAuthUser(providerId = "providerId", roles = "USER")
     void modifyMemberWithInvalidNicknameLength() throws Exception {
@@ -218,7 +221,7 @@ public class MemberServiceTest extends IntegrationTestSupport {
         assertThat(members).hasSize(1);
     }
 
-    @DisplayName("[정보수정] 회원의 닉네임은 한글과 숫자만 허용한다.")
+    @DisplayName("[멤버수정] 회원의 닉네임은 한글과 숫자만 허용한다.")
     @Test
     @WithAuthUser(providerId = "providerId", roles = "USER")
     void modifyMemberWithInvalidNicknamePattern() throws Exception {
@@ -244,7 +247,7 @@ public class MemberServiceTest extends IntegrationTestSupport {
         assertThat(members).hasSize(1);
     }
 
-    @DisplayName("[정보수정] 가입하지 않은 유저의 정보는 수정할 수 없다.")
+    @DisplayName("[멤버수정] 가입하지 않은 유저의 정보는 수정할 수 없다.")
     @Test
     @WithAuthUser(providerId = "providerId", roles = "USER")
     void modifyMemberWithNotFoundUser() throws Exception {
@@ -272,6 +275,24 @@ public class MemberServiceTest extends IntegrationTestSupport {
 
         List<Member> members = memberRepository.findAll();
         assertThat(members).hasSize(2);
+    }
+
+    @DisplayName("회원 탈퇴")
+    @Test
+    void removeMember() throws Exception{
+        //given
+        String providerId = "providerId";
+        Auth auth = createAuth(providerId);
+        Member member = createMember(auth);
+
+        //when
+        MemberRemoveResponse response = memberService.removeMember(providerId);
+
+        //then
+        Assertions.assertThat(response).isNotNull();
+
+        Member savedMember = memberQueryRepository.findByProviderId("providerId");
+        Assertions.assertThat(savedMember).isNull();
     }
 
 
