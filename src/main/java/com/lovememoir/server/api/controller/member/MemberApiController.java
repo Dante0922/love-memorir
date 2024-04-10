@@ -41,10 +41,8 @@ public class MemberApiController {
 
     @DeleteMapping()
     public ApiResponse<MemberRemoveResponse> removeMember() {
-        MemberRemoveResponse response = MemberRemoveResponse.builder()
-            .memberKey("hello")
-            .nickname("잘가세요")
-            .build();
+        String providerId = SecurityUtils.getProviderId();
+        MemberRemoveResponse response = memberService.removeMember(providerId);
         return ApiResponse.ok(response);
     }
 

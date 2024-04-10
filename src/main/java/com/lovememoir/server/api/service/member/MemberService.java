@@ -2,6 +2,7 @@ package com.lovememoir.server.api.service.member;
 
 import com.lovememoir.server.api.controller.member.response.MemberCreateResponse;
 import com.lovememoir.server.api.controller.member.response.MemberModifyResponse;
+import com.lovememoir.server.api.controller.member.response.MemberRemoveResponse;
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
 import com.lovememoir.server.api.service.member.request.MemberModifyServiceRequest;
 import com.lovememoir.server.domain.auth.Auth;
@@ -57,6 +58,12 @@ public class MemberService {
         return MemberModifyResponse.of(member);
     }
 
+    public MemberRemoveResponse removeMember(String providerId) {
+        Member member = validateMemberExistence(providerId);
+        member.remove();
+        return MemberRemoveResponse.of(member);
+    }
+
     private void validateDuplicateMember(String providerId) {
         Member member = memberQueryRepository.findByProviderId(providerId);
         if (member != null) {
@@ -71,6 +78,7 @@ public class MemberService {
         }
         return member;
     }
+
 
     private Member saveMember(String nickname, Gender gender, String birth, RoleType roleType, Auth auth) {
         final Member member = Member.builder()

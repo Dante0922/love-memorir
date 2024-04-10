@@ -82,6 +82,5 @@ public class Member extends BaseTimeEntity {
         this.birth = birth;
         this.gender = gender;
     }
-
 }
 
