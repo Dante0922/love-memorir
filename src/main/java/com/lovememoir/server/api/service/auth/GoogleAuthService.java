@@ -2,7 +2,7 @@ package com.lovememoir.server.api.service.auth;
 
 import com.lovememoir.server.api.controller.auth.request.AuthRequest;
 import com.lovememoir.server.api.controller.auth.response.AuthResponse;
-import com.lovememoir.server.common.auth.client.ClientKakao;
+import com.lovememoir.server.common.auth.client.ClientGoogle;
 import com.lovememoir.server.common.auth.jwt.AuthToken;
 import com.lovememoir.server.common.auth.jwt.AuthTokenProvider;
 import com.lovememoir.server.domain.auth.Auth;
@@ -19,22 +19,22 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class KakaoAuthService {
+public class GoogleAuthService {
 
-    private final ClientKakao clientKakao;
     private final AuthTokenProvider authTokenProvider;
     private final AuthRepository authRepository;
     private final AuthQueryRepository authQueryRepository;
     private final MemberQueryRepository memberQueryRepository;
+    private final ClientGoogle clientGoogle;
 
 
     public AuthResponse login(AuthRequest authRequest) {
         String accessToken = authRequest.getAccessToken();
-        String providerId = clientKakao.getProviderId(accessToken);
+        String providerId = clientGoogle.getProviderId(accessToken);
         Auth savedAuth = authQueryRepository.findByProviderId(providerId);
 
         if (savedAuth == null) {
-            Auth kakaoAuth = clientKakao.createAuth(accessToken);
+            Auth kakaoAuth = clientGoogle.createAuth(accessToken);
             authRepository.save(kakaoAuth);
         }
 

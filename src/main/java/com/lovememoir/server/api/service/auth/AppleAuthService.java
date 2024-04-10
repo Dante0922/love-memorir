@@ -28,7 +28,7 @@ public class AppleAuthService {
     private final MemberQueryRepository memberQueryRepository;
 
 
-    public AuthResponse appleLogin(AuthRequest authRequest) {
+    public AuthResponse login(AuthRequest authRequest) {
         String accessToken = authRequest.getAccessToken();
         String providerId = clientApple.getProviderId(accessToken);
         Auth savedAuth = authQueryRepository.findByProviderId(providerId);

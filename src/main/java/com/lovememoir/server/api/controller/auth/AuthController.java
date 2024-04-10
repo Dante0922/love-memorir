@@ -4,6 +4,7 @@ import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.api.controller.auth.request.AuthRequest;
 import com.lovememoir.server.api.controller.auth.response.AuthResponse;
 import com.lovememoir.server.api.service.auth.AppleAuthService;
+import com.lovememoir.server.api.service.auth.GoogleAuthService;
 import com.lovememoir.server.api.service.auth.KakaoAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,16 +20,23 @@ public class AuthController {
 
     private final KakaoAuthService kakaoAuthService;
     private final AppleAuthService appleAuthService;
+    private final GoogleAuthService googleAuthService;
 
     @RequestMapping("/kakao")
     public ApiResponse<AuthResponse> kakaoAuth(@RequestBody AuthRequest authRequest) {
         log.info("authRequest: {}", authRequest);
-        return ApiResponse.success(kakaoAuthService.kakaoLogin(authRequest));
+        return ApiResponse.success(kakaoAuthService.login(authRequest));
     }
 
     @RequestMapping("/apple")
     public ApiResponse<AuthResponse> appleAuth(@RequestBody AuthRequest authRequest) {
         log.info("authRequest: {}", authRequest);
-        return ApiResponse.success(appleAuthService.appleLogin(authRequest));
+        return ApiResponse.success(appleAuthService.login(authRequest));
+    }
+
+    @RequestMapping("/google")
+    public ApiResponse<AuthResponse> googleAuth(@RequestBody AuthRequest authRequest) {
+        log.info("authRequest: {}", authRequest);
+        return ApiResponse.success(googleAuthService.login(authRequest));
     }
 }
