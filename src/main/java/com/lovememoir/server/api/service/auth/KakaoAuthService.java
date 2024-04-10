@@ -28,7 +28,7 @@ public class KakaoAuthService {
     private final MemberQueryRepository memberQueryRepository;
 
 
-    public AuthResponse login(AuthRequest authRequest) {
+    public AuthResponse kakaoLogin(AuthRequest authRequest) {
         String accessToken = authRequest.getAccessToken();
         String providerId = clientKakao.getProviderId(accessToken);
         Auth savedAuth = authQueryRepository.findByProviderId(providerId);
@@ -46,5 +46,9 @@ public class KakaoAuthService {
             .appToken(appToken.getToken())
             .isNewMember(isNewMember)
             .build();
+    }
+
+    public AuthResponse appleLogin(AuthRequest authRequest) {
+        return null;
     }
 }

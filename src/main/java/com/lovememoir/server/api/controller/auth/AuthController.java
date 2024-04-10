@@ -21,6 +21,12 @@ public class AuthController {
     @RequestMapping("/kakao")
     public ApiResponse<AuthResponse> kakaoAuth(@RequestBody AuthRequest authRequest) {
         log.info("authRequest: {}", authRequest);
-        return ApiResponse.success(kakaoAuthService.login(authRequest));
+        return ApiResponse.success(kakaoAuthService.kakaoLogin(authRequest));
+    }
+
+    @RequestMapping("/apple")
+    public ApiResponse<AuthResponse> appleAuth(@RequestBody AuthRequest authRequest) {
+        log.info("authRequest: {}", authRequest);
+        return ApiResponse.success(kakaoAuthService.appleLogin(authRequest));
     }
 }
