@@ -23,7 +23,8 @@ public class MemberQueryRepository {
         return jpaQueryFactory
             .select(auth.member)
             .from(auth)
-            .where(auth.providerId.eq(id))
+            .where(auth.providerId.eq(id),
+                   auth.member.isDeleted.isFalse())
             .fetchOne();
     }
 }

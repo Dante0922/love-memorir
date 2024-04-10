@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    @Query("select m from Member m join m.auth a where a.providerId = :providerId")
+    @Query("select m from Member m join m.auth a where a.providerId = :providerId and m.isDeleted = false")
     Optional<Member> findByProviderId(String providerId);
 }

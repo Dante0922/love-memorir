@@ -18,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static com.lovememoir.server.api.service.member.MemberValidator.validateNickname;
 import static com.lovememoir.server.common.message.ExceptionMessage.ALREADY_REGISTERED_USER;
 import static com.lovememoir.server.common.message.ExceptionMessage.USER_NOT_FOUND;
@@ -36,8 +38,7 @@ public class MemberService {
     public MemberCreateResponse createMember(MemberCreateServiceRequest request) {
         String nickname = validateNickname(request.getNickname());
         Gender gender = Gender.valueOf(request.getGender());
-        Auth currentAuth = authQueryRepository.findByProviderId(request.getProviderId());
-
+        Auth currentAuth = validateAndGetCurrentAuth(request.getProviderId());
         validateDuplicateMember(request.getProviderId());
 
         Member savedMember = saveMember(nickname, gender, request.getBirth(), RoleType.USER, currentAuth);
@@ -45,9 +46,10 @@ public class MemberService {
         return MemberCreateResponse.of(savedMember);
     }
 
+
+
     public MemberModifyResponse modifyMember(MemberModifyServiceRequest request) {
-        Auth currentAuth = authQueryRepository.findByProviderId(request.getProviderId());
-        Member member = validateMemberExistence(request.getProviderId());
+        Member member = validateAndGetMember(request.getProviderId());
 
         String nickname = validateNickname(request.getNickname());
         String birth = request.getBirth();
@@ -59,19 +61,27 @@ public class MemberService {
     }
 
     public MemberRemoveResponse removeMember(String providerId) {
-        Member member = validateMemberExistence(providerId);
+        Member member = validateAndGetMember(providerId);
         member.remove();
         return MemberRemoveResponse.of(member);
     }
 
     private void validateDuplicateMember(String providerId) {
-        Member member = memberQueryRepository.findByProviderId(providerId);
-        if (member != null) {
+        Optional<Member> optionalMember = memberRepository.findByProviderId(providerId);
+        if (optionalMember.isPresent()) {
             throw new IllegalArgumentException(ALREADY_REGISTERED_USER);
         }
     }
 
-    private Member validateMemberExistence(String providerId) {
+    private Auth validateAndGetCurrentAuth(String providerId) {
+        Auth currentAuth = authQueryRepository.findByProviderId(providerId);
+        if (currentAuth == null) {
+            throw new IllegalArgumentException(USER_NOT_FOUND);
+        }
+        return currentAuth;
+    }
+
+    private Member validateAndGetMember(String providerId) {
         Member member = memberQueryRepository.findByProviderId(providerId);
         if (member == null) {
             throw new IllegalArgumentException(USER_NOT_FOUND);
