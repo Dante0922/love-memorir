@@ -1,4 +1,4 @@
-[[search-member]]
+[[search-avatar]]
 === 아바타 조회 API
 
 ==== HTTP Request

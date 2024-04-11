@@ -1,4 +1,4 @@
-[[modify-member]]
+[[modify-avatar]]
 === 아바타 정보 수정 API
 
 ==== HTTP Request
