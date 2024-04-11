@@ -1,4 +1,4 @@
-[[create-Avatar]]
+[[create-avatar]]
 === 신규 아바타 생성 API
 
 ==== HTTP Request

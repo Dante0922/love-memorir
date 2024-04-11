@@ -2,6 +2,7 @@ package com.lovememoir.server.api.service.member;
 
 import com.lovememoir.server.api.controller.member.response.MemberCreateResponse;
 import com.lovememoir.server.api.controller.member.response.MemberModifyResponse;
+import com.lovememoir.server.api.controller.member.response.MemberRemoveResponse;
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
 import com.lovememoir.server.api.service.member.request.MemberModifyServiceRequest;
 import com.lovememoir.server.domain.auth.Auth;
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static com.lovememoir.server.api.service.member.MemberValidator.validateNickname;
 import static com.lovememoir.server.common.message.ExceptionMessage.ALREADY_REGISTERED_USER;
@@ -35,8 +38,7 @@ public class MemberService {
     public MemberCreateResponse createMember(MemberCreateServiceRequest request) {
         String nickname = validateNickname(request.getNickname());
         Gender gender = Gender.valueOf(request.getGender());
-        Auth currentAuth = authQueryRepository.findByProviderId(request.getProviderId());
-
+        Auth currentAuth = validateAndGetCurrentAuth(request.getProviderId());
         validateDuplicateMember(request.getProviderId());
 
         Member savedMember = saveMember(nickname, gender, request.getBirth(), RoleType.USER, currentAuth);
@@ -44,9 +46,10 @@ public class MemberService {
         return MemberCreateResponse.of(savedMember);
     }
 
+
+
     public MemberModifyResponse modifyMember(MemberModifyServiceRequest request) {
-        Auth currentAuth = authQueryRepository.findByProviderId(request.getProviderId());
-        Member member = validateMemberExistence(request.getProviderId());
+        Member member = validateAndGetMember(request.getProviderId());
 
         String nickname = validateNickname(request.getNickname());
         String birth = request.getBirth();
@@ -57,20 +60,35 @@ public class MemberService {
         return MemberModifyResponse.of(member);
     }
 
+    public MemberRemoveResponse removeMember(String providerId) {
+        Member member = validateAndGetMember(providerId);
+        member.remove();
+        return MemberRemoveResponse.of(member);
+    }
+
     private void validateDuplicateMember(String providerId) {
-        Member member = memberQueryRepository.findByProviderId(providerId);
-        if (member != null) {
+        Optional<Member> optionalMember = memberRepository.findByProviderId(providerId);
+        if (optionalMember.isPresent()) {
             throw new IllegalArgumentException(ALREADY_REGISTERED_USER);
         }
     }
 
-    private Member validateMemberExistence(String providerId) {
+    private Auth validateAndGetCurrentAuth(String providerId) {
+        Auth currentAuth = authQueryRepository.findByProviderId(providerId);
+        if (currentAuth == null) {
+            throw new IllegalArgumentException(USER_NOT_FOUND);
+        }
+        return currentAuth;
+    }
+
+    private Member validateAndGetMember(String providerId) {
         Member member = memberQueryRepository.findByProviderId(providerId);
         if (member == null) {
             throw new IllegalArgumentException(USER_NOT_FOUND);
         }
         return member;
     }
+
 
     private Member saveMember(String nickname, Gender gender, String birth, RoleType roleType, Auth auth) {
         final Member member = Member.builder()

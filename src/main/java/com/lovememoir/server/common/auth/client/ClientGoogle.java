@@ -1,6 +1,6 @@
 package com.lovememoir.server.common.auth.client;
 
-import com.lovememoir.server.api.controller.auth.response.KakaoUserResponse;
+import com.lovememoir.server.api.controller.auth.response.GoogleUserResponse;
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.ProviderType;
@@ -17,36 +17,39 @@ import static com.lovememoir.server.common.message.ExceptionMessage.OAUTH_TOKEN_
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ClientKakao implements ClientProxy {
+public class ClientGoogle implements ClientProxy {
 
     private final WebClient webClient;
 
     @Override
     public Auth createAuth(String accessToken) {
-        KakaoUserResponse kakaoUserResponse = getUserResponse(accessToken);
+        GoogleUserResponse googleUserResponse = getUserResponse(accessToken);
         return Auth.builder()
-            .provider(ProviderType.KAKAO)
-            .providerId(kakaoUserResponse.getId().toString())
+            .provider(ProviderType.GOOGLE)
+            .providerId(googleUserResponse.getSub())
             // TODO : 프론트로부터 RefreshToken 받아오기?
             .accessToken(accessToken)
             .build();
     }
 
     public String getProviderId(String accessToken) {
-        KakaoUserResponse kakaoUserResponse = getUserResponse(accessToken);
-        return kakaoUserResponse.getId().toString();
+        GoogleUserResponse kakaoUserResponse = getUserResponse(accessToken);
+        return kakaoUserResponse.getSub();
     }
 
-    private KakaoUserResponse getUserResponse(String accessToken) {
+    private GoogleUserResponse getUserResponse(String accessToken) {
         return webClient.get()
-            .uri("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
-            .headers(h -> h.setBearerAuth(accessToken))
+            .uri("https://oauth2.googleapis.com/tokeninfo",
+                builder ->
+                    builder
+                        .queryParam("id_token", accessToken)
+                        .build())
             .retrieve()
             .onStatus(HttpStatusCode::is4xxClientError, response ->
                 Mono.error(new AuthException(OAUTH_TOKEN_UNAUTHORIZED)))
             .onStatus(HttpStatusCode::is5xxServerError, response ->
                 Mono.error(new AuthException(OAUTH_SERVER_ERROR)))
-            .bodyToMono(KakaoUserResponse.class)
+            .bodyToMono(GoogleUserResponse.class)
             .block();
     }
 }

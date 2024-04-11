@@ -1,6 +1,7 @@
 package com.lovememoir.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lovememoir.server.api.controller.auth.AuthApiController;
 import com.lovememoir.server.api.controller.avatar.AvatarApiController;
 import com.lovememoir.server.api.controller.avatar.AvatarQueryApiController;
 import com.lovememoir.server.api.controller.diary.DiaryApiController;
@@ -9,6 +10,9 @@ import com.lovememoir.server.api.controller.diarypage.DiaryPageApiController;
 import com.lovememoir.server.api.controller.diarypage.DiaryPageQueryApiController;
 import com.lovememoir.server.api.controller.member.MemberApiController;
 import com.lovememoir.server.api.controller.member.MemberQueryApiController;
+import com.lovememoir.server.api.service.auth.AppleAuthService;
+import com.lovememoir.server.api.service.auth.GoogleAuthService;
+import com.lovememoir.server.api.service.auth.KakaoAuthService;
 import com.lovememoir.server.api.service.diary.DiaryQueryService;
 import com.lovememoir.server.api.service.diary.DiaryService;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
@@ -31,6 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @WithMockUser(username = "user", roles = "USER")
 @WithUserDetails(userDetailsServiceBeanName = "customUserDetailsService")
 @WebMvcTest(controllers = {
+    AuthApiController.class,
     MemberApiController.class, MemberQueryApiController.class,
     AvatarApiController.class, AvatarQueryApiController.class,
     DiaryApiController.class, DiaryQueryApiController.class,
@@ -64,5 +69,14 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected MemberQueryService memberQueryService;
+
+    @MockBean
+    protected KakaoAuthService kakaoAuthService;
+
+    @MockBean
+    protected AppleAuthService appleAuthService;
+
+    @MockBean
+    protected GoogleAuthService googleAuthService;
 
 }

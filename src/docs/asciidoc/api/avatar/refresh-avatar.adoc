@@ -1,4 +1,4 @@
-[[refresh-member]]
+[[refresh-avatar]]
 === 아바타 질문/행동 갱신 API
 
 ==== HTTP Request
