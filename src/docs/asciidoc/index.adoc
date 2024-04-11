@@ -11,6 +11,12 @@ endif::[]
 
 include::overview.adoc[]
 
+[[OAuth2-API]]
+== OAuth2 API
+
+include::api/auth/kakao-login.adoc[]
+
+
 [[Member-API]]
 == 멤버 API
 

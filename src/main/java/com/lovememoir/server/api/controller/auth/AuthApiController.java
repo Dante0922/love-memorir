@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @Slf4j
-public class AuthController {
+public class AuthApiController {
 
     private final KakaoAuthService kakaoAuthService;
     private final AppleAuthService appleAuthService;
