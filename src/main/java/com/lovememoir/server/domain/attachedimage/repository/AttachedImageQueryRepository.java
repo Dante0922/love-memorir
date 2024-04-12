@@ -1,6 +1,5 @@
 package com.lovememoir.server.domain.attachedimage.repository;
 
-import com.lovememoir.server.domain.attachedimage.QAttachedImage;
 import com.lovememoir.server.domain.attachedimage.repository.response.AttachedImageResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQueryFactory;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.lovememoir.server.domain.attachedimage.QAttachedImage.*;
+import static com.lovememoir.server.domain.attachedimage.QAttachedImage.attachedImage;
 
 @Repository
 public class AttachedImageQueryRepository {

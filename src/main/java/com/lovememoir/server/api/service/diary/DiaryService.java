@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateLoveInfo;
 import static com.lovememoir.server.api.service.diary.DiaryValidator.validateTitle;
