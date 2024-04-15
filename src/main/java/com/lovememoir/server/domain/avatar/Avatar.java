@@ -14,26 +14,18 @@ public class Avatar extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "avatar_id") // @TODO member_id PK 활용 예정.. @Inheritance? 이해하고 수정하자.
+    @Column(name = "avatar_id")
     private Long id;
 
     @Column(nullable = false, length = 10)
-    private String avatarType;
-
-    @Column(nullable = false, length = 10)
-    private String growthStage;
-
-    @Column(nullable = false, length = 10)
-    private String behavior;
+    private String emotion;
 
     @Column(nullable = false, length = 100)
     private String question;
 
     @Builder
-    private Avatar(String avatarType, String growthStage, String behavior, String question) {
-        this.avatarType = avatarType;
-        this.growthStage = growthStage;
-        this.behavior = behavior;
+    private Avatar(String emotion, String question) {
+        this.emotion = emotion;
         this.question = question;
     }
 }

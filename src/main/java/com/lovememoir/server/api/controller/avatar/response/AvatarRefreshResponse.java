@@ -6,12 +6,12 @@ import lombok.Getter;
 @Getter
 public class AvatarRefreshResponse {
 
-    private final String behavior;
+    private final String emotion;
     private final String question;
 
     @Builder
-    private AvatarRefreshResponse(String behavior, String question) {
-        this.behavior = behavior;
+    private AvatarRefreshResponse(String emotion, String question) {
+        this.emotion = emotion;
         this.question = question;
     }
 }
