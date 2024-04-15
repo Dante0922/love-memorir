@@ -1,6 +1,8 @@
 package com.lovememoir.server.docs.avatar;
 
 import com.lovememoir.server.api.controller.avatar.AvatarQueryApiController;
+import com.lovememoir.server.api.service.avatar.AvatarQueryService;
+import com.lovememoir.server.api.service.diary.DiaryQueryService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -21,10 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AvatarQueryApiControllerDocsTest extends RestDocsSupport {
 
     private static final String BASE_URL = "/api/v1/avatars";
+    private final AvatarQueryService avatarQueryService = mock(AvatarQueryService.class);
+
 
     @Override
     protected Object initController() {
-        return new AvatarQueryApiController();
+        return new AvatarQueryApiController(avatarQueryService);
     }
 
     @DisplayName("아바타 조회 API")

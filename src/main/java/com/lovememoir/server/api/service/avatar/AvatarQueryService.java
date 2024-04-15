@@ -1,6 +1,6 @@
 package com.lovememoir.server.api.service.avatar;
 
-import com.lovememoir.server.api.controller.avatar.response.AvatarRefreshResponse;
+import com.lovememoir.server.api.controller.avatar.response.AvatarCreateResponse;
 import com.lovememoir.server.domain.avatar.Avatar;
 import com.lovememoir.server.domain.avatar.repository.AvatarQueryRepository;
 import com.lovememoir.server.domain.avatar.repository.response.AvatarResponse;
@@ -22,8 +22,8 @@ public class AvatarQueryService {
     public AvatarResponse searchAvatar(String providerId) {
         Optional<Avatar> avatar = avatarQueryRepository.findByProviderId(providerId);
         if (avatar.isEmpty()) {
-            AvatarRefreshResponse avatarRefreshResponse = avatarService.refreshAvatar();
-            return avatarRefreshResponse.toAvatarResponse();
+            AvatarCreateResponse avatarCreateResponse = avatarService.createAvatar();
+            return avatarCreateResponse.toAvatarResponse();
         }
         return AvatarResponse.of(avatar.get());
     }

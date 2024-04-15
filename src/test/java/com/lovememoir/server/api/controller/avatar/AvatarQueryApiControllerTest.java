@@ -1,8 +1,10 @@
 package com.lovememoir.server.api.controller.avatar;
 
 import com.lovememoir.server.ControllerTestSupport;
+import com.lovememoir.server.api.service.avatar.AvatarQueryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;

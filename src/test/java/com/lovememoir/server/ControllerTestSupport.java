@@ -13,6 +13,8 @@ import com.lovememoir.server.api.controller.member.MemberQueryApiController;
 import com.lovememoir.server.api.service.auth.AppleAuthService;
 import com.lovememoir.server.api.service.auth.GoogleAuthService;
 import com.lovememoir.server.api.service.auth.KakaoAuthService;
+import com.lovememoir.server.api.service.avatar.AvatarQueryService;
+import com.lovememoir.server.api.service.avatar.AvatarService;
 import com.lovememoir.server.api.service.diary.DiaryQueryService;
 import com.lovememoir.server.api.service.diary.DiaryService;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
@@ -69,6 +71,12 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected MemberQueryService memberQueryService;
+
+    @MockBean
+    protected AvatarService avatarService;
+
+    @MockBean
+    protected AvatarQueryService avatarQueryService;
 
     @MockBean
     protected KakaoAuthService kakaoAuthService;
