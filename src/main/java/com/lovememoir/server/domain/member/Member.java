@@ -45,8 +45,7 @@ public class Member extends BaseTimeEntity {
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Auth auth;
 
-    @OneToOne
-    @JoinColumn(name = "avatar_id")
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Avatar avatar;
 
     //TODO diary, term 속성 추가

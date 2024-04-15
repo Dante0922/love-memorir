@@ -1,6 +1,7 @@
 package com.lovememoir.server.domain.avatar;
 
 import com.lovememoir.server.domain.BaseTimeEntity;
+import com.lovememoir.server.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,6 +17,10 @@ public class Avatar extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "avatar_id")
     private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(nullable = false, length = 10)
     private String emotion;
