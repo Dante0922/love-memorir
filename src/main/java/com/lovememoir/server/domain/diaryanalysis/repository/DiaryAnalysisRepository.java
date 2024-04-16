@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DiaryAnalysisRepository extends JpaRepository<DiaryAnalysis, Long> {
+
 }

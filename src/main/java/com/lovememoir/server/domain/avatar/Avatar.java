@@ -23,13 +23,13 @@ public class Avatar extends BaseTimeEntity {
     private Member member;
 
     @Column(nullable = false, length = 10)
-    private String emotion;
+    private Emotion emotion;
 
     @Column(nullable = false, length = 100)
     private String question;
 
     @Builder
-    private Avatar(String emotion, String question) {
+    private Avatar(Emotion emotion, String question) {
         this.emotion = emotion;
         this.question = question;
     }
