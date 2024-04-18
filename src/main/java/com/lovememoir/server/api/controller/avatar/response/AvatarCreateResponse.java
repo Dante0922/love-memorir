@@ -22,4 +22,6 @@ public class AvatarCreateResponse {
             .question(question)
             .build();
     }
+
+    public static AvatarCreateResponse
 }

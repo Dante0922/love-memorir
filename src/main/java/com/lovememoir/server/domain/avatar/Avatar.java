@@ -29,8 +29,17 @@ public class Avatar extends BaseTimeEntity {
     private String question;
 
     @Builder
-    private Avatar(Emotion emotion, String question) {
+    private Avatar(Emotion emotion, String question, Member member) {
         this.emotion = emotion;
         this.question = question;
+        this.member = member;
+    }
+
+    public static Avatar create(Emotion emotion, String question, Member member) {
+        return Avatar.builder()
+            .emotion(emotion)
+            .question(question)
+            .member(member)
+            .build();
     }
 }

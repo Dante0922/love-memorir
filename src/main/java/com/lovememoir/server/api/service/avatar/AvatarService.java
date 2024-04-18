@@ -7,10 +7,13 @@ import com.lovememoir.server.common.auth.SecurityUtils;
 import com.lovememoir.server.domain.avatar.Avatar;
 import com.lovememoir.server.domain.avatar.Emotion;
 import com.lovememoir.server.domain.avatar.repository.AvatarRepository;
+import com.lovememoir.server.domain.avatar.repository.response.AvatarResponse;
 import com.lovememoir.server.domain.diaryanalysis.DiaryAnalysis;
 import com.lovememoir.server.domain.diaryanalysis.repository.DiaryAnalysisQueryRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
+import com.lovememoir.server.domain.question.Question;
+import com.lovememoir.server.domain.question.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,30 +34,33 @@ public class AvatarService {
     private final AvatarRepository avatarRepository;
     private final MemberRepository memberRepository;
     private final DiaryAnalysisQueryRepository diaryAnalysisQueryRepository;
+    private final QuestionRepository questionRepository;
 
-    public AvatarCreateResponse createAvatar() {
+    public AvatarResponse createAvatar() {
 
+        // 회원가입 시 최초 아바타를 생성한다.
         Member member = getMember();
+        Emotion emotion = Emotion.STABILITY;
+        String question = "만나서 반가워요";
 
-        Map.Entry<Integer, Double> highestEmotion = getRecentHighestEmotion(member);
-        Integer emotionCode = highestEmotion.getKey();
-        Double emotionWeight = highestEmotion.getValue();
-
-        // 일주일 간의 기록을 분석하여 Avatar 생성
-
-        Avatar avatar = Avatar.builder()
-            .emotion(Emotion.STABILITY)
-            .question(generateQuestion())
-            .build();
-        return null;
+        Avatar avatar = Avatar.create(emotion, question, member);
+        return AvatarResponse.of(avatar);
 
     }
 
     public AvatarRefreshResponse refreshAvatar() {
-        return AvatarRefreshResponse.builder()
-            .emotion("H2")
-            .question("오늘은 무슨 일이 있었나요?")
-            .build();
+
+        Member member = getMember();
+        Map.Entry<Integer, Double> highestEmotion = getRecentHighestEmotion(member);
+        Integer emotionCode = highestEmotion.getKey();
+
+        Emotion emotion = Emotion.fromCode(emotionCode);
+        //question들을 어떻게 할 것인가...
+        List<Question> questionList = questionRepository.findByEmotion(emotion);
+
+
+
+        return null;
     }
 
     private Map.Entry<Integer, Double> getRecentHighestEmotion(Member member) {
