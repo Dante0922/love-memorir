@@ -1,6 +1,7 @@
 package com.lovememoir.server.api.controller.avatar;
 import com.lovememoir.server.ControllerTestSupport;
 import com.lovememoir.server.api.controller.avatar.response.AvatarRefreshResponse;
+import com.lovememoir.server.domain.avatar.Emotion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -19,7 +20,7 @@ class AvatarApiControllerTest extends ControllerTestSupport {
     void refreshAvatar() throws Exception {
         //given
         AvatarRefreshResponse request = AvatarRefreshResponse.builder()
-                .emotion("Z8")
+                .emotion(Emotion.STABILITY)
                 .question("오늘은 무슨 일이 있었나요?")
                 .build();
         //when //then

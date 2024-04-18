@@ -22,8 +22,8 @@ public class AvatarQueryService {
     public AvatarResponse searchAvatar(String providerId) {
         Optional<Avatar> avatar = avatarQueryRepository.findByProviderId(providerId);
         if (avatar.isEmpty()) {
-            AvatarCreateResponse avatarCreateResponse = avatarService.createAvatar();
-            return avatarCreateResponse.toAvatarResponse();
+            AvatarResponse response = avatarService.createAvatar();
+            return response;
         }
         return AvatarResponse.of(avatar.get());
     }
