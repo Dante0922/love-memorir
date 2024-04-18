@@ -1,8 +1,8 @@
 package com.lovememoir.server.api.service.avatar;
 
 
-import com.lovememoir.server.api.controller.avatar.response.AvatarCreateResponse;
 import com.lovememoir.server.api.controller.avatar.response.AvatarRefreshResponse;
+import com.lovememoir.server.api.service.RedisService;
 import com.lovememoir.server.common.auth.SecurityUtils;
 import com.lovememoir.server.domain.avatar.Avatar;
 import com.lovememoir.server.domain.avatar.Emotion;
@@ -18,10 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.lovememoir.server.common.message.ExceptionMessage.NO_SUCH_MEMBER;
@@ -35,6 +32,7 @@ public class AvatarService {
     private final MemberRepository memberRepository;
     private final DiaryAnalysisQueryRepository diaryAnalysisQueryRepository;
     private final QuestionRepository questionRepository;
+    private final RedisService redisService;
 
     public AvatarResponse createAvatar() {
 
@@ -51,16 +49,36 @@ public class AvatarService {
     public AvatarRefreshResponse refreshAvatar() {
 
         Member member = getMember();
+        Long memberId = member.getId();
+
         Map.Entry<Integer, Double> highestEmotion = getRecentHighestEmotion(member);
         Integer emotionCode = highestEmotion.getKey();
-
         Emotion emotion = Emotion.fromCode(emotionCode);
+
         //question들을 어떻게 할 것인가...
-        List<Question> questionList = questionRepository.findByEmotion(emotion);
+        Question selectedQuestion = getQuestion(emotion, memberId);
+        // Avatar와 Question의 관계는 끊는 게 맞을까?
+        Avatar avatar = Avatar.create(emotion, selectedQuestion.getContent(), member);
 
+        return AvatarRefreshResponse.of(avatar);
+    }
 
-
-        return null;
+    private Question getQuestion(Emotion emotion, Long memberId) {
+        List<Question> allQuestions = questionRepository.findByEmotion(emotion);
+        List<Question> availableQuestions = allQuestions.stream()
+            .filter(question -> redisService.find(redisService.generateAvatarKey(memberId, question.getId())) == null)
+            .toList();
+        Question selectedQuestion;
+        if (availableQuestions.isEmpty()) {
+            selectedQuestion = Question.builder()
+                .emotion(Emotion.STABILITY)
+                .content("행복하길 바래요")
+                .build();
+        } else {
+            selectedQuestion = availableQuestions.get(new Random().nextInt(availableQuestions.size()));
+        }
+        redisService.saveWith7DaysExpiration(redisService.generateAvatarKey(memberId, selectedQuestion.getId()), "AA");
+        return selectedQuestion;
     }
 
     private Map.Entry<Integer, Double> getRecentHighestEmotion(Member member) {
@@ -70,15 +88,13 @@ public class AvatarService {
             .collect(Collectors.groupingBy(DiaryAnalysis::getEmotionCode,
                 Collectors.averagingDouble(DiaryAnalysis::getWeight)));
 
-        Map.Entry<Integer, Double> highestEmotion = Collections.max(emotionScores.entrySet(), Map.Entry.comparingByValue());
-        return highestEmotion;
+        return Collections.max(emotionScores.entrySet(), Map.Entry.comparingByValue());
     }
 
     private Member getMember() {
         String providerId = SecurityUtils.getProviderId();
-        Member member = memberRepository.findByProviderId(providerId)
+        return memberRepository.findByProviderId(providerId)
             .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
-        return member;
     }
 
     private String generateQuestion() {

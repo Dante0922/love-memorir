@@ -1,5 +1,6 @@
 package com.lovememoir.server.api.controller.avatar.response;
 
+import com.lovememoir.server.domain.avatar.Avatar;
 import com.lovememoir.server.domain.avatar.Emotion;
 import com.lovememoir.server.domain.avatar.repository.response.AvatarResponse;
 import lombok.Builder;
@@ -21,6 +22,13 @@ public class AvatarRefreshResponse {
         return AvatarResponse.builder()
             .emotion(emotion)
             .question(question)
+            .build();
+    }
+
+    public static AvatarRefreshResponse of(Avatar avatar) {
+        return AvatarRefreshResponse.builder()
+            .emotion(avatar.getEmotion())
+            .question(avatar.getQuestion())
             .build();
     }
 }

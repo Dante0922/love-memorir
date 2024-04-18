@@ -13,18 +13,21 @@ public class RedisService {
     private final StringRedisTemplate redisTemplate;
 
     //TODO type enum 만들 것
-    private String getKey(String type, String key) {
-        return type + ":" + key;
+    public String generateAvatarKey(Long memberId, Long questionId) {
+        return String.format("%s:%d:%d", "avatar", memberId, questionId);
     }
 
-    public void save(String type, String key, String value) {
-        redisTemplate.opsForValue().set(getKey(type, key), value);
-    }
-    public void saveWith7DaysExpiration(String type, String key, String value) {
-        redisTemplate.opsForValue().set(getKey(type, key), value, 7, TimeUnit.DAYS);
+    public void save(String key, String value) {
+        redisTemplate.opsForValue().set(key, value);
     }
 
-    public String find(String type, String key) {
-        return redisTemplate.opsForValue().get(getKey(type, key));
+    public void saveWith7DaysExpiration(String key, String value) {
+        redisTemplate.opsForValue().set(key, value, 7, TimeUnit.DAYS);
     }
+
+    public String find(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
+
+
 }

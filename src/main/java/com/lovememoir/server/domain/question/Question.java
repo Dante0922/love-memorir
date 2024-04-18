@@ -4,6 +4,7 @@ import com.lovememoir.server.domain.BaseTimeEntity;
 import com.lovememoir.server.domain.avatar.Emotion;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,10 @@ public class Question extends BaseTimeEntity {
     @Column
     private String content;
 
+    @Builder
+    private Question(Long id, Emotion emotion, String content) {
+        this.id = id;
+        this.emotion = emotion;
+        this.content = content;
+    }
 }
