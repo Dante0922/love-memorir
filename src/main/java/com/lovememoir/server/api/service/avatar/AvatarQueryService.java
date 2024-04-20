@@ -1,6 +1,6 @@
 package com.lovememoir.server.api.service.avatar;
 
-import com.lovememoir.server.api.controller.avatar.response.AvatarCreateResponse;
+import com.lovememoir.server.api.controller.avatar.response.AvatarRefreshResponse;
 import com.lovememoir.server.domain.avatar.Avatar;
 import com.lovememoir.server.domain.avatar.repository.AvatarQueryRepository;
 import com.lovememoir.server.domain.avatar.repository.response.AvatarResponse;
@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Service
@@ -20,12 +20,18 @@ public class AvatarQueryService {
 
 
     public AvatarResponse searchAvatar(String providerId) {
-        Optional<Avatar> avatar = avatarQueryRepository.findByProviderId(providerId);
-        if (avatar.isEmpty()) {
-            AvatarResponse response = avatarService.createAvatar();
-            return response;
+        Avatar avatar = avatarQueryRepository.findByProviderId(providerId);
+        
+        if (isQuestionOutdated(avatar)){
+            AvatarRefreshResponse avatarRefreshResponse = avatarService.refreshAvatar(providerId);
+            return avatarRefreshResponse.toAvatarResponse();
         }
-        return AvatarResponse.of(avatar.get());
+
+        return AvatarResponse.of(avatar);
+    }
+
+    private static boolean isQuestionOutdated(Avatar avatar) {
+        return avatar.getQuestionModifiedDateTime().isBefore(LocalDateTime.now().minusDays(1));
     }
 }
 

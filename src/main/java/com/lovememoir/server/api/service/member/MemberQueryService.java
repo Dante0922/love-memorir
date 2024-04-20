@@ -1,6 +1,6 @@
 package com.lovememoir.server.api.service.member;
 
-import com.lovememoir.server.api.controller.member.response.MemberResponse;
+import com.lovememoir.server.domain.member.repository.response.MemberResponse;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberQueryRepository;
 import lombok.RequiredArgsConstructor;

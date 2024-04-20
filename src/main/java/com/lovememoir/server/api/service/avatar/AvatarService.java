@@ -3,10 +3,9 @@ package com.lovememoir.server.api.service.avatar;
 
 import com.lovememoir.server.api.controller.avatar.response.AvatarRefreshResponse;
 import com.lovememoir.server.api.service.RedisService;
-import com.lovememoir.server.common.auth.SecurityUtils;
 import com.lovememoir.server.domain.avatar.Avatar;
 import com.lovememoir.server.domain.avatar.Emotion;
-import com.lovememoir.server.domain.avatar.repository.AvatarRepository;
+import com.lovememoir.server.domain.avatar.repository.AvatarQueryRepository;
 import com.lovememoir.server.domain.avatar.repository.response.AvatarResponse;
 import com.lovememoir.server.domain.diaryanalysis.DiaryAnalysis;
 import com.lovememoir.server.domain.diaryanalysis.repository.DiaryAnalysisQueryRepository;
@@ -28,46 +27,51 @@ import static com.lovememoir.server.common.message.ExceptionMessage.NO_SUCH_MEMB
 @Transactional
 public class AvatarService {
 
-    private final AvatarRepository avatarRepository;
     private final MemberRepository memberRepository;
+    private final AvatarQueryRepository avatarQueryRepository;
     private final DiaryAnalysisQueryRepository diaryAnalysisQueryRepository;
     private final QuestionRepository questionRepository;
     private final RedisService redisService;
 
-    public AvatarResponse createAvatar() {
+    public AvatarResponse createAvatar(Member member) {
 
-        // 회원가입 시 최초 아바타를 생성한다.
-        Member member = getMember();
         Emotion emotion = Emotion.STABILITY;
-        String question = "만나서 반가워요";
+        String question = "만나서 반가워요!";
 
         Avatar avatar = Avatar.create(emotion, question, member);
         return AvatarResponse.of(avatar);
-
     }
 
-    public AvatarRefreshResponse refreshAvatar() {
+    public AvatarRefreshResponse refreshAvatar(String providerId) {
 
-        Member member = getMember();
+        Member member = getMember(providerId);
         Long memberId = member.getId();
 
         Map.Entry<Integer, Double> highestEmotion = getRecentHighestEmotion(member);
-        Integer emotionCode = highestEmotion.getKey();
-        Emotion emotion = Emotion.fromCode(emotionCode);
-
-        //question들을 어떻게 할 것인가...
-        Question selectedQuestion = getQuestion(emotion, memberId);
-        // Avatar와 Question의 관계는 끊는 게 맞을까?
-        Avatar avatar = Avatar.create(emotion, selectedQuestion.getContent(), member);
+        Avatar avatar = getRefreshedAvatar(highestEmotion, memberId);
 
         return AvatarRefreshResponse.of(avatar);
     }
 
+    private Avatar getRefreshedAvatar(Map.Entry<Integer, Double> highestEmotion, Long memberId) {
+        Integer emotionCode = highestEmotion.getKey();
+        Emotion emotion = Emotion.fromCode(emotionCode);
+        Question selectedQuestion = getQuestion(emotion, memberId);
+
+        Avatar avatar = avatarQueryRepository.findByMemberId(memberId);
+        avatar.modified(emotion, selectedQuestion.getContent());
+        return avatar;
+    }
+
     private Question getQuestion(Emotion emotion, Long memberId) {
         List<Question> allQuestions = questionRepository.findByEmotion(emotion);
-        List<Question> availableQuestions = allQuestions.stream()
-            .filter(question -> redisService.find(redisService.generateAvatarKey(memberId, question.getId())) == null)
-            .toList();
+        List<Question> availableQuestions = getAvailableQuestions(memberId, allQuestions);
+        Question selectedQuestion = getSelectedQuestion(availableQuestions);
+        saveQuestionInRedis(memberId, selectedQuestion);
+        return selectedQuestion;
+    }
+
+    private static Question getSelectedQuestion(List<Question> availableQuestions) {
         Question selectedQuestion;
         if (availableQuestions.isEmpty()) {
             selectedQuestion = Question.builder()
@@ -77,8 +81,18 @@ public class AvatarService {
         } else {
             selectedQuestion = availableQuestions.get(new Random().nextInt(availableQuestions.size()));
         }
-        redisService.saveWith7DaysExpiration(redisService.generateAvatarKey(memberId, selectedQuestion.getId()), "AA");
         return selectedQuestion;
+    }
+
+    private List<Question> getAvailableQuestions(Long memberId, List<Question> allQuestions) {
+        List<Question> availableQuestions = allQuestions.stream()
+            .filter(question -> redisService.find(redisService.generateAvatarKey(memberId, question.getId())) == null)
+            .toList();
+        return availableQuestions;
+    }
+
+    private void saveQuestionInRedis(Long memberId, Question selectedQuestion) {
+        redisService.saveWith7DaysExpiration(redisService.generateAvatarKey(memberId, selectedQuestion.getId()), "AA");
     }
 
     private Map.Entry<Integer, Double> getRecentHighestEmotion(Member member) {
@@ -91,19 +105,9 @@ public class AvatarService {
         return Collections.max(emotionScores.entrySet(), Map.Entry.comparingByValue());
     }
 
-    private Member getMember() {
-        String providerId = SecurityUtils.getProviderId();
+    private Member getMember(String providerId) {
         return memberRepository.findByProviderId(providerId)
             .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
     }
 
-    private String generateQuestion() {
-
-        //TODO 일기분석 토대로 질문 생성
-        // 질문은 1일 1질문으로 제공..
-        // 질문은 어디에 저장할지, 어떻게 제공여부 파악할지..(redis?)
-
-
-        return "오늘은 무슨 일이 있었나요?";
-    }
 }

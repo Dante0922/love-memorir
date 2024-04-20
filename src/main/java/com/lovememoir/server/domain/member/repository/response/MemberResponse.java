@@ -1,4 +1,4 @@
-package com.lovememoir.server.api.controller.member.response;
+package com.lovememoir.server.domain.member.repository.response;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -5,6 +5,8 @@ import static com.lovememoir.server.domain.avatar.QAvatar.avatar;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -22,11 +24,9 @@ public class AvatarQueryRepository {
     }
 
 
-    public Optional<Avatar> findByProviderId(String providerId) {
-        Avatar result = jpaQueryFactory.selectFrom(avatar)
+    public Avatar findByProviderId(String providerId) {
+        return jpaQueryFactory.selectFrom(avatar)
             .where(avatar.member.auth.providerId.eq(providerId))
             .fetchOne();
-        return Optional.ofNullable(result);
-
     }
 }

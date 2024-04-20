@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,11 +30,15 @@ public class Avatar extends BaseTimeEntity {
     @Column(nullable = false, length = 100)
     private String question;
 
+    @Column
+    private LocalDateTime questionModifiedDateTime;
+
     @Builder
     private Avatar(Emotion emotion, String question, Member member) {
         this.emotion = emotion;
         this.question = question;
         this.member = member;
+        this.questionModifiedDateTime = LocalDateTime.now();
     }
 
     public static Avatar create(Emotion emotion, String question, Member member) {
@@ -41,5 +47,11 @@ public class Avatar extends BaseTimeEntity {
             .question(question)
             .member(member)
             .build();
+    }
+
+    public void modified(Emotion emotion, String question) {
+        this.emotion = emotion;
+        this.question = question;
+        questionModifiedDateTime = LocalDateTime.now();
     }
 }
