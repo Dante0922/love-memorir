@@ -8,11 +8,11 @@ import static com.lovememoir.server.common.message.ExceptionMessage.INVALID_EMOT
 @Getter
 @AllArgsConstructor
 public enum Emotion {
+    STABILITY(0, "안정"),
     HAPPINESS(1, "행복"),
     ROMANCE(2, "설렘"),
-    STABILITY(3, "안정"),
-    SADNESS(4, "슬픔"),
-    ANGER(5, "분노");
+    SADNESS(3, "슬픔"),
+    ANGER(4, "분노");
 
     private final int code;
     private final String text;

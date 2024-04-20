@@ -6,6 +6,7 @@ import com.lovememoir.server.api.service.RedisService;
 import com.lovememoir.server.domain.avatar.Avatar;
 import com.lovememoir.server.domain.avatar.Emotion;
 import com.lovememoir.server.domain.avatar.repository.AvatarQueryRepository;
+import com.lovememoir.server.domain.avatar.repository.AvatarRepository;
 import com.lovememoir.server.domain.avatar.repository.response.AvatarResponse;
 import com.lovememoir.server.domain.diaryanalysis.DiaryAnalysis;
 import com.lovememoir.server.domain.diaryanalysis.repository.DiaryAnalysisQueryRepository;
@@ -13,6 +14,7 @@ import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import com.lovememoir.server.domain.question.Question;
 import com.lovememoir.server.domain.question.repository.QuestionRepository;
+import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +27,12 @@ import static com.lovememoir.server.common.message.ExceptionMessage.NO_SUCH_MEMB
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class AvatarService {
 
     private final MemberRepository memberRepository;
     private final AvatarQueryRepository avatarQueryRepository;
+    private final AvatarRepository avatarRepository;
     private final DiaryAnalysisQueryRepository diaryAnalysisQueryRepository;
     private final QuestionRepository questionRepository;
     private final RedisService redisService;
@@ -39,6 +43,7 @@ public class AvatarService {
         String question = "만나서 반가워요!";
 
         Avatar avatar = Avatar.create(emotion, question, member);
+        avatarRepository.save(avatar);
         return AvatarResponse.of(avatar);
     }
 
@@ -64,11 +69,23 @@ public class AvatarService {
     }
 
     private Question getQuestion(Emotion emotion, Long memberId) {
+
+        questionRepository.save(Question.builder().emotion(Emotion.STABILITY).content("he2").build());
+
         List<Question> allQuestions = questionRepository.findByEmotion(emotion);
         List<Question> availableQuestions = getAvailableQuestions(memberId, allQuestions);
         Question selectedQuestion = getSelectedQuestion(availableQuestions);
         saveQuestionInRedis(memberId, selectedQuestion);
         return selectedQuestion;
+    }
+
+    private List<Question> getAvailableQuestions(Long memberId, List<Question> allQuestions) {
+
+        List<Question> availableQuestions = allQuestions.stream()
+            .filter(question -> redisService.find(
+                redisService.generateAvatarKey(memberId, question.getId())) == null)
+            .toList();
+        return availableQuestions;
     }
 
     private static Question getSelectedQuestion(List<Question> availableQuestions) {
@@ -84,19 +101,16 @@ public class AvatarService {
         return selectedQuestion;
     }
 
-    private List<Question> getAvailableQuestions(Long memberId, List<Question> allQuestions) {
-        List<Question> availableQuestions = allQuestions.stream()
-            .filter(question -> redisService.find(redisService.generateAvatarKey(memberId, question.getId())) == null)
-            .toList();
-        return availableQuestions;
-    }
-
     private void saveQuestionInRedis(Long memberId, Question selectedQuestion) {
         redisService.saveWith7DaysExpiration(redisService.generateAvatarKey(memberId, selectedQuestion.getId()), "AA");
     }
 
     private Map.Entry<Integer, Double> getRecentHighestEmotion(Member member) {
         List<DiaryAnalysis> analysisList = diaryAnalysisQueryRepository.findTop3RecentAnalysesByMemberId(member.getId());
+
+        if (analysisList.isEmpty()) {
+            return new AbstractMap.SimpleEntry<>(Emotion.STABILITY.getCode(), 0.0);
+        }
 
         Map<Integer, Double> emotionScores = analysisList.stream()
             .collect(Collectors.groupingBy(DiaryAnalysis::getEmotionCode,

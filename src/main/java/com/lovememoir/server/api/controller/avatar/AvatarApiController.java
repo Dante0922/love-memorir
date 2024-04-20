@@ -8,6 +8,7 @@ import com.lovememoir.server.domain.avatar.Emotion;
 import com.lovememoir.server.domain.avatar.repository.response.AvatarResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,7 @@ public class AvatarApiController {
 
     private final AvatarService avatarService;
 
-    @GetMapping("/refresh")
+    @PostMapping("/refresh")
     public ApiResponse<AvatarRefreshResponse> refreshAvatar() {
 
         String providerId = SecurityUtils.getProviderId();

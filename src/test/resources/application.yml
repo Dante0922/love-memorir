@@ -28,7 +28,7 @@ app:
   auth:
     token:
       tokenSecret: secretkey123secretkey444secretkey586secretkeysecretkey
-      tokenExpiry: 1800000
+      tokenExpiry: 365 * 24 * 3600 * 1000
 
 
 logging:
