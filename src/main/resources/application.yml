@@ -47,7 +47,6 @@ spring:
             scope:
               - name
               - email
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             client-name: Apple
         provider:
           kakao:
@@ -60,14 +59,14 @@ spring:
             token-uri: https://appleid.apple.com/auth/token
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${redis.url}
+      port: ${redis.port}
 
 app:
   auth:
     token:
-      tokenSecret: secretkey123secretkey444secretkey586secretkeysecretkey
-      tokenExpiry: 1800000
+      tokenSecret: ${auth.token.tokenSecret}
+      tokenExpiry: ${auth.token.tokenExpiry}
 
 logging:
   level:

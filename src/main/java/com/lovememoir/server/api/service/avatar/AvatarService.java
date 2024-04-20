@@ -70,8 +70,6 @@ public class AvatarService {
 
     private Question getQuestion(Emotion emotion, Long memberId) {
 
-        questionRepository.save(Question.builder().emotion(Emotion.STABILITY).content("he2").build());
-
         List<Question> allQuestions = questionRepository.findByEmotion(emotion);
         List<Question> availableQuestions = getAvailableQuestions(memberId, allQuestions);
         Question selectedQuestion = getSelectedQuestion(availableQuestions);
