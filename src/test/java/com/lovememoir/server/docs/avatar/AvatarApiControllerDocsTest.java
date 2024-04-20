@@ -1,19 +1,26 @@
 package com.lovememoir.server.docs.avatar;
 
 import com.lovememoir.server.api.controller.avatar.AvatarApiController;
+import com.lovememoir.server.api.controller.avatar.response.AvatarRefreshResponse;
 import com.lovememoir.server.api.service.avatar.AvatarService;
 import com.lovememoir.server.docs.RestDocsSupport;
+import com.lovememoir.server.domain.avatar.Emotion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import static org.awaitility.Awaitility.given;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -36,8 +43,16 @@ public class AvatarApiControllerDocsTest extends RestDocsSupport {
     @Test
     void refreshAvatar() throws Exception {
 
+        AvatarRefreshResponse response = AvatarRefreshResponse.builder()
+            .emotion(Emotion.STABILITY)
+            .question("하이")
+            .build();
+
+        BDDMockito.given(avatarService.refreshAvatar(anyString()))
+            .willReturn(response);
+
         mockMvc.perform(
-                get(BASE_URL + "/refresh")
+                post(BASE_URL + "/refresh")
 
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")

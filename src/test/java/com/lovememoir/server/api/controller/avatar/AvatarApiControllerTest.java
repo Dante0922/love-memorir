@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,7 +27,7 @@ class AvatarApiControllerTest extends ControllerTestSupport {
                 .build();
         //when //then
         mockMvc.perform(
-                        get(BASE_URL + "/refresh")
+                        post(BASE_URL + "/refresh")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf())
