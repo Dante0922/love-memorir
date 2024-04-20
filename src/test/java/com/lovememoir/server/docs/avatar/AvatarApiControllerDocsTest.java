@@ -1,6 +1,7 @@
 package com.lovememoir.server.docs.avatar;
 
 import com.lovememoir.server.api.controller.avatar.AvatarApiController;
+import com.lovememoir.server.api.service.avatar.AvatarService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,12 +9,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -21,10 +24,11 @@ public class AvatarApiControllerDocsTest extends RestDocsSupport {
 
 
     private static final String BASE_URL = "/api/v1/avatars";
+    private final AvatarService avatarService = mock(AvatarService.class);
 
     @Override
     protected Object initController() {
-        return new AvatarApiController();
+        return new AvatarApiController(avatarService);
     }
 
 

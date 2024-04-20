@@ -7,7 +7,6 @@ import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
 import com.lovememoir.server.docs.RestDocsSupport;
 import com.lovememoir.server.domain.attachedimage.repository.response.AttachedImageResponse;
 import com.lovememoir.server.domain.diarypage.AnalysisStatus;
-import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

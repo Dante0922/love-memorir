@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 
 import static com.lovememoir.server.common.message.ValidationMessage.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DiaryValidatorTest {
 

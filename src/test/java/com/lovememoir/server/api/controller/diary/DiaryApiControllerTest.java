@@ -10,8 +10,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
-import java.time.LocalDate;
-
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_BLANK_DIARY_TITLE;
 import static com.lovememoir.server.common.message.ValidationMessage.NOT_NULL_IS_LOVE;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;

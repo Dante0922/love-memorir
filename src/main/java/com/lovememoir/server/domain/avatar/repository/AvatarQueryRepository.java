@@ -1,13 +1,11 @@
 package com.lovememoir.server.domain.avatar.repository;
 
 import com.lovememoir.server.domain.avatar.Avatar;
-import static com.lovememoir.server.domain.avatar.QAvatar.avatar;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import static com.lovememoir.server.domain.avatar.QAvatar.avatar;
 
 
 

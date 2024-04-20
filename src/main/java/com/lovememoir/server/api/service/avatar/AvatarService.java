@@ -31,10 +31,10 @@ import static com.lovememoir.server.common.message.ExceptionMessage.NO_SUCH_MEMB
 public class AvatarService {
 
     private final MemberRepository memberRepository;
-    private final AvatarQueryRepository avatarQueryRepository;
     private final AvatarRepository avatarRepository;
-    private final DiaryAnalysisQueryRepository diaryAnalysisQueryRepository;
+    private final AvatarQueryRepository avatarQueryRepository;
     private final QuestionRepository questionRepository;
+    private final DiaryAnalysisQueryRepository diaryAnalysisQueryRepository;
     private final RedisService redisService;
 
     public AvatarResponse createAvatar(Member member) {

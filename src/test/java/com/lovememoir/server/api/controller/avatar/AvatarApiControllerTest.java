@@ -1,4 +1,5 @@
 package com.lovememoir.server.api.controller.avatar;
+
 import com.lovememoir.server.ControllerTestSupport;
 import com.lovememoir.server.api.controller.avatar.response.AvatarRefreshResponse;
 import com.lovememoir.server.domain.avatar.Emotion;
@@ -6,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

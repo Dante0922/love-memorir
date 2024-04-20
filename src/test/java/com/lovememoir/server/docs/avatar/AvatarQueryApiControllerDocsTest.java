@@ -2,7 +2,6 @@ package com.lovememoir.server.docs.avatar;
 
 import com.lovememoir.server.api.controller.avatar.AvatarQueryApiController;
 import com.lovememoir.server.api.service.avatar.AvatarQueryService;
-import com.lovememoir.server.api.service.diary.DiaryQueryService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

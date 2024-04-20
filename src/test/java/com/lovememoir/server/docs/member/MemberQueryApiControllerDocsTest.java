@@ -1,9 +1,9 @@
 package com.lovememoir.server.docs.member;
 
 import com.lovememoir.server.api.controller.member.MemberQueryApiController;
-import com.lovememoir.server.domain.member.repository.response.MemberResponse;
 import com.lovememoir.server.api.service.member.MemberQueryService;
 import com.lovememoir.server.docs.RestDocsSupport;
+import com.lovememoir.server.domain.member.repository.response.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
