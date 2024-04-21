@@ -38,7 +38,7 @@ import java.util.Optional;
 
 import static com.lovememoir.server.common.message.ExceptionMessage.NO_AUTH;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
 
 class DiaryPageServiceTest extends IntegrationTestSupport {
 

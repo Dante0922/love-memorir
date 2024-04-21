@@ -1,8 +1,8 @@
 package com.lovememoir.server.api.service.member;
 
-import com.lovememoir.server.api.controller.member.response.MemberResponse;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberQueryRepository;
+import com.lovememoir.server.domain.member.repository.response.MemberResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

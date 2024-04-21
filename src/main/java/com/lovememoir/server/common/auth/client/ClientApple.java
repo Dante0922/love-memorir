@@ -1,7 +1,6 @@
 package com.lovememoir.server.common.auth.client;
 
 import com.lovememoir.server.api.controller.auth.response.AppleUserResponse;
-import com.lovememoir.server.api.controller.auth.response.KakaoUserResponse;
 import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.ProviderType;

@@ -1,9 +1,11 @@
 package com.lovememoir.server.common.auth;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
+@RequiredArgsConstructor
 public class SecurityUtils {
 
     public static String getProviderId() {

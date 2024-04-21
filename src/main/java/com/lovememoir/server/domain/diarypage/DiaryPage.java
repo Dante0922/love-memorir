@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-import static com.lovememoir.server.domain.diarypage.AnalysisResult.*;
 import static com.lovememoir.server.domain.diarypage.AnalysisResult.init;
-import static com.lovememoir.server.domain.diarypage.AnalysisResult.success;
 
 @Entity
 @Getter

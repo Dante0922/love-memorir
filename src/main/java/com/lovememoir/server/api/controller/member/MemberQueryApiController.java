@@ -1,9 +1,9 @@
 package com.lovememoir.server.api.controller.member;
 
 import com.lovememoir.server.api.ApiResponse;
-import com.lovememoir.server.api.controller.member.response.MemberResponse;
 import com.lovememoir.server.api.service.member.MemberQueryService;
 import com.lovememoir.server.common.auth.SecurityUtils;
+import com.lovememoir.server.domain.member.repository.response.MemberResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

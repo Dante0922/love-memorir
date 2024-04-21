@@ -1,11 +1,14 @@
 package com.lovememoir.server.domain.avatar;
 
 import com.lovememoir.server.domain.BaseTimeEntity;
+import com.lovememoir.server.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -14,26 +17,41 @@ public class Avatar extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "avatar_id") // @TODO member_id PK 활용 예정.. @Inheritance? 이해하고 수정하자.
+    @Column(name = "avatar_id")
     private Long id;
 
-    @Column(nullable = false, length = 10)
-    private String avatarType;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(nullable = false, length = 10)
-    private String growthStage;
-
-    @Column(nullable = false, length = 10)
-    private String behavior;
+    private Emotion emotion;
 
     @Column(nullable = false, length = 100)
     private String question;
 
+    @Column
+    private LocalDateTime questionModifiedDateTime;
+
     @Builder
-    private Avatar(String avatarType, String growthStage, String behavior, String question) {
-        this.avatarType = avatarType;
-        this.growthStage = growthStage;
-        this.behavior = behavior;
+    private Avatar(Emotion emotion, String question, Member member) {
+        this.emotion = emotion;
         this.question = question;
+        this.member = member;
+        this.questionModifiedDateTime = LocalDateTime.now();
+    }
+
+    public static Avatar create(Emotion emotion, String question, Member member) {
+        return Avatar.builder()
+            .emotion(emotion)
+            .question(question)
+            .member(member)
+            .build();
+    }
+
+    public void modified(Emotion emotion, String question) {
+        this.emotion = emotion;
+        this.question = question;
+        questionModifiedDateTime = LocalDateTime.now();
     }
 }
