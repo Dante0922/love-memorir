@@ -21,7 +21,6 @@ public class AvatarQueryRepository {
             .fetchOne();
     }
 
-
     public Avatar findByProviderId(String providerId) {
         return jpaQueryFactory.selectFrom(avatar)
             .where(avatar.member.auth.providerId.eq(providerId))

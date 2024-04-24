@@ -34,11 +34,11 @@ public class Avatar extends BaseTimeEntity {
     private LocalDateTime questionModifiedDateTime;
 
     @Builder
-    private Avatar(Emotion emotion, String question, Member member) {
+    private Avatar(Emotion emotion, String question, Member member, LocalDateTime modifiedDateTime) {
         this.emotion = emotion;
         this.question = question;
         this.member = member;
-        this.questionModifiedDateTime = LocalDateTime.now();
+        this.questionModifiedDateTime = modifiedDateTime != null ? modifiedDateTime : LocalDateTime.now();
     }
 
     public static Avatar create(Emotion emotion, String question, Member member) {
