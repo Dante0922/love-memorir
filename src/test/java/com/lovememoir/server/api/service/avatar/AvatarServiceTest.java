@@ -13,20 +13,12 @@ import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.enumerate.RoleType;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
-import com.lovememoir.server.domain.question.Question;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDateTime;
-
-import static com.lovememoir.server.domain.avatar.Emotion.HAPPINESS;
 import static com.lovememoir.server.domain.avatar.Emotion.STABILITY;
-import static org.assertj.core.api.Assertions.*;
-import static org.hamcrest.Matchers.any;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AvatarServiceTest extends IntegrationTestSupport {
 

@@ -1,7 +1,6 @@
 package com.lovememoir.server.docs.avatar;
 
 import com.lovememoir.server.api.controller.avatar.AvatarQueryApiController;
-import com.lovememoir.server.api.controller.avatar.response.AvatarRefreshResponse;
 import com.lovememoir.server.api.service.avatar.AvatarQueryService;
 import com.lovememoir.server.docs.RestDocsSupport;
 import com.lovememoir.server.domain.avatar.Emotion;

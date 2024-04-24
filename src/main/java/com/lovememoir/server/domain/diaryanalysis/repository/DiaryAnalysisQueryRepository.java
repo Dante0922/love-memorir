@@ -32,6 +32,4 @@ public class DiaryAnalysisQueryRepository {
             .limit(3)
             .fetch();
     }
-
-
 }
