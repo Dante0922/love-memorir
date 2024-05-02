@@ -21,7 +21,6 @@ import static com.lovememoir.server.common.message.ExceptionMessage.OAUTH_TOKEN_
 public class ClientGoogle implements ClientProxy {
 
     private final WebClient webClient;
-    //"https://openidconnect.googleapis.com/v1/userinfo"
     @Value("${spring.security.oauth2.client.provider.google.user-info-uri}")
     private String googleUserInfoUri;
 

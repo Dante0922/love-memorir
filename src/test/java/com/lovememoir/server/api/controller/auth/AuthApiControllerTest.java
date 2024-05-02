@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class AuthApiControllerTest extends ControllerTestSupport {
 
-    private static final String BASE_URL = "/auth";
+    private static final String BASE_URL = "/api/v1/auth";
 
     @DisplayName("카카오 로그인을 한다.")
     @Test
