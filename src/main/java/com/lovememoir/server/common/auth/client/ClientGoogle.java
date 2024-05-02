@@ -6,6 +6,7 @@ import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,6 +21,8 @@ import static com.lovememoir.server.common.message.ExceptionMessage.OAUTH_TOKEN_
 public class ClientGoogle implements ClientProxy {
 
     private final WebClient webClient;
+    @Value("${spring.security.oauth2.client.provider.google.user-info-uri}")
+    private String googleUserInfoUri;
 
     @Override
     public Auth createAuth(String accessToken) {
@@ -27,23 +30,20 @@ public class ClientGoogle implements ClientProxy {
         return Auth.builder()
             .provider(ProviderType.GOOGLE)
             .providerId(googleUserResponse.getSub())
-            // TODO : 프론트로부터 RefreshToken 받아오기?
             .accessToken(accessToken)
             .build();
     }
 
     public String getProviderId(String accessToken) {
-        GoogleUserResponse kakaoUserResponse = getUserResponse(accessToken);
-        return kakaoUserResponse.getSub();
+        GoogleUserResponse googleUserResponse = getUserResponse(accessToken);
+        return googleUserResponse.getSub();
     }
 
     private GoogleUserResponse getUserResponse(String accessToken) {
+        log.info(accessToken);
         return webClient.get()
-            .uri("https://oauth2.googleapis.com/tokeninfo",
-                builder ->
-                    builder
-                        .queryParam("id_token", accessToken)
-                        .build())
+            .uri(googleUserInfoUri)
+            .header("Authorization", "Bearer " + accessToken)
             .retrieve()
             .onStatus(HttpStatusCode::is4xxClientError, response ->
                 Mono.error(new AuthException(OAUTH_TOKEN_UNAUTHORIZED)))

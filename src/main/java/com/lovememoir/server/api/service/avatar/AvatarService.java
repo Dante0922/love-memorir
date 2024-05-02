@@ -94,12 +94,12 @@ public class AvatarService {
     }
 
     private Map.Entry<Integer, Double> getRecentHighestEmotion(Member member) {
-        List<DiaryAnalysis> analyses = diaryAnalysisQueryRepository.findTop3RecentAnalysesByMemberId(member.getId());
+        Optional<List<DiaryAnalysis>> analyses = diaryAnalysisQueryRepository.findTop3RecentAnalysesByMemberId(member.getId());
 
-        if (analyses.isEmpty()) {
+        if (analyses.isEmpty() || analyses.get().isEmpty()) {
             return new AbstractMap.SimpleEntry<>(Emotion.STABILITY.getCode(), 0.0);
         }
-        Map<Integer, Double> emotionScores = analyses.stream()
+        Map<Integer, Double> emotionScores = analyses.get().stream()
             .collect(Collectors.groupingBy(DiaryAnalysis::getEmotionCode,
                 Collectors.averagingDouble(DiaryAnalysis::getWeight)));
 
