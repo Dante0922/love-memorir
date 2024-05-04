@@ -1,0 +1,13 @@
+[[count-diary-page]]
+=== 일기 갯수 조회 API
+
+==== HTTP Request
+
+include::{snippets}/count-diary-page/http-request.adoc[]
+include::{snippets}/count-diary-page/request-headers.adoc[]
+include::{snippets}/count-diary-page/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/count-diary-page/http-response.adoc[]
+include::{snippets}/count-diary-page/response-fields.adoc[]
