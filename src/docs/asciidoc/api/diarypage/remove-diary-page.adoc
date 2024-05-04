@@ -1,5 +1,5 @@
 [[remove-diary-page]]
-=== 신규 일기 등록 API
+=== 일기 삭제 API
 
 ==== HTTP Request
 
