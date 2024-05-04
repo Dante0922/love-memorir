@@ -48,6 +48,7 @@ include::api/diary/remove-diary.adoc[]
 == 일기 API
 
 include::api/diarypage/create-diary-page.adoc[]
+include::api/diarypage/count-diary-page.adoc[]
 include::api/diarypage/search-diary-pages.adoc[]
 include::api/diarypage/search-diary-page.adoc[]
 include::api/diarypage/modify-diary-page.adoc[]

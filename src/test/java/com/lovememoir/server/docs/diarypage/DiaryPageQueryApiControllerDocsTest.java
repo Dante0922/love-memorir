@@ -2,6 +2,7 @@ package com.lovememoir.server.docs.diarypage;
 
 import com.lovememoir.server.api.SliceResponse;
 import com.lovememoir.server.api.controller.diarypage.DiaryPageQueryApiController;
+import com.lovememoir.server.api.service.diarypage.DiaryPageCountResponse;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
 import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
 import com.lovememoir.server.docs.RestDocsSupport;
@@ -125,6 +126,48 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
                         .description("첫 페이지 여부"),
                     fieldWithPath("data.isLast").type(JsonFieldType.BOOLEAN)
                         .description("마지막 페이지 여부")
+                )
+            ));
+    }
+
+    @DisplayName("일기 전체 갯수 조회 API")
+    @Test
+    void countDiaryPage() throws Exception {
+        DiaryPageCountResponse response = DiaryPageCountResponse.builder()
+            .pageCount(10)
+            .build();
+
+        given(diaryPageQueryService.countDiaryPage(anyLong()))
+            .willReturn(response);
+
+        mockMvc.perform(
+                get(BASE_URL + "/page-count", 1L)
+                    .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("count-diary-page",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION)
+                        .description("회원 인증 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("diaryId")
+                        .description("일기장 식별키")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.pageCount").type(JsonFieldType.NUMBER)
+                        .description("페이지 수")
                 )
             ));
     }

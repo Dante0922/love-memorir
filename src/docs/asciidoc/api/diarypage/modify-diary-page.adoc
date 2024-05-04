@@ -1,5 +1,5 @@
 [[modify-diary-page]]
-=== 신규 일기 등록 API
+=== 일기 수정 API
 
 ==== HTTP Request
 

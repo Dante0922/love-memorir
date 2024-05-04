@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: server
@@ -86,3 +87,5 @@ cloud:
       auto: false
     region:
       static: ap-northeast-2
+server:
+  port: 8081

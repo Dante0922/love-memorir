@@ -82,4 +82,16 @@ public class DiaryPageQueryRepository {
             .fetchFirst();
         return Optional.ofNullable(content);
     }
+
+    public int countAllByDiaryId(final long diaryId) {
+        return queryFactory
+            .select(diaryPage.id)
+            .from(diaryPage)
+            .where(
+                diaryPage.isDeleted.isFalse(),
+                diaryPage.diary.id.eq(diaryId)
+            )
+            .fetch()
+            .size();
+    }
 }
