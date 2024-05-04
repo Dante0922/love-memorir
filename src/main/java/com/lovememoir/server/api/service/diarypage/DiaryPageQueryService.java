@@ -27,6 +27,14 @@ public class DiaryPageQueryService {
     private final DiaryPageQueryRepository diaryPageQueryRepository;
     private final AttachedImageQueryRepository attachedImageQueryRepository;
 
+    public DiaryPageCountResponse countDiaryPage(final long diaryId) {
+        int pageCount = diaryPageQueryRepository.countAllByDiaryId(diaryId);
+
+        return DiaryPageCountResponse.builder()
+            .pageCount(pageCount)
+            .build();
+    }
+
     public SliceResponse<DiaryPagesResponse> searchDiaryPages(long diaryId, Pageable pageable) {
         List<Long> diaryIds = diaryPageQueryRepository.findAllIdByDiaryId(diaryId, pageable);
 

@@ -3,6 +3,7 @@ package com.lovememoir.server.api.controller.diarypage;
 import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.api.SliceResponse;
 import com.lovememoir.server.api.controller.diarypage.param.DiaryPageSearchParam;
+import com.lovememoir.server.api.service.diarypage.DiaryPageCountResponse;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
 import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
@@ -33,6 +34,13 @@ public class DiaryPageQueryApiController {
         PageRequest pageRequest = PageRequest.of(param.getPage() - 1, PAGE_SIZE);
 
         SliceResponse<DiaryPagesResponse> response = diaryPageQueryService.searchDiaryPages(diaryId, pageRequest);
+
+        return ApiResponse.ok(response);
+    }
+
+    @GetMapping("/page-count")
+    public ApiResponse<DiaryPageCountResponse> countDiaryPage(@PathVariable Long diaryId) {
+        DiaryPageCountResponse response = diaryPageQueryService.countDiaryPage(diaryId);
 
         return ApiResponse.ok(response);
     }
