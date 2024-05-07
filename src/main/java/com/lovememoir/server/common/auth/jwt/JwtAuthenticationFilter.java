@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String tokenStr = JwtHeaderUtil.getAccessToken(request);
+            String tokenStr = JwtParser.getAccessToken(request);
             AuthToken token = tokenProvider.convertAuthToken(tokenStr);
             if (token.validate()) {
                 Authentication authentication = tokenProvider.getAuthentication(token);

@@ -54,6 +54,7 @@ spring:
             user-info-uri: "https://openidconnect.googleapis.com/v1/userinfo"
           apple:
             authorization-uri: https://appleid.apple.com/auth/authorize
+            user-info-uri: https://appleid.apple.com/auth/token
             token-uri: https://appleid.apple.com/auth/token
   data:
     redis:
