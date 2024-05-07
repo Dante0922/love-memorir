@@ -15,6 +15,7 @@ include::overview.adoc[]
 == OAuth2 API
 
 include::api/auth/kakao-login.adoc[]
+include::api/auth/apple-login.adoc[]
 include::api/auth/google-login.adoc[]
 
 

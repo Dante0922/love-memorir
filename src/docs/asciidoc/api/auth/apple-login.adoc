@@ -1,0 +1,12 @@
+[[apple-login]]
+=== 애플 OAuth2 API
+
+==== HTTP Request
+
+include::{snippets}/apple-login/http-request.adoc[]
+include::{snippets}/apple-login/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/apple-login/http-response.adoc[]
+include::{snippets}/apple-login/response-fields.adoc[]

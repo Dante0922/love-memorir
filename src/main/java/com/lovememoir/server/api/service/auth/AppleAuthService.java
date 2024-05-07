@@ -29,12 +29,12 @@ public class AppleAuthService {
 
 
     public AuthResponse login(AuthRequest authRequest) {
-        String accessToken = authRequest.getAccessToken();
-        String providerId = clientApple.getProviderId(accessToken);
+        String idToken = authRequest.getAccessToken();
+        String providerId = clientApple.getProviderId(idToken);
         Auth savedAuth = authQueryRepository.findByProviderId(providerId);
 
         if (savedAuth == null) {
-            Auth appleAuth = clientApple.createAuth(accessToken);
+            Auth appleAuth = clientApple.createAuth(idToken);
             authRepository.save(appleAuth);
         }
 
