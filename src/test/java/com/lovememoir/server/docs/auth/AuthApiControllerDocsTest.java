@@ -134,4 +134,53 @@ public class AuthApiControllerDocsTest extends RestDocsSupport {
                 )
             ));
     }
+
+    @DisplayName("애플 OAuth2 인증 API")
+    @Test
+    void appleAuthLogin() throws Exception {
+
+        AuthRequest request = AuthRequest.builder()
+            .accessToken("apple.access.token")
+            .build();
+
+        AuthResponse response = AuthResponse.builder()
+            .appToken("app.token")
+            .isNewMember(true)
+            .build();
+
+
+        given(appleAuthService.login(any()))
+            .willReturn(response);
+
+        mockMvc.perform(
+                post(BASE_URL + "/apple")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("apple-login",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("accessToken").type(JsonFieldType.STRING)
+                        .description("애플 id token")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.appToken").type(JsonFieldType.STRING)
+                        .description("앱 전용 토큰"),
+                    fieldWithPath("data.isNewMember").type(JsonFieldType.BOOLEAN)
+                        .description("신규 멤버 여부")
+                )
+            ));
+    }
 }
