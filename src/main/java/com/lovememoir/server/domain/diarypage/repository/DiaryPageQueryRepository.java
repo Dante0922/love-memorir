@@ -51,6 +51,7 @@ public class DiaryPageQueryRepository {
                     diaryPage.analysis.analysisStatus,
                     diaryPage.analysis.emotionCode,
                     diaryPage.title,
+                    diaryPage.recordDate,
                     diaryPage.createdDateTime
                 )
             )

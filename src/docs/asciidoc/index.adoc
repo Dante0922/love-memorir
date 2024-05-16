@@ -18,7 +18,6 @@ include::api/auth/kakao-login.adoc[]
 include::api/auth/apple-login.adoc[]
 include::api/auth/google-login.adoc[]
 
-
 [[Member-API]]
 == 멤버 API
 
@@ -33,12 +32,12 @@ include::api/member/remove-member.adoc[]
 include::api/avatar/refresh-avatar.adoc[]
 include::api/avatar/search-avatar.adoc[]
 
-
 [[Diary-API]]
 == 일기장 API
 
 include::api/diary/create-diary.adoc[]
 include::api/diary/search-diaries.adoc[]
+include::api/diary/search-store-diaries.adoc[]
 include::api/diary/modify-diary.adoc[]
 include::api/diary/modify-diary-image.adoc[]
 include::api/diary/modify-diary-store-status.adoc[]

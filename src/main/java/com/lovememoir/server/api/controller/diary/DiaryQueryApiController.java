@@ -34,4 +34,15 @@ public class DiaryQueryApiController {
 
         return ApiResponse.ok(response);
     }
+
+    @GetMapping("/store")
+    public ApiResponse<ListResponse<DiarySearchResponse>> searchStoreDiaries() {
+        String providerId = SecurityUtils.getProviderId();
+
+        List<DiarySearchResponse> content = diaryQueryService.searchStoreDiaries(providerId);
+
+        ListResponse<DiarySearchResponse> response = ListResponse.of(content);
+
+        return ApiResponse.ok(response);
+    }
 }

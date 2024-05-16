@@ -53,18 +53,21 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
             .diaryPageId(1L)
             .analysisStatus(AnalysisStatus.BEFORE)
             .title("푸바오와 마지막 인사")
+            .recordDate(LocalDate.of(2024, 3, 3))
             .createdDateTime(LocalDateTime.of(2024, 3, 3, 0, 0))
             .build();
         DiaryPagesResponse response2 = DiaryPagesResponse.builder()
             .diaryPageId(2L)
             .analysisStatus(AnalysisStatus.BEFORE)
             .title("루이바오의 먹방")
+            .recordDate(LocalDate.of(2024, 3, 4))
             .createdDateTime(LocalDateTime.of(2024, 3, 4, 0, 0))
             .build();
         DiaryPagesResponse response3 = DiaryPagesResponse.builder()
             .diaryPageId(3L)
             .analysisStatus(AnalysisStatus.BEFORE)
             .title("후쪽이 후이바오")
+            .recordDate(LocalDate.of(2024, 3, 5))
             .createdDateTime(LocalDateTime.of(2024, 3, 5, 0, 0))
             .build();
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
@@ -116,6 +119,8 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
                         .description("일기 감정 코드"),
                     fieldWithPath("data.content[].title").type(JsonFieldType.STRING)
                         .description("일기 제목"),
+                    fieldWithPath("data.content[].recordDate").type(JsonFieldType.ARRAY)
+                        .description("일기 기록일"),
                     fieldWithPath("data.content[].createdDateTime").type(JsonFieldType.ARRAY)
                         .description("일기 작성 일시"),
                     fieldWithPath("data.currentPage").type(JsonFieldType.NUMBER)

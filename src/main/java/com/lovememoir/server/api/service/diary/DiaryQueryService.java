@@ -34,4 +34,11 @@ public class DiaryQueryService {
         content.addAll(diaryContents);
         return content;
     }
+
+    public List<DiarySearchResponse> searchStoreDiaries(final String providerId) {
+        Member member = memberRepository.findByProviderId(providerId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
+
+        return diaryQueryRepository.findStoreAllByMemberId(member.getId());
+    }
 }

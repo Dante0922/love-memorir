@@ -44,6 +44,29 @@ public class DiaryQueryRepository {
             .fetch();
     }
 
+    public List<DiarySearchResponse> findStoreAllByMemberId(final long memberId) {
+        return queryFactory.select(
+                Projections.fields(
+                    DiarySearchResponse.class,
+                    diary.id.as("diaryId"),
+                    diary.isMain,
+                    diary.title,
+                    diary.loveInfo.isLove,
+                    diary.loveInfo.startedDate,
+                    diary.loveInfo.finishedDate,
+                    diary.profile.storeFileUrl.as("profileImage")
+                )
+            )
+            .from(diary)
+            .where(
+                diary.isDeleted.isFalse(),
+                diary.isStored.isTrue(),
+                diary.member.id.eq(memberId)
+            )
+            .orderBy(diary.createdDateTime.desc())
+            .fetch();
+    }
+
     private BooleanExpression mainIsTrue(final boolean isContainsMain) {
         return isContainsMain ? diary.isMain.isTrue() : diary.isMain.isFalse();
     }
