@@ -37,6 +37,9 @@ public class AvatarServiceV2 {
     private final DiaryAnalysisQueryRepository diaryAnalysisQueryRepository;
     private final RedisService redisService;
 
+    // TODO: 감정, 대화, 질문 로직 수정할 것.
+    // TODO: 감정, 질문, 대화 코드화할 것.
+
     public AvatarResponse createAvatar(Member member) {
 
         Emotion emotion = Emotion.STABILITY;

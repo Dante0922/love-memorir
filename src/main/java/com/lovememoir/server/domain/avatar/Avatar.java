@@ -24,7 +24,8 @@ public class Avatar extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 10, columnDefinition = "varchar(10)")
+    @Enumerated(EnumType.STRING)
     private Emotion emotion;
 
     @Column(nullable = false, length = 100)
