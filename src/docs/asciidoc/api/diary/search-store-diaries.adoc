@@ -1,0 +1,12 @@
+[[search-store-diaries]]
+=== 저장된 일기장 목록 조회 API
+
+==== HTTP Request
+
+include::{snippets}/search-store-diaries/http-request.adoc[]
+include::{snippets}/search-store-diaries/request-headers.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/search-store-diaries/http-response.adoc[]
+include::{snippets}/search-store-diaries/response-fields.adoc[]

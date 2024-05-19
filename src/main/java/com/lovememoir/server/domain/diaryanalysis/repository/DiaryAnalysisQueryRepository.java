@@ -14,7 +14,6 @@ import java.util.Optional;
 import static com.lovememoir.server.domain.diary.QDiary.diary;
 import static com.lovememoir.server.domain.diaryanalysis.QDiaryAnalysis.diaryAnalysis;
 import static com.lovememoir.server.domain.diarypage.QDiaryPage.diaryPage;
-import static com.lovememoir.server.domain.member.QMember.member;
 
 @Repository
 @RequiredArgsConstructor

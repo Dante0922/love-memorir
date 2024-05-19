@@ -22,7 +22,7 @@ import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
 import java.util.Map;
 
-import static com.lovememoir.server.common.message.ExceptionMessage.*;
+import static com.lovememoir.server.common.message.ExceptionMessage.FAILED_TO_GENERATE_TOKEN;
 
 @Component
 @RequiredArgsConstructor
