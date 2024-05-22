@@ -19,6 +19,10 @@ public class Question extends BaseTimeEntity {
     private Long id;
 
     @Column
+    @Enumerated(EnumType.STRING)
+    private ContentType contentType;
+
+    @Column
     @Enumerated(EnumType.ORDINAL)
     private Emotion emotion;
 

@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -52,32 +53,72 @@ public class AvatarServiceV2 {
 
     public AvatarRefreshResponse refreshAvatar(String providerId) {
 
+        // 아바타의 상태 변경일자 조회
+        // 아바타의 당일 일기작성 여부 조회 (당일 질문 사용 여부...??)
+        // 1. 감정과 질문 모두 갱신
+        // 2. 질문만 갱신
+
         Member member = getMember(providerId);
         Long memberId = member.getId();
+        Avatar avatar = avatarQueryRepository.findByMemberId(memberId);
+        boolean isEmotionRefreshedToday = avatar.getEmotionModifiedDateTime().toLocalDate().isEqual(LocalDate.now());
 
-        Map.Entry<Integer, Double> highestEmotion = getRecentHighestEmotion(member);
-        Avatar avatar = refreshMemberAvatar(highestEmotion, memberId);
+        Avatar updatedAvatar = updateAvatarEmotionAndQuestion(memberId, avatar, isEmotionRefreshedToday);
+
 
         return AvatarRefreshResponse.of(avatar);
     }
 
-    private Avatar refreshMemberAvatar(Map.Entry<Integer, Double> highestEmotion, Long memberId) {
-        Integer emotionCode = highestEmotion.getKey();
-        Emotion emotion = Emotion.fromCode(emotionCode);
-        Question selectedQuestion = selectQuestion(emotion, memberId);
+    private Avatar updateAvatarEmotionAndQuestion(Long memberId, Avatar avatar, boolean isEmotionRefreshedToday) {
+        Emotion emotion;
+        Question question;
+        if (isEmotionRefreshedToday) {
+            emotion = avatar.getEmotion();
+            question = getConversationByEmotion(emotion);
+        } else {
+            emotion = getRecentHighestEmotion(memberId);
+            question = getQuestionByEmotion(memberId, emotion);
+        }
 
-        Avatar avatar = avatarQueryRepository.findByMemberId(memberId);
-        avatar.modified(emotion, selectedQuestion.getContent());
+        avatar.modified(emotion, question.getContent());
+
         return avatar;
     }
 
-    private Question selectQuestion(Emotion emotion, Long memberId) {
+    private Emotion getRecentHighestEmotion(Long memberId) {
+        List<DiaryAnalysis> analyses = diaryAnalysisQueryRepository.findTop3RecentAnalysesByMemberId(memberId)
+            .orElse(Collections.emptyList());
 
+        if (analyses.isEmpty()) {
+            return Emotion.STABILITY;
+        }
+
+        Emotion emotion = analyses.stream()
+            .collect(Collectors.groupingBy(DiaryAnalysis::getEmotionCode,
+                Collectors.averagingDouble(DiaryAnalysis::getWeight)))
+            .entrySet()
+            .stream()
+            .max(Map.Entry.comparingByValue())
+            .map(entry -> Emotion.fromCode(entry.getKey()))
+            .orElse(Emotion.STABILITY);
+
+        return emotion;
+    }
+
+    private Question getConversationByEmotion(Emotion emotion) {
+        return null;
+    }
+
+    private Question getQuestionByEmotion(Long memberId, Emotion emotion) {
         List<Question> allQuestions = questionRepository.findByEmotion(emotion);
         List<Question> availableQuestions = filterAvailableQuestions(memberId, allQuestions);
         Question selectedQuestion = selectRandomQuestion(availableQuestions);
         saveQuestionInRedis(memberId, selectedQuestion);
+
         return selectedQuestion;
+    }
+
+    private Question selectQuestion(Emotion emotion, Long memberId) {
     }
 
     private List<Question> filterAvailableQuestions(Long memberId, List<Question> allQuestions) {
@@ -94,19 +135,6 @@ public class AvatarServiceV2 {
 
     private void saveQuestionInRedis(Long memberId, Question selectedQuestion) {
         redisService.saveWith7DaysExpiration(redisService.generateAvatarKey(memberId, selectedQuestion.getId()), "AA");
-    }
-
-    private Map.Entry<Integer, Double> getRecentHighestEmotion(Member member) {
-        Optional<List<DiaryAnalysis>> analyses = diaryAnalysisQueryRepository.findTop3RecentAnalysesByMemberId(member.getId());
-
-        if (analyses.isEmpty() || analyses.get().isEmpty()) {
-            return new AbstractMap.SimpleEntry<>(Emotion.STABILITY.getCode(), 0.0);
-        }
-        Map<Integer, Double> emotionScores = analyses.get().stream()
-            .collect(Collectors.groupingBy(DiaryAnalysis::getEmotionCode,
-                Collectors.averagingDouble(DiaryAnalysis::getWeight)));
-
-        return Collections.max(emotionScores.entrySet(), Map.Entry.comparingByValue());
     }
 
     private Member getMember(String providerId) {
