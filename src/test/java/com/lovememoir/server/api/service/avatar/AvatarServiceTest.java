@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static com.lovememoir.server.domain.avatar.Emotion.SADNESS;
 import static com.lovememoir.server.domain.avatar.Emotion.STABILITY;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -66,7 +67,7 @@ class AvatarServiceTest extends IntegrationTestSupport {
 
         //then
         assertThat(response).isNotNull();
-        assertThat(response.getEmotion()).isEqualTo(STABILITY);
+        assertThat(response.getEmotion()).isEqualTo(SADNESS);
         assertThat(response.getEmotion()).isNotEqualTo(emotion);
         assertThat(response.getQuestion()).isNotEqualTo(question);
     }
