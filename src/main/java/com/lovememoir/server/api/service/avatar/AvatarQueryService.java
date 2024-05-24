@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @RequiredArgsConstructor
 @Service
@@ -21,8 +21,9 @@ public class AvatarQueryService {
 
     public AvatarResponse searchAvatar(String providerId) {
         Avatar avatar = avatarQueryRepository.findByProviderId(providerId);
-        
-        if (isQuestionOutdated(avatar)){
+
+        //TODO 수정필요..
+        if (isQuestionOutdated(avatar)) {
             AvatarRefreshResponse avatarRefreshResponse = avatarService.refreshAvatar(providerId);
             return avatarRefreshResponse.toAvatarResponse();
         }
@@ -31,7 +32,7 @@ public class AvatarQueryService {
     }
 
     private static boolean isQuestionOutdated(Avatar avatar) {
-        return avatar.getQuestionModifiedDateTime().isBefore(LocalDateTime.now().minusDays(1));
+        return avatar.getEmotionModifiedDateTime().toLocalDate().isBefore(LocalDate.now());
     }
 }
 

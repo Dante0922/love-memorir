@@ -13,12 +13,13 @@ import com.lovememoir.server.domain.diaryanalysis.repository.DiaryAnalysisQueryR
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import com.lovememoir.server.domain.question.Question;
-import com.lovememoir.server.domain.question.repository.QuestionRepository;
+import com.lovememoir.server.domain.question.repository.QuestionQueryRepository;
 import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,13 +30,15 @@ import static com.lovememoir.server.common.message.ExceptionMessage.NO_SUCH_MEMB
 @Transactional
 @Slf4j
 public class AvatarService {
-
     private final MemberRepository memberRepository;
     private final AvatarRepository avatarRepository;
     private final AvatarQueryRepository avatarQueryRepository;
-    private final QuestionRepository questionRepository;
+    private final QuestionQueryRepository questionQueryRepository;
     private final DiaryAnalysisQueryRepository diaryAnalysisQueryRepository;
     private final RedisService redisService;
+
+    // TODO: 감정, 대화, 질문 로직 수정할 것.
+    // TODO: 감정, 질문, 대화 코드화할 것.
 
     public AvatarResponse createAvatar(Member member) {
 
@@ -51,29 +54,66 @@ public class AvatarService {
 
         Member member = getMember(providerId);
         Long memberId = member.getId();
+        Avatar avatar = avatarQueryRepository.findByMemberId(memberId);
+        boolean isEmotionRefreshedToday = avatar.getEmotionModifiedDateTime().toLocalDate().isEqual(LocalDate.now());
 
-        Map.Entry<Integer, Double> highestEmotion = getRecentHighestEmotion(member);
-        Avatar avatar = refreshMemberAvatar(highestEmotion, memberId);
+        Avatar updatedAvatar = updateAvatarEmotionAndQuestion(memberId, avatar, isEmotionRefreshedToday);
+
 
         return AvatarRefreshResponse.of(avatar);
     }
 
-    private Avatar refreshMemberAvatar(Map.Entry<Integer, Double> highestEmotion, Long memberId) {
-        Integer emotionCode = highestEmotion.getKey();
-        Emotion emotion = Emotion.fromCode(emotionCode);
-        Question selectedQuestion = selectQuestion(emotion, memberId);
+    private Avatar updateAvatarEmotionAndQuestion(Long memberId, Avatar avatar, boolean isEmotionRefreshedToday) {
+        Emotion emotion;
+        Question question;
+        if (isEmotionRefreshedToday) {
+            emotion = avatar.getEmotion();
+            question = getConversationByEmotion(memberId, emotion);
+        } else {
+            emotion = getRecentHighestEmotion(memberId);
+            question = getQuestionByEmotion(memberId, emotion);
+        }
 
-        Avatar avatar = avatarQueryRepository.findByMemberId(memberId);
-        avatar.modified(emotion, selectedQuestion.getContent());
+        avatar.modified(emotion, question.getContent());
+
         return avatar;
     }
 
-    private Question selectQuestion(Emotion emotion, Long memberId) {
+    private Emotion getRecentHighestEmotion(Long memberId) {
+        List<DiaryAnalysis> analyses = diaryAnalysisQueryRepository.findTop3RecentAnalysesByMemberId(memberId)
+            .orElse(Collections.emptyList());
 
-        List<Question> allQuestions = questionRepository.findByEmotion(emotion);
+        if (analyses.isEmpty()) {
+            return Emotion.STABILITY;
+        }
+
+        Emotion emotion = analyses.stream()
+            .collect(Collectors.groupingBy(DiaryAnalysis::getEmotionCode,
+                Collectors.averagingDouble(DiaryAnalysis::getWeight)))
+            .entrySet()
+            .stream()
+            .max(Map.Entry.comparingByValue())
+            .map(entry -> Emotion.fromCode(entry.getKey()))
+            .orElse(Emotion.STABILITY);
+
+        return emotion;
+    }
+
+    private Question getQuestionByEmotion(Long memberId, Emotion emotion) {
+        List<Question> allQuestions = questionQueryRepository.findQuestionByEmotion(emotion);
         List<Question> availableQuestions = filterAvailableQuestions(memberId, allQuestions);
         Question selectedQuestion = selectRandomQuestion(availableQuestions);
         saveQuestionInRedis(memberId, selectedQuestion);
+
+        return selectedQuestion;
+    }
+
+    private Question getConversationByEmotion(Long memberId, Emotion emotion) {
+        List<Question> allQuestions = questionQueryRepository.findConversationByEmotion(emotion);
+        List<Question> availableQuestions = filterAvailableQuestions(memberId, allQuestions);
+        Question selectedQuestion = selectRandomQuestion(allQuestions);
+        saveQuestionInRedis(memberId, selectedQuestion);
+
         return selectedQuestion;
     }
 
@@ -93,22 +133,8 @@ public class AvatarService {
         redisService.saveWith7DaysExpiration(redisService.generateAvatarKey(memberId, selectedQuestion.getId()), "AA");
     }
 
-    private Map.Entry<Integer, Double> getRecentHighestEmotion(Member member) {
-        Optional<List<DiaryAnalysis>> analyses = diaryAnalysisQueryRepository.findTop3RecentAnalysesByMemberId(member.getId());
-
-        if (analyses.isEmpty() || analyses.get().isEmpty()) {
-            return new AbstractMap.SimpleEntry<>(Emotion.STABILITY.getCode(), 0.0);
-        }
-        Map<Integer, Double> emotionScores = analyses.get().stream()
-            .collect(Collectors.groupingBy(DiaryAnalysis::getEmotionCode,
-                Collectors.averagingDouble(DiaryAnalysis::getWeight)));
-
-        return Collections.max(emotionScores.entrySet(), Map.Entry.comparingByValue());
-    }
-
     private Member getMember(String providerId) {
         return memberRepository.findByProviderId(providerId)
             .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
     }
-
 }
