@@ -52,10 +52,10 @@ public class Diary extends BaseTimeEntity {
         this.member = member;
     }
 
-    public static Diary create(String title, LoveInfo loveInfo, Member member) {
+    public static Diary create(String title, LoveInfo loveInfo, Member member, boolean isMain) {
         return Diary.builder()
             .isDeleted(false)
-            .isMain(false)
+            .isMain(isMain)
             .title(title)
             .loveInfo(loveInfo)
             .pageCount(0)

@@ -77,7 +77,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         Optional<Diary> findDiary = diaryRepository.findById(response.getDiaryId());
         assertThat(findDiary).isPresent();
         assertThat(findDiary.get())
-            .hasFieldOrPropertyWithValue("isMain", false)
+            .hasFieldOrPropertyWithValue("isMain", true)
             .hasFieldOrPropertyWithValue("title", "푸바오")
             .hasFieldOrPropertyWithValue("loveInfo.isLove", true)
             .hasFieldOrPropertyWithValue("loveInfo.startedDate", LocalDate.of(2023, 12, 25))
