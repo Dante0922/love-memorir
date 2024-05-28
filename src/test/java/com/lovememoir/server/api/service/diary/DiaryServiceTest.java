@@ -273,7 +273,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         Auth otherAuth = createAuth(otherMember, "0987654321");
 
         //when //then
-        assertThatThrownBy(() -> diaryService.modifyDiaryMainStatus(otherAuth.getProviderId(), diary.getId()))
+        assertThatThrownBy(() -> diaryService.modifyDiaryMainStatus(otherAuth.getProviderId(), diary.getId(), true))
             .isInstanceOf(AuthException.class)
             .hasMessage(NO_AUTH);
     }
@@ -289,7 +289,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         Diary diary = createDiary(member, false, false);
 
         //when
-        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(auth.getProviderId(), diary.getId());
+        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(auth.getProviderId(), diary.getId(), true);
 
         //then
         assertThat(response).isNotNull();
@@ -297,10 +297,6 @@ class DiaryServiceTest extends IntegrationTestSupport {
         Optional<Diary> findDiary1 = diaryRepository.findById(diary.getId());
         assertThat(findDiary1).isPresent();
         assertThat(findDiary1.get().isMain()).isTrue();
-
-        Optional<Diary> findDiary2 = diaryRepository.findById(mainDiary.getId());
-        assertThat(findDiary2).isPresent();
-        assertThat(findDiary2.get().isMain()).isFalse();
     }
 
     @DisplayName("회원 정보와 일기장 정보를 입력 받아 대표 일기장을 등록한다.")
@@ -312,7 +308,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         Diary diary = createDiary(member, false, false);
 
         //when
-        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(auth.getProviderId(), diary.getId());
+        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(auth.getProviderId(), diary.getId(), true);
 
         //then
         assertThat(response).isNotNull();
@@ -331,7 +327,7 @@ class DiaryServiceTest extends IntegrationTestSupport {
         Diary diary = createDiary(member, false, true);
 
         //when
-        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(auth.getProviderId(), diary.getId());
+        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(auth.getProviderId(), diary.getId(), false);
 
         //then
         assertThat(response).isNotNull();

@@ -78,8 +78,8 @@ public class Diary extends BaseTimeEntity {
         isStored = !isStored;
     }
 
-    public void modifyMainStatus() {
-        isMain = !isMain;
+    public void modifyMainStatus(boolean isMain) {
+        this.isMain = isMain;
     }
 
     public void pageCountUp() {

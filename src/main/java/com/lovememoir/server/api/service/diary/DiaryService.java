@@ -100,7 +100,7 @@ public class DiaryService {
         return DiaryModifyResponse.of(diary);
     }
 
-    public DiaryModifyResponse modifyDiaryMainStatus(final String providerId, final long diaryId) {
+    public DiaryModifyResponse modifyDiaryMainStatus(final String providerId, final long diaryId, final boolean isMain) {
         Member member = memberRepository.findByProviderId(providerId)
             .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
 
@@ -111,14 +111,7 @@ public class DiaryService {
             throw new AuthException(NO_AUTH);
         }
 
-        Diary mainDiary = diaryRepository.findMainDiaryByMemberId(member.getId())
-            .orElse(null);
-
-        if (mainDiary != null && !mainDiary.getId().equals(diaryId)) {
-            mainDiary.modifyMainStatus();
-        }
-
-        diary.modifyMainStatus();
+        diary.modifyMainStatus(isMain);
 
         return DiaryModifyResponse.of(diary);
     }

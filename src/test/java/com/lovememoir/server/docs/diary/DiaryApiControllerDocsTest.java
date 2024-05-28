@@ -3,6 +3,7 @@ package com.lovememoir.server.docs.diary;
 import com.lovememoir.server.api.controller.diary.DiaryApiController;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryImageModifyRequest;
+import com.lovememoir.server.api.controller.diary.request.DiaryModifyMainStatusRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
@@ -19,8 +20,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -325,6 +325,10 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
     @DisplayName("일기장 메인 상태 수정 API")
     @Test
     void modifyDiaryMainStatus() throws Exception {
+        DiaryModifyMainStatusRequest request = DiaryModifyMainStatusRequest.builder()
+            .isMain(true)
+            .build();
+
         DiaryModifyResponse response = DiaryModifyResponse.builder()
             .diaryId(1L)
             .title("루이바오")
@@ -332,11 +336,12 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
             .startedDate(LocalDate.of(2024, 1, 1))
             .build();
 
-        given(diaryService.modifyDiaryMainStatus(anyString(), anyLong()))
+        given(diaryService.modifyDiaryMainStatus(anyString(), anyLong(), anyBoolean()))
             .willReturn(response);
 
         mockMvc.perform(
                 patch(BASE_URL + "/{diaryId}/main-status", 1L)
+                    .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
             )

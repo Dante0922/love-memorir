@@ -3,6 +3,7 @@ package com.lovememoir.server.api.controller.diary;
 import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryImageModifyRequest;
+import com.lovememoir.server.api.controller.diary.request.DiaryModifyMainStatusRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import com.lovememoir.server.api.controller.diary.response.DiaryCreateResponse;
 import com.lovememoir.server.api.controller.diary.response.DiaryModifyResponse;
@@ -78,10 +79,10 @@ public class DiaryApiController {
     }
 
     @PatchMapping("/{diaryId}/main-status")
-    public ApiResponse<DiaryModifyResponse> modifyDiaryMainStatus(@PathVariable Long diaryId) {
+    public ApiResponse<DiaryModifyResponse> modifyDiaryMainStatus(@PathVariable Long diaryId, @RequestBody DiaryModifyMainStatusRequest request) {
         String providerId = SecurityUtils.getProviderId();
 
-        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(providerId, diaryId);
+        DiaryModifyResponse response = diaryService.modifyDiaryMainStatus(providerId, diaryId, request.getIsMain());
 
         return ApiResponse.ok(response);
     }

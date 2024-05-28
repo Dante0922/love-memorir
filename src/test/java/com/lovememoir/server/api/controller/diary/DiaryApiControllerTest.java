@@ -3,6 +3,7 @@ package com.lovememoir.server.api.controller.diary;
 import com.lovememoir.server.ControllerTestSupport;
 import com.lovememoir.server.api.controller.diary.request.DiaryCreateRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryImageModifyRequest;
+import com.lovememoir.server.api.controller.diary.request.DiaryModifyMainStatusRequest;
 import com.lovememoir.server.api.controller.diary.request.DiaryModifyRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -199,9 +200,15 @@ class DiaryApiControllerTest extends ControllerTestSupport {
     @DisplayName("일기장을 메인 상태를 수정한다.")
     @Test
     void modifyDiaryMainStatus() throws Exception {
-        //given //when //then
+        //given
+        DiaryModifyMainStatusRequest request = DiaryModifyMainStatusRequest.builder()
+            .isMain(true)
+            .build();
+
+        //when //then
         mockMvc.perform(
                 patch(BASE_URL + "/{diaryId}/main-status", 1L)
+                    .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
                     .with(csrf())
             )
