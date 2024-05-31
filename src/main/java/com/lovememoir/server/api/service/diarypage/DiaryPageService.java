@@ -4,6 +4,7 @@ import com.lovememoir.server.api.FileStore;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
+import com.lovememoir.server.api.service.diaryanalysis.DiaryAnalysisService;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageCreateServiceRequest;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
@@ -18,6 +19,7 @@ import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.parser.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +43,7 @@ public class DiaryPageService {
     private final DiaryRepository diaryRepository;
     private final AttachedImageRepository attachedImageRepository;
     private final FileStore fileStore;
+    private final DiaryAnalysisService diaryAnalysisService;
 
     public DiaryPageCreateResponse createDiaryPage(final String providerId, final Long diaryId, final LocalDate currentDate, DiaryPageCreateServiceRequest request) {
         String title = validateTitle(request.getTitle());
@@ -65,6 +68,12 @@ public class DiaryPageService {
         List<AttachedImage> savedAttachedImages = attachedImageRepository.saveAll(attachedImages);
 
         diary.pageCountUp();
+
+        try {
+            diaryAnalysisService.diaryAnalysis(savedDiaryPage.getId());
+        } catch (ParseException e) {
+            diaryPage.failAnalysis();
+        }
 
         return DiaryPageCreateResponse.of(savedDiaryPage, savedAttachedImages);
     }

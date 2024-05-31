@@ -65,4 +65,12 @@ public class DiaryPage extends BaseTimeEntity {
         this.content = content;
         this.recordDate = recordDate;
     }
+
+    public void successAnalysis(int emotionCode) {
+        analysis = AnalysisResult.success(emotionCode);
+    }
+
+    public void failAnalysis() {
+        analysis = AnalysisResult.fail();
+    }
 }

@@ -1,4 +1,4 @@
-package com.lovememoir.server.api.service.diarypage;
+package com.lovememoir.server.api.service.diarypage.response;
 
 import lombok.Builder;
 import lombok.Getter;

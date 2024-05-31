@@ -1,6 +1,7 @@
 package com.lovememoir.server.api.service.diarypage;
 
 import com.lovememoir.server.api.SliceResponse;
+import com.lovememoir.server.api.service.diarypage.response.DiaryPageCountResponse;
 import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
 import com.lovememoir.server.domain.attachedimage.repository.AttachedImageQueryRepository;
 import com.lovememoir.server.domain.attachedimage.repository.response.AttachedImageResponse;

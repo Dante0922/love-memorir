@@ -358,6 +358,10 @@ public class DiaryApiControllerDocsTest extends RestDocsSupport {
                     parameterWithName("diaryId")
                         .description("일기장 식별키")
                 ),
+                requestFields(
+                    fieldWithPath("isMain").type(JsonFieldType.BOOLEAN)
+                        .description("메인 일기장 여부")
+                ),
                 responseFields(
                     fieldWithPath("code").type(JsonFieldType.NUMBER)
                         .description("코드"),

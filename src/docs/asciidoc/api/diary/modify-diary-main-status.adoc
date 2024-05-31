@@ -6,6 +6,7 @@
 include::{snippets}/modify-diary-main-status/http-request.adoc[]
 include::{snippets}/modify-diary-main-status/request-headers.adoc[]
 include::{snippets}/modify-diary-main-status/path-parameters.adoc[]
+include::{snippets}/modify-diary-main-status/request-fields.adoc[]
 
 ==== HTTP Response
 
