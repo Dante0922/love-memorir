@@ -6,6 +6,7 @@ import com.lovememoir.server.common.exception.AuthException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 import java.security.PublicKey;
 import java.util.Base64;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import static com.lovememoir.server.common.message.ExceptionMessage.FAILED_TO_GENERATE_TOKEN;
 
+@Slf4j
 public class JwtParser {
 
     private static final String HEADER_AUTHORIZATION = "Authorization";
@@ -37,9 +39,15 @@ public class JwtParser {
     }
 
     public static Map<String, String> parseHeaders(String token) {
+        log.info(token);
         try {
-            String encodedHeader = token.split(TOKEN_VALUE_DELIMITER)[HEADER_INDEX];
-            String decodedHeader = new String(Base64.getDecoder().decode(encodedHeader));
+            String[] tokenParts = token.split(TOKEN_VALUE_DELIMITER);
+            if (tokenParts.length != 3) {
+                throw new AuthException("토큰파츠가 3개가 아님.." + tokenParts.length);
+            }
+
+            String encodedHeader = tokenParts[HEADER_INDEX];
+            String decodedHeader = new String(Base64.getUrlDecoder().decode(encodedHeader));
             return OBJECT_MAPPER.readValue(decodedHeader, Map.class);
         } catch (JsonProcessingException | ArrayIndexOutOfBoundsException e) {
             throw new AuthException(FAILED_TO_GENERATE_TOKEN);
