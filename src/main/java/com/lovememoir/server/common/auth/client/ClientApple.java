@@ -49,21 +49,17 @@ public class ClientApple implements ClientProxy {
     }
 
     private String getAppleSubject(String idToken) {
+        log.info("idToken: " + idToken);
         Map<String, String> tokenHeaders = JwtParser.parseHeaders(idToken);
         String kid = tokenHeaders.get("kid");
         RSAPublicKey applePublicKey = getApplePublicKey(kid);
         Claims claims = JwtParser.parseClaims(idToken, applePublicKey);
-        validateClaims(claims);
 
         // ProviderId == Subject
         return claims.getSubject();
 
     }
 
-    private void validateClaims(Claims claims) {
-        throw new AuthException("validateClaims 만드는 중..");
-        // TODO 구현할 것..
-    }
 
     private RSAPublicKey getApplePublicKey(String keyId) {
         Mono<String> responseMono = webClient.get()
