@@ -3,7 +3,7 @@ package com.lovememoir.server.api.controller.diarypage;
 import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.api.SliceResponse;
 import com.lovememoir.server.api.controller.diarypage.param.DiaryPageSearchParam;
-import com.lovememoir.server.api.service.diarypage.DiaryPageCountResponse;
+import com.lovememoir.server.api.service.diarypage.response.DiaryPageCountResponse;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
 import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;

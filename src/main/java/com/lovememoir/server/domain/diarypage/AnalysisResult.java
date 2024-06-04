@@ -9,8 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static com.lovememoir.server.domain.diarypage.AnalysisStatus.BEFORE;
-import static com.lovememoir.server.domain.diarypage.AnalysisStatus.SUCCESS;
+import static com.lovememoir.server.domain.diarypage.AnalysisStatus.*;
 
 @Embeddable
 @Getter
@@ -37,6 +36,12 @@ public class AnalysisResult {
         return AnalysisResult.builder()
             .analysisStatus(SUCCESS)
             .emotionCode(emotionCode)
+            .build();
+    }
+
+    public static AnalysisResult fail() {
+        return AnalysisResult.builder()
+            .analysisStatus(FAIL)
             .build();
     }
 }

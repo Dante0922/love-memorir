@@ -2,7 +2,7 @@ package com.lovememoir.server.docs.diarypage;
 
 import com.lovememoir.server.api.SliceResponse;
 import com.lovememoir.server.api.controller.diarypage.DiaryPageQueryApiController;
-import com.lovememoir.server.api.service.diarypage.DiaryPageCountResponse;
+import com.lovememoir.server.api.service.diarypage.response.DiaryPageCountResponse;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
 import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
 import com.lovememoir.server.docs.RestDocsSupport;

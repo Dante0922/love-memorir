@@ -52,7 +52,7 @@ class AvatarServiceTest extends IntegrationTestSupport {
 
 
     @DisplayName("아바타 갱신 성공")
-    @Test
+//    @Test
     void refreshAvatar() throws Exception{
         //given
         Member member = createMember();

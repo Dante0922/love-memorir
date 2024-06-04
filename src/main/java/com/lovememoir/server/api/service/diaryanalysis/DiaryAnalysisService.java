@@ -1,12 +1,15 @@
 package com.lovememoir.server.api.service.diaryanalysis;
 
-import com.lovememoir.server.domain.code.SystemCode;
+import com.lovememoir.server.domain.avatar.Emotion;
 import com.lovememoir.server.domain.code.repository.SystemCodeRepository;
 import com.lovememoir.server.domain.diaryanalysis.DiaryAnalysis;
 import com.lovememoir.server.domain.diaryanalysis.repository.DiaryAnalysisRepository;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 import org.springframework.ai.openai.OpenAiChatClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,16 +25,9 @@ public class DiaryAnalysisService {
 
     private final DiaryAnalysisRepository diaryAnalysisRepository;
     private final DiaryPageRepository diaryPageRepository;
-    private final SystemCodeRepository codeRepository;
     private final OpenAiChatClient chatClient;
 
-    public void diaryAnalysis(final Long diaryPageId, final int groupCode) {
-        List<SystemCode> emotionCodes = codeRepository.findAllByGroupCode(groupCode);
-        Map<String, Integer> emotionCodeMap = new HashMap<>();
-        for (SystemCode emotionCode : emotionCodes) {
-            emotionCodeMap.put(emotionCode.getName(), emotionCode.getCode());
-        }
-
+    public void diaryAnalysis(final Long diaryPageId) throws ParseException {
         DiaryPage diaryPage = diaryPageRepository.findById(diaryPageId)
             .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY_PAGE));
 
@@ -39,12 +35,14 @@ public class DiaryAnalysisService {
 
         String response = chatClient.call(prompt);
 
-        String[] results = response.split("\n");
+        JSONParser jsonParser = new JSONParser();
+        Object obj = jsonParser.parse(response);
+        JSONObject json = (JSONObject) obj;
+
         List<DiaryAnalysis> diaryAnalyses = new ArrayList<>();
-        for (String result : results) {
-            String[] emotion = result.split(": ");
-            int emotionCode = emotionCodeMap.get(emotion[0]);
-            int weight = Integer.parseInt(emotion[1]);
+        for (Emotion emotion : Emotion.values()) {
+            int emotionCode = emotion.getCode();
+            int weight = (int) json.get(emotion.getText());
             diaryAnalyses.add(DiaryAnalysis.create(emotionCode, weight, diaryPage));
         }
 
@@ -54,6 +52,6 @@ public class DiaryAnalysisService {
 
         DiaryAnalysis maxWeightEmotion = savedDiaryAnalyses.get(0);
 
-//        diaryPage.successAnalysis(maxWeightEmotion.getEmotionCode());
+        diaryPage.successAnalysis(maxWeightEmotion.getEmotionCode());
     }
 }
