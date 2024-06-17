@@ -35,8 +35,8 @@ public class DiaryAnalysisService {
 
         String prompt = OpenaiPrompt.generatePrompt(diaryPage.getContent());
 
-//        String response = chatClient.call(prompt);
-        String response = "hi";
+        String response = "";
+
         try{
             response = openAiApiService.callGpt4Api(prompt);
 
@@ -44,19 +44,31 @@ public class DiaryAnalysisService {
             System.out.println(e);
         }
 
-        log.info(response);
-
-
-        JSONParser jsonParser = new JSONParser();
-        Object obj = jsonParser.parse(response);
-        JSONObject json = (JSONObject) obj;
+        JSONObject json = null;
+        try{
+            JSONParser jsonParser = new JSONParser(JSONParser.MODE_JSON_SIMPLE);
+            Object obj =  jsonParser.parse(response);
+            json = (JSONObject) obj;
+        } catch (ParseException e) {
+            log.error("JSON 파싱 실패", e);
+        } catch (Exception e) {
+            log.error("무슨 다른 에러가..?", e);
+        }
 
         List<DiaryAnalysis> diaryAnalyses = new ArrayList<>();
+
         for (Emotion emotion : Emotion.values()) {
+            System.out.println(emotion);
             int emotionCode = emotion.getCode();
-            int weight = (int) json.get(emotion.getText());
+            Object weightObj = json.get(emotion.name());
+            int weight = 0;
+            if (weightObj != null) {
+                weight = ((Long) weightObj).intValue();
+            }
             diaryAnalyses.add(DiaryAnalysis.create(emotionCode, weight, diaryPage));
         }
+
+
 
         List<DiaryAnalysis> savedDiaryAnalyses = diaryAnalysisRepository.saveAll(diaryAnalyses);
 

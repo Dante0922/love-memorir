@@ -4,7 +4,9 @@ package com.lovememoir.server.api.service.diaryanalysis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -13,12 +15,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class OpenAiApiService {
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_KEY = "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";
-//    private static final String API_KEY = "sk-proj-seQTzUShchYUjxtkXaj7T3BlbkFJjLlw0ymYCdwZ1VVIizoM";
+    @Value("${spring.ai.openai.api-key}")
+    private String API_KEY;
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
@@ -50,17 +53,18 @@ public class OpenAiApiService {
             .header("Authorization", "Bearer sk-proj-seQTzUShchYUjxtkXaj7T3BlbkFJjLlw0ymYCdwZ1VVIizoM")
             .POST(HttpRequest.BodyPublishers.ofString(requestBodyStr))
             .build();
-        log.info("req 확인" + request.headers().map());
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        log.info("resp 확인" + response.headers().map());
-        log.info("resq 바디", response.body().toString());
 
         if (response.statusCode() != 200) {
             throw new RuntimeException("GPT 실패" + response.toString());
         }
 
         ObjectNode responseJson = objectMapper.readValue(response.body(), ObjectNode.class);
-        return responseJson.path("choices").get(0).path("message").path("content").asText();
+        String text = responseJson.path("choices").get(0).path("message").path("content").asText();
+        String trimmedText = text.replaceAll("json", "").replaceAll("^```", "").replaceAll("```$", "");
+        log.info(trimmedText);
+        return trimmedText;
+
     }
 }
