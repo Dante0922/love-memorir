@@ -1,12 +1,12 @@
 package com.lovememoir.server.api.service.diaryanalysis;
 
 import com.lovememoir.server.domain.avatar.Emotion;
-import com.lovememoir.server.domain.code.repository.SystemCodeRepository;
 import com.lovememoir.server.domain.diaryanalysis.DiaryAnalysis;
 import com.lovememoir.server.domain.diaryanalysis.repository.DiaryAnalysisRepository;
 import com.lovememoir.server.domain.diarypage.DiaryPage;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -21,11 +21,13 @@ import static com.lovememoir.server.common.message.ExceptionMessage.NO_SUCH_DIAR
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class DiaryAnalysisService {
 
     private final DiaryAnalysisRepository diaryAnalysisRepository;
     private final DiaryPageRepository diaryPageRepository;
     private final OpenAiChatClient chatClient;
+    private final OpenAiApiService openAiApiService;
 
     public void diaryAnalysis(final Long diaryPageId) throws ParseException {
         DiaryPage diaryPage = diaryPageRepository.findById(diaryPageId)
@@ -33,7 +35,17 @@ public class DiaryAnalysisService {
 
         String prompt = OpenaiPrompt.generatePrompt(diaryPage.getContent());
 
-        String response = chatClient.call(prompt);
+//        String response = chatClient.call(prompt);
+        String response = "hi";
+        try{
+            response = openAiApiService.callGpt4Api(prompt);
+
+        } catch (Exception e){
+            System.out.println(e);
+        }
+
+        log.info(response);
+
 
         JSONParser jsonParser = new JSONParser();
         Object obj = jsonParser.parse(response);
