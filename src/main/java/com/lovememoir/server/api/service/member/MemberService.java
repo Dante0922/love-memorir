@@ -3,6 +3,7 @@ package com.lovememoir.server.api.service.member;
 import com.lovememoir.server.api.controller.member.response.MemberCreateResponse;
 import com.lovememoir.server.api.controller.member.response.MemberModifyResponse;
 import com.lovememoir.server.api.controller.member.response.MemberRemoveResponse;
+import com.lovememoir.server.api.service.auth.AuthService;
 import com.lovememoir.server.api.service.avatar.AvatarService;
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
 import com.lovememoir.server.api.service.member.request.MemberModifyServiceRequest;
@@ -34,8 +35,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
     private final AuthQueryRepository authQueryRepository;
-    private final AuthRepository authRepository;
     private final AvatarService avatarService;
+    private final AuthService authService;
 
     public MemberCreateResponse createMember(MemberCreateServiceRequest request) {
         String nickname = validateNickname(request.getNickname());
@@ -66,6 +67,7 @@ public class MemberService {
     public MemberRemoveResponse removeMember(String providerId) {
         Member member = validateAndGetMember(providerId);
         member.remove();
+        authService.removeAuthByProviderId(providerId);
         return MemberRemoveResponse.of(member);
     }
 
