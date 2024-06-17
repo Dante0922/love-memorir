@@ -64,7 +64,7 @@ dependencies {
     //spring ai
     implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 
-    //h2
+    //h2https://platform.openai.com/docs/api-reference/authentication
     runtimeOnly 'com.h2database:h2'
     //mysql
     runtimeOnly 'com.mysql:mysql-connector-j'

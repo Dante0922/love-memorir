@@ -33,7 +33,7 @@ class OpenaiPromptTest {
             기분이 지금 좋지는 않지만 안 좋은 것은 아니다.
                             
             위 일기의 감정을  json 형태로만 분석해서 반환해줘.
-            감정의 종류는 행복, 슬픔, 설렘, 안정, 분노 다섯가지이고 0~100의 점수화해줘.
+            감정의 종류는 STABILITY, HAPPINESS, ROMANCE, SADNESS, ANGER 다섯가지이고 0~100의 점수화해줘.
             다른 말 하지말고 json만 보내.
             """;
         assertThat(prompt).isEqualTo(expected);
