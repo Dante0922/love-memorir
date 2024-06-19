@@ -83,7 +83,7 @@ cloud:
       accessKey: ${s3.accessKey}
       secretKey: ${s3.secretKey}
     s3:
-      bucket: love-memoir
+      bucket: love-log-bucket
     stack:
       auto: false
     region:
