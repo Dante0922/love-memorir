@@ -1,6 +1,5 @@
 package com.lovememoir.server.api.controller.diarypage.response;
 
-import com.lovememoir.server.domain.diarypage.AnalysisStatus;
 import lombok.Builder;
 
 public class DiaryPageEmotionResponse {

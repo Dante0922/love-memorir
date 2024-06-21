@@ -6,7 +6,6 @@ import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.repository.AuthQueryRepository;
 import com.lovememoir.server.domain.auth.repository.AuthRepository;
-import com.lovememoir.server.domain.member.repository.MemberQueryRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

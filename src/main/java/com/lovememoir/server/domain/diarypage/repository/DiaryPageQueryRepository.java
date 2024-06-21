@@ -1,8 +1,6 @@
 package com.lovememoir.server.domain.diarypage.repository;
 
-import com.lovememoir.server.domain.avatar.Emotion;
 import com.lovememoir.server.domain.diaryanalysis.QDiaryAnalysis;
-import com.lovememoir.server.domain.diarypage.QDiaryPage;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryAnalysisRseponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.lovememoir.server.domain.diaryanalysis.QDiaryAnalysis.diaryAnalysis;
 import static com.lovememoir.server.domain.diarypage.QDiaryPage.diaryPage;
 
 @Repository
