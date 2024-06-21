@@ -42,6 +42,6 @@ public class AuthService {
         if (auth == null) {
             throw new AuthException(USER_NOT_FOUND);
         }
-        authRepository.delete(auth);
+        auth.remove();
     }
 }
