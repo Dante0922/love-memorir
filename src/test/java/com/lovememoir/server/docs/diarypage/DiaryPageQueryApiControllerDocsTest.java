@@ -8,6 +8,7 @@ import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
 import com.lovememoir.server.docs.RestDocsSupport;
 import com.lovememoir.server.domain.attachedimage.repository.response.AttachedImageResponse;
 import com.lovememoir.server.domain.diarypage.AnalysisStatus;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryAnalysisRseponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -117,6 +118,8 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
                     fieldWithPath("data.content[].emotionCode").type(JsonFieldType.STRING)
                         .optional()
                         .description("일기 감정 코드"),
+                    fieldWithPath("data.content[].emotionName").type(JsonFieldType.STRING)
+                            .description("일기 감정 이름"),
                     fieldWithPath("data.content[].title").type(JsonFieldType.STRING)
                         .description("일기 제목"),
                     fieldWithPath("data.content[].recordDate").type(JsonFieldType.ARRAY)
@@ -246,6 +249,57 @@ public class DiaryPageQueryApiControllerDocsTest extends RestDocsSupport {
                         .description("일기 이미지 주소"),
                     fieldWithPath("data.createdDateTime").type(JsonFieldType.ARRAY)
                         .description("일기 작성 일시")
+                )
+            ));
+    }
+
+    @DisplayName("일기 감정분석 결과 조회 API")
+    @Test
+    void searchDiaryPageEmotion() throws Exception {
+
+        DiaryAnalysisRseponse response = DiaryAnalysisRseponse.builder()
+            .emotionName("HAPPINESS")
+            .weight(90)
+            .emotionCode(1)
+            .build();
+
+        given(diaryPageQueryService.searchDiaryPageEmotion(anyLong()))
+            .willReturn(response);
+
+        mockMvc.perform(
+                get(BASE_URL + "/{diaryPageId}/emotion", 1L, 1L)
+                    .header(HttpHeaders.AUTHORIZATION, "user.authorization.token")
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("search-diary-page-emotion",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION)
+                        .description("회원 인증 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("diaryId")
+                        .description("일기장 식별키"),
+                    parameterWithName("diaryPageId")
+                        .description("일기 식별키")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.emotionName").type(JsonFieldType.STRING)
+                        .description("일기 감정 분석 상태"),
+                    fieldWithPath("data.weight").type(JsonFieldType.NUMBER)
+                        .description("일기 감정 결과"),
+                    fieldWithPath("data.emotionCode").type(JsonFieldType.NUMBER)
+                        .description("일기 감정 코드")
                 )
             ));
     }

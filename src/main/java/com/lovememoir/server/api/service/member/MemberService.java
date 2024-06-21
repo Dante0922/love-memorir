@@ -9,7 +9,6 @@ import com.lovememoir.server.api.service.member.request.MemberCreateServiceReque
 import com.lovememoir.server.api.service.member.request.MemberModifyServiceRequest;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.repository.AuthQueryRepository;
-import com.lovememoir.server.domain.auth.repository.AuthRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.enumerate.RoleType;

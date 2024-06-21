@@ -6,6 +6,7 @@ import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
 import com.lovememoir.server.domain.attachedimage.repository.AttachedImageQueryRepository;
 import com.lovememoir.server.domain.attachedimage.repository.response.AttachedImageResponse;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageQueryRepository;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryAnalysisRseponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import lombok.RequiredArgsConstructor;
@@ -61,5 +62,10 @@ public class DiaryPageQueryService {
         List<AttachedImageResponse> images = attachedImageQueryRepository.findAllByDiaryPageId(diaryPageId);
 
         return DiaryPageResponse.of(diaryPage, images);
+    }
+
+    public DiaryAnalysisRseponse searchDiaryPageEmotion(Long diaryPageId) {
+        return diaryPageQueryRepository.findEmotionByDiaryId(diaryPageId);
+
     }
 }
