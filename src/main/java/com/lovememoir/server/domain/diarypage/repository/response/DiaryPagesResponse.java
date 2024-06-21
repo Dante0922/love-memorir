@@ -29,7 +29,7 @@ public class DiaryPagesResponse {
         this.title = title;
         this.recordDate = recordDate;
         this.createdDateTime = createdDateTime;
-        this.emotionName = Emotion.fromCode(emotionCode).toString();
+        this.emotionName = emotionCode == null ? "" : Emotion.fromCode(emotionCode).toString();
     }
 
     public void setEmotionString(int emotionCode) {

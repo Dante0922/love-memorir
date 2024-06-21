@@ -66,6 +66,7 @@ public class DiaryPageQueryRepository {
             .fetch();
 
         for (DiaryPagesResponse response : responses) {
+            if (response.getEmotionCode() == null) continue;
             response.setEmotionString(response.getEmotionCode());
         }
         return responses;
