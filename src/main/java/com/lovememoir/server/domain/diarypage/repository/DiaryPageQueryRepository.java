@@ -1,6 +1,9 @@
 package com.lovememoir.server.domain.diarypage.repository;
 
 import com.lovememoir.server.domain.avatar.Emotion;
+import com.lovememoir.server.domain.diaryanalysis.QDiaryAnalysis;
+import com.lovememoir.server.domain.diarypage.QDiaryPage;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryAnalysisRseponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.querydsl.core.types.Projections;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import static com.lovememoir.server.domain.diaryanalysis.QDiaryAnalysis.diaryAnalysis;
 import static com.lovememoir.server.domain.diarypage.QDiaryPage.diaryPage;
 
 @Repository
@@ -65,7 +69,7 @@ public class DiaryPageQueryRepository {
             .fetch();
 
         for (DiaryPagesResponse response : responses) {
-            response.setEmotionString(Emotion.fromCode(response.getEmotionCode()).toString());
+            response.setEmotionString(response.getEmotionCode());
         }
         return responses;
     }
@@ -100,5 +104,26 @@ public class DiaryPageQueryRepository {
             )
             .fetch()
             .size();
+    }
+
+    public DiaryAnalysisRseponse findEmotionByDiaryId(Long diaryPageId) {
+        QDiaryAnalysis diaryAnalysis = QDiaryAnalysis.diaryAnalysis;
+
+        DiaryAnalysisRseponse diaryAnalysisRseponse = queryFactory
+            .select(
+                Projections.fields(
+                    DiaryAnalysisRseponse.class,
+                    diaryAnalysis.emotionCode.as("emotionCode"),
+                    diaryAnalysis.weight.as("weight")
+                )
+            )
+            .from(diaryPage)
+            .join(diaryAnalysis).on(diaryAnalysis.diaryPage.eq(diaryPage))
+            .where(diaryPage.id.eq(diaryPageId)
+                .and(diaryAnalysis.emotionCode.eq(diaryPage.analysis.emotionCode)))
+            .fetchOne();
+         diaryAnalysisRseponse.setEmotionName();
+
+         return diaryAnalysisRseponse;
     }
 }

@@ -1,11 +1,15 @@
 package com.lovememoir.server.api.controller.diarypage;
 
+import com.google.protobuf.Api;
 import com.lovememoir.server.api.ApiResponse;
 import com.lovememoir.server.api.SliceResponse;
 import com.lovememoir.server.api.controller.diarypage.param.DiaryPageSearchParam;
+import com.lovememoir.server.api.controller.diarypage.response.DiaryPageEmotionResponse;
 import com.lovememoir.server.api.service.diarypage.response.DiaryPageCountResponse;
 import com.lovememoir.server.api.service.diarypage.DiaryPageQueryService;
 import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
+import com.lovememoir.server.domain.avatar.Emotion;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryAnalysisRseponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +59,12 @@ public class DiaryPageQueryApiController {
         return ApiResponse.ok(response);
     }
 
+    @GetMapping("/{diaryPageId}/emotion")
+    public ApiResponse<DiaryAnalysisRseponse> searchDiaryPageEmotion(
+        @PathVariable Long diaryId,
+        @PathVariable Long diaryPageId) {
+        DiaryAnalysisRseponse response = diaryPageQueryService.searchDiaryPageEmotion(diaryPageId);
+        return ApiResponse.ok(response);
+    }
 
 }

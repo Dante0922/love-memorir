@@ -32,7 +32,7 @@ public class DiaryPagesResponse {
         this.emotionName = Emotion.fromCode(emotionCode).toString();
     }
 
-    public void setEmotionString(String emotionName) {
-        this.emotionName = emotionName;
+    public void setEmotionString(int emotionCode) {
+        this.emotionName = Emotion.fromCode(emotionCode).toString();
     }
 }
