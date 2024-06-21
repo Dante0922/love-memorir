@@ -1,5 +1,6 @@
 package com.lovememoir.server.domain.diarypage.repository;
 
+import com.lovememoir.server.domain.avatar.Emotion;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.querydsl.core.types.Projections;
@@ -43,7 +44,7 @@ public class DiaryPageQueryRepository {
     }
 
     public List<DiaryPagesResponse> findAllByDiaryIdIn(final List<Long> diaryIds) {
-        return queryFactory
+        List<DiaryPagesResponse> responses = queryFactory
             .select(
                 Projections.fields(
                     DiaryPagesResponse.class,
@@ -62,6 +63,11 @@ public class DiaryPageQueryRepository {
                 diaryPage.createdDateTime.desc()
             )
             .fetch();
+
+        for (DiaryPagesResponse response : responses) {
+            response.setEmotionString(Emotion.fromCode(response.getEmotionCode()).toString());
+        }
+        return responses;
     }
 
     public Optional<DiaryPageDto> findById(final long diaryPageId) {
