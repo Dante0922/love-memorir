@@ -5,7 +5,9 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,9 +17,11 @@ import static com.lovememoir.server.domain.diary.QDiary.diary;
 public class DiaryQueryRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final EntityManager entityManager;
 
     public DiaryQueryRepository(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
+        this.entityManager = em;
     }
 
     public List<DiarySearchResponse> findAllByMemberId(final long memberId, final boolean isContainsMain) {
@@ -65,6 +69,14 @@ public class DiaryQueryRepository {
             )
             .orderBy(diary.createdDateTime.desc())
             .fetch();
+    }
+
+    @Transactional
+    public void setAllMainToFalse(Long memberId) {
+            queryFactory.update(diary)
+                .where(diary.isMain.isTrue(), diary.member.id.eq(memberId), diary.isDeleted.isFalse())
+                .set(diary.isMain, false)
+                .execute();
     }
 
     private BooleanExpression mainIsTrue(final boolean isContainsMain) {

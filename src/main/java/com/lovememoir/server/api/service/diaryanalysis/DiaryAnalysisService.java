@@ -11,6 +11,7 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 import org.springframework.ai.openai.OpenAiChatClient;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +32,10 @@ public class DiaryAnalysisService {
     private final OpenAiChatClient chatClient;
     private final OpenAiApiService openAiApiService;
 
-    public void diaryAnalysis(final Long diaryPageId) throws ParseException {
-        DiaryPage diaryPage = diaryPageRepository.findById(diaryPageId)
-            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY_PAGE));
+    @Async
+    public void diaryAnalysis(final DiaryPage diaryPage) throws ParseException {
+//        DiaryPage diaryPage = diaryPageRepository.findById(diaryPageId)
+//            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY_PAGE));
 
         String prompt = OpenaiPrompt.generatePrompt(diaryPage.getContent());
 

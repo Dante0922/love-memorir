@@ -70,7 +70,7 @@ public class DiaryPageService {
         diary.pageCountUp();
 
         try {
-            diaryAnalysisService.diaryAnalysis(savedDiaryPage.getId());
+            diaryAnalysisService.diaryAnalysis(savedDiaryPage);
         } catch (ParseException e) {
             diaryPage.failAnalysis();
         }
