@@ -10,7 +10,9 @@ import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.LoveInfo;
 import com.lovememoir.server.domain.diary.UploadFile;
+import com.lovememoir.server.domain.diary.repository.DiaryQueryRepository;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
+import com.lovememoir.server.domain.diary.repository.response.DiarySearchResponse;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -33,6 +36,7 @@ import static com.lovememoir.server.common.message.ExceptionMessage.*;
 public class DiaryService {
 
     private final DiaryRepository diaryRepository;
+    private final DiaryQueryRepository diaryQueryRepository;
     private final MemberRepository memberRepository;
     private final FileStore fileStore;
 
@@ -100,6 +104,7 @@ public class DiaryService {
             throw new AuthException(NO_AUTH);
         }
 
+        diaryQueryRepository.setAllMainToFalse(member.getId());
         diary.modifyStoreStatus();
 
         return DiaryModifyResponse.of(diary);
