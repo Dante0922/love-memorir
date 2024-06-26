@@ -72,7 +72,7 @@ class DiaryAnalysisServiceTest extends IntegrationTestSupport {
                 """);
 
         //when
-        diaryAnalysisService.diaryAnalysis(diaryPage);
+        diaryAnalysisService.diaryAnalysis(diaryPage.getId());
 
         //then
         List<DiaryAnalysis> diaryAnalyses = diaryAnalysisRepository.findAll();
