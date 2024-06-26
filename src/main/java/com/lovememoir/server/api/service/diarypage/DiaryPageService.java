@@ -22,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import net.minidev.json.parser.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -44,6 +46,8 @@ public class DiaryPageService {
     private final AttachedImageRepository attachedImageRepository;
     private final FileStore fileStore;
     private final DiaryAnalysisService diaryAnalysisService;
+    private TransactionSynchronizationManager transactionSynchronizationManager;
+
 
     public DiaryPageCreateResponse createDiaryPage(final String providerId, final Long diaryId, final LocalDate currentDate, DiaryPageCreateServiceRequest request) {
         String title = validateTitle(request.getTitle());
@@ -69,11 +73,12 @@ public class DiaryPageService {
 
         diary.pageCountUp();
 
-        try {
-            diaryAnalysisService.diaryAnalysis(savedDiaryPage);
-        } catch (ParseException e) {
-            diaryPage.failAnalysis();
-        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+            diaryAnalysisService.diaryAnalysis(savedDiaryPage.getId());
+            }
+        });
 
         return DiaryPageCreateResponse.of(savedDiaryPage, savedAttachedImages);
     }

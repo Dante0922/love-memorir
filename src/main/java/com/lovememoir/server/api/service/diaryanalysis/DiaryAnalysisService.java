@@ -33,9 +33,9 @@ public class DiaryAnalysisService {
     private final OpenAiApiService openAiApiService;
 
     @Async
-    public void diaryAnalysis(final DiaryPage diaryPage) throws ParseException {
-//        DiaryPage diaryPage = diaryPageRepository.findById(diaryPageId)
-//            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY_PAGE));
+    public void diaryAnalysis(final Long diaryPageId) {
+        DiaryPage diaryPage = diaryPageRepository.findById(diaryPageId)
+            .orElseThrow(() -> new NoSuchElementException(NO_SUCH_DIARY_PAGE));
 
         String prompt = OpenaiPrompt.generatePrompt(diaryPage.getContent());
 
@@ -58,6 +58,10 @@ public class DiaryAnalysisService {
         } catch (Exception e) {
             log.error("무슨 다른 에러가..?", e);
         }
+        if (json == null) {
+            diaryPage.failAnalysis();
+            return;
+        }
 
         List<DiaryAnalysis> diaryAnalyses = new ArrayList<>();
 
@@ -72,14 +76,10 @@ public class DiaryAnalysisService {
             diaryAnalyses.add(DiaryAnalysis.create(emotionCode, weight, diaryPage));
         }
 
-
-
         List<DiaryAnalysis> savedDiaryAnalyses = diaryAnalysisRepository.saveAll(diaryAnalyses);
-
         savedDiaryAnalyses.sort((a, b) -> b.getWeight() - a.getWeight());
 
         DiaryAnalysis maxWeightEmotion = savedDiaryAnalyses.get(0);
-
         diaryPage.successAnalysis(maxWeightEmotion.getEmotionCode());
     }
 }
