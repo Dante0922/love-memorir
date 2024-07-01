@@ -33,7 +33,7 @@ class DiaryValidatorTest {
         //when //then
         assertThatThrownBy(() -> DiaryValidator.validateTitle(title))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(NOT_MATCHES_PATTERN_DIARY_TITLE);
+            .hasMessage(NOT_MATCHES_PATTERN_DIARY_TITLE + title);
     }
 
     @DisplayName("입력 받은 제목의 데이터 유효성 검증을 한다.")

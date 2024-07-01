@@ -19,7 +19,7 @@ import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import net.minidev.json.parser.ParseException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -38,6 +38,7 @@ import static com.lovememoir.server.common.message.ExceptionMessage.*;
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class DiaryPageService {
 
     private final DiaryPageRepository diaryPageRepository;
@@ -46,13 +47,21 @@ public class DiaryPageService {
     private final AttachedImageRepository attachedImageRepository;
     private final FileStore fileStore;
     private final DiaryAnalysisService diaryAnalysisService;
-    private TransactionSynchronizationManager transactionSynchronizationManager;
 
 
     public DiaryPageCreateResponse createDiaryPage(final String providerId, final Long diaryId, final LocalDate currentDate, DiaryPageCreateServiceRequest request) {
         String title = validateTitle(request.getTitle());
         LocalDate recordDate = validateRecordDate(request.getRecordDate(), currentDate);
+
         List<MultipartFile> files = validateImageCount(request.getImages());
+
+        for (MultipartFile file : files) {
+            log.info("file for-loop..");
+            log.info(file.getName());
+            log.info(file.getContentType());
+            log.info(file.getOriginalFilename());
+        }
+
 
         Member member = memberRepository.findByProviderId(providerId)
             .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
@@ -118,6 +127,7 @@ public class DiaryPageService {
 
     private List<UploadFile> cloudUploadFiles(List<MultipartFile> files) {
         try {
+            log.info("storeFiles 시작..");
             return fileStore.storeFiles(files);
         } catch (IOException e) {
             throw new RuntimeException(e);
