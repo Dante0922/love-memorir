@@ -65,7 +65,9 @@ public class DiaryPageQueryService {
     }
 
     public DiaryAnalysisRseponse searchDiaryPageEmotion(Long diaryPageId) {
-        return diaryPageQueryRepository.findEmotionByDiaryId(diaryPageId);
+        DiaryAnalysisRseponse rseponse = diaryPageQueryRepository.findEmotionByDiaryId(diaryPageId);
+
+        return null;
 
     }
 }

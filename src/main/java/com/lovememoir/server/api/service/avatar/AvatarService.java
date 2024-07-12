@@ -125,7 +125,7 @@ public class AvatarService {
 
     private static Question selectRandomQuestion(List<Question> availableQuestions) {
         return availableQuestions.isEmpty() ?
-            Question.builder().emotion(Emotion.STABILITY).content("항복하길 바래요").build() :
+            Question.builder().emotion(Emotion.STABILITY).content(" ").build() :
             availableQuestions.get(new Random().nextInt(availableQuestions.size()));
     }
 
