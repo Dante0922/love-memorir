@@ -34,19 +34,20 @@ public class Member extends BaseTimeEntity {
     private String nickname;
 
     @Column(nullable = false, length = 1, columnDefinition = "char(1)")
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(nullable = false, length = 10, columnDefinition = "char(10)")
     private String birth;
 
-    @Column(nullable = false, length = 5)
+    @Column(nullable = false, length = 20, columnDefinition = "varchar(20)")
+    @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Auth auth;
 
-    @OneToOne
-    @JoinColumn(name = "avatar_id")
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Avatar avatar;
 
     //TODO diary, term 속성 추가

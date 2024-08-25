@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
-    @Query("select d from Diary d where d.member.id = :memberId and d.isDeleted = false and d.isMain = true")
-    Optional<Diary> findMainDiaryByMemberId(Long memberId);
+    @Query("select d.id from Diary d where d.member.id = :memberId and d.isMain = true and d.isDeleted = false")
+    Optional<Long> findMainDiaryByMemberId(@Param("memberId") Long memberId);
 }

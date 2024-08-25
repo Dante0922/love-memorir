@@ -5,6 +5,7 @@ import com.lovememoir.server.api.FileStore;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
+import com.lovememoir.server.api.service.diaryanalysis.DiaryAnalysisService;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageCreateServiceRequest;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
@@ -25,6 +26,7 @@ import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.enumerate.RoleType;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
+import net.minidev.json.parser.ParseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,8 @@ import java.util.Optional;
 
 import static com.lovememoir.server.common.message.ExceptionMessage.NO_AUTH;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 
 class DiaryPageServiceTest extends IntegrationTestSupport {
 
@@ -62,6 +65,9 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
 
     @MockBean
     private FileStore fileStore;
+
+    @MockBean
+    private DiaryAnalysisService diaryAnalysisService;
 
     @DisplayName("신규 일기 등록 시 본인의 일기장이 아니라면 예외가 발생한다.")
     @Test
@@ -113,7 +119,7 @@ class DiaryPageServiceTest extends IntegrationTestSupport {
 
     @DisplayName("회원 정보와 일기 정보를 입력 받아 신규 일기를 등록한다.")
     @Test
-    void createDiaryPage() throws IOException {
+    void createDiaryPage() throws IOException, ParseException {
         //given
         LocalDate currentDate = LocalDate.of(2024, 4, 6);
 

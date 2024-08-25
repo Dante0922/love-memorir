@@ -10,7 +10,9 @@ import com.lovememoir.server.common.exception.AuthException;
 import com.lovememoir.server.domain.diary.Diary;
 import com.lovememoir.server.domain.diary.LoveInfo;
 import com.lovememoir.server.domain.diary.UploadFile;
+import com.lovememoir.server.domain.diary.repository.DiaryQueryRepository;
 import com.lovememoir.server.domain.diary.repository.DiaryRepository;
+import com.lovememoir.server.domain.diary.repository.response.DiarySearchResponse;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -33,6 +36,7 @@ import static com.lovememoir.server.common.message.ExceptionMessage.*;
 public class DiaryService {
 
     private final DiaryRepository diaryRepository;
+    private final DiaryQueryRepository diaryQueryRepository;
     private final MemberRepository memberRepository;
     private final FileStore fileStore;
 
@@ -43,7 +47,11 @@ public class DiaryService {
         Member member = memberRepository.findByProviderId(providerId)
             .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
 
-        Diary diary = Diary.create(title, loveInfo, member);
+        Optional<Long> mainDiary = diaryRepository.findMainDiaryByMemberId(member.getId());
+
+        boolean isMain = mainDiary.isEmpty();
+
+        Diary diary = Diary.create(title, loveInfo, member, isMain);
         Diary savedDiary = diaryRepository.save(diary);
 
         return DiaryCreateResponse.of(savedDiary);
@@ -96,12 +104,13 @@ public class DiaryService {
             throw new AuthException(NO_AUTH);
         }
 
+        diaryQueryRepository.setAllMainToFalse(member.getId());
         diary.modifyStoreStatus();
 
         return DiaryModifyResponse.of(diary);
     }
 
-    public DiaryModifyResponse modifyDiaryMainStatus(final String providerId, final long diaryId) {
+    public DiaryModifyResponse modifyDiaryMainStatus(final String providerId, final long diaryId, final boolean isMain) {
         Member member = memberRepository.findByProviderId(providerId)
             .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
 
@@ -112,14 +121,7 @@ public class DiaryService {
             throw new AuthException(NO_AUTH);
         }
 
-        Diary mainDiary = diaryRepository.findMainDiaryByMemberId(member.getId())
-            .orElse(null);
-
-        if (mainDiary != null && !mainDiary.getId().equals(diaryId)) {
-            mainDiary.modifyMainStatus();
-        }
-
-        diary.modifyMainStatus();
+        diary.modifyMainStatus(isMain);
 
         return DiaryModifyResponse.of(diary);
     }

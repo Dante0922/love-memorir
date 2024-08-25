@@ -3,11 +3,12 @@ package com.lovememoir.server.api.service.member;
 import com.lovememoir.server.api.controller.member.response.MemberCreateResponse;
 import com.lovememoir.server.api.controller.member.response.MemberModifyResponse;
 import com.lovememoir.server.api.controller.member.response.MemberRemoveResponse;
+import com.lovememoir.server.api.service.auth.AuthService;
+import com.lovememoir.server.api.service.avatar.AvatarService;
 import com.lovememoir.server.api.service.member.request.MemberCreateServiceRequest;
 import com.lovememoir.server.api.service.member.request.MemberModifyServiceRequest;
 import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.repository.AuthQueryRepository;
-import com.lovememoir.server.domain.auth.repository.AuthRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.enumerate.RoleType;
@@ -33,7 +34,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
     private final AuthQueryRepository authQueryRepository;
-    private final AuthRepository authRepository;
+    private final AvatarService avatarService;
+    private final AuthService authService;
 
     public MemberCreateResponse createMember(MemberCreateServiceRequest request) {
         String nickname = validateNickname(request.getNickname());
@@ -42,6 +44,7 @@ public class MemberService {
         validateDuplicateMember(request.getProviderId());
 
         Member savedMember = saveMember(nickname, gender, request.getBirth(), RoleType.USER, currentAuth);
+        avatarService.createAvatar(savedMember);
 
         return MemberCreateResponse.of(savedMember);
     }
@@ -63,6 +66,7 @@ public class MemberService {
     public MemberRemoveResponse removeMember(String providerId) {
         Member member = validateAndGetMember(providerId);
         member.remove();
+        authService.removeAuthByProviderId(providerId);
         return MemberRemoveResponse.of(member);
     }
 

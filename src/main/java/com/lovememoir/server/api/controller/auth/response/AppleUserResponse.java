@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
@@ -13,24 +12,24 @@ import lombok.ToString;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class AppleUserResponse {
 
-    private Long id;
-    private Properties properties;
+    private String accessToken;
+    private long expiresIn;
+    private String idToken;
+    private String refreshToken;
+    private String tokenType;
     private AppleAccount appleAccount;
 
     @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @ToString
-    public static class Properties {
-        private String nickname;
-        private String profileImage;
-    }
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @ToString
     public static class AppleAccount {
+        private String iss;
+        private String aud;
+        private long exp;
+        private long iat;
+        private String sub;
+        private String atHash;
         private String email;
+        private boolean emailVerified;
+        private boolean isPrivateEmail;
+        private long authTime;
     }
 }

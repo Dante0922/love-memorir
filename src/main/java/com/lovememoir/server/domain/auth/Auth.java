@@ -24,7 +24,8 @@ public class Auth extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20, columnDefinition = "varchar(20)")
+    @Enumerated(EnumType.STRING)
     private ProviderType provider;
 
     @Column(nullable = false)

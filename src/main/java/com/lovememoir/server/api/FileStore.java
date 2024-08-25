@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.lovememoir.server.domain.diary.UploadFile;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class FileStore {
 
     private final AmazonS3Client amazonS3Client;
@@ -29,7 +31,9 @@ public class FileStore {
     public List<UploadFile> storeFiles(List<MultipartFile> multipartFiles) throws IOException {
         List<UploadFile> storeFileResult = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
+            log.info("storeFiles for-loop");
             if (!multipartFile.isEmpty()) {
+                log.info("storeFiles !isEmpty()");
                 storeFileResult.add(storeFile(multipartFile));
             }
         }
@@ -37,17 +41,24 @@ public class FileStore {
     }
 
     public UploadFile storeFile(MultipartFile multipartFile) throws IOException {
+        log.info("storeFile 1");
+
         if (multipartFile.isEmpty()) {
             return null;
         }
+        log.info("storeFile 2");
 
         String originalFilename = multipartFile.getOriginalFilename();
         String storeFileName = createStoreFileName(originalFilename);
+        log.info("storeFile 3");
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(multipartFile.getContentType());
         metadata.setContentLength(multipartFile.getSize());
+        log.info("storeFile 4");
         amazonS3Client.putObject(bucket, storeFileName, multipartFile.getInputStream(), metadata);
+
+        log.info("metadata" + metadata);
 
         return UploadFile.builder()
             .uploadFileName(originalFilename)

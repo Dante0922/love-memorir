@@ -15,7 +15,8 @@ include::overview.adoc[]
 == OAuth2 API
 
 include::api/auth/kakao-login.adoc[]
-
+include::api/auth/apple-login.adoc[]
+include::api/auth/google-login.adoc[]
 
 [[Member-API]]
 == 멤버 API
@@ -28,17 +29,15 @@ include::api/member/remove-member.adoc[]
 [[Avatar-API]]
 == 아바타 API
 
-include::api/avatar/create-avatar.adoc[]
-include::api/avatar/modify-avatar.adoc[]
 include::api/avatar/refresh-avatar.adoc[]
 include::api/avatar/search-avatar.adoc[]
-
 
 [[Diary-API]]
 == 일기장 API
 
 include::api/diary/create-diary.adoc[]
 include::api/diary/search-diaries.adoc[]
+include::api/diary/search-store-diaries.adoc[]
 include::api/diary/modify-diary.adoc[]
 include::api/diary/modify-diary-image.adoc[]
 include::api/diary/modify-diary-store-status.adoc[]
@@ -49,7 +48,9 @@ include::api/diary/remove-diary.adoc[]
 == 일기 API
 
 include::api/diarypage/create-diary-page.adoc[]
+include::api/diarypage/count-diary-page.adoc[]
 include::api/diarypage/search-diary-pages.adoc[]
 include::api/diarypage/search-diary-page.adoc[]
+include::api/diarypage/search-diary-page-emotion.adoc[]
 include::api/diarypage/modify-diary-page.adoc[]
 include::api/diarypage/remove-diary-page.adoc[]

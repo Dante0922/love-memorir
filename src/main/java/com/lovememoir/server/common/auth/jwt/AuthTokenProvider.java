@@ -50,8 +50,6 @@ public class AuthTokenProvider {
         return new AuthToken(token, key);
     }
 
-
-
     public Authentication getAuthentication(AuthToken token) {
 
         if(token.validate()) {

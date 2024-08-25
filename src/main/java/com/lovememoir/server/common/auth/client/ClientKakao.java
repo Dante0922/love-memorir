@@ -6,6 +6,7 @@ import com.lovememoir.server.domain.auth.Auth;
 import com.lovememoir.server.domain.auth.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,6 +21,8 @@ import static com.lovememoir.server.common.message.ExceptionMessage.OAUTH_TOKEN_
 public class ClientKakao implements ClientProxy {
 
     private final WebClient webClient;
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+    private String kakaoUserInfoUri;
 
     @Override
     public Auth createAuth(String accessToken) {
@@ -38,8 +41,9 @@ public class ClientKakao implements ClientProxy {
     }
 
     private KakaoUserResponse getUserResponse(String accessToken) {
+        log.info("accessToken {}", accessToken);
         return webClient.get()
-            .uri("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+            .uri(kakaoUserInfoUri)
             .headers(h -> h.setBearerAuth(accessToken))
             .retrieve()
             .onStatus(HttpStatusCode::is4xxClientError, response ->

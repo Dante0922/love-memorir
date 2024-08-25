@@ -1,5 +1,5 @@
 [[search-diary-page]]
-=== 일기 목록 조회 API
+=== 일기 상세 조회 API
 
 ==== HTTP Request
 

@@ -4,6 +4,7 @@ import com.lovememoir.server.api.FileStore;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageCreateResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageModifyResponse;
 import com.lovememoir.server.api.controller.diarypage.response.DiaryPageRemoveResponse;
+import com.lovememoir.server.api.service.diaryanalysis.DiaryAnalysisService;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageCreateServiceRequest;
 import com.lovememoir.server.api.service.diarypage.request.DiaryPageModifyServiceRequest;
 import com.lovememoir.server.common.exception.AuthException;
@@ -18,8 +19,11 @@ import com.lovememoir.server.domain.diarypage.repository.DiaryPageRepository;
 import com.lovememoir.server.domain.member.Member;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -34,6 +38,7 @@ import static com.lovememoir.server.common.message.ExceptionMessage.*;
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class DiaryPageService {
 
     private final DiaryPageRepository diaryPageRepository;
@@ -41,11 +46,22 @@ public class DiaryPageService {
     private final DiaryRepository diaryRepository;
     private final AttachedImageRepository attachedImageRepository;
     private final FileStore fileStore;
+    private final DiaryAnalysisService diaryAnalysisService;
+
 
     public DiaryPageCreateResponse createDiaryPage(final String providerId, final Long diaryId, final LocalDate currentDate, DiaryPageCreateServiceRequest request) {
         String title = validateTitle(request.getTitle());
         LocalDate recordDate = validateRecordDate(request.getRecordDate(), currentDate);
+
         List<MultipartFile> files = validateImageCount(request.getImages());
+
+        for (MultipartFile file : files) {
+            log.info("file for-loop..");
+            log.info(file.getName());
+            log.info(file.getContentType());
+            log.info(file.getOriginalFilename());
+        }
+
 
         Member member = memberRepository.findByProviderId(providerId)
             .orElseThrow(() -> new NoSuchElementException(NO_SUCH_MEMBER));
@@ -65,6 +81,13 @@ public class DiaryPageService {
         List<AttachedImage> savedAttachedImages = attachedImageRepository.saveAll(attachedImages);
 
         diary.pageCountUp();
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+            diaryAnalysisService.diaryAnalysis(savedDiaryPage.getId());
+            }
+        });
 
         return DiaryPageCreateResponse.of(savedDiaryPage, savedAttachedImages);
     }
@@ -104,6 +127,7 @@ public class DiaryPageService {
 
     private List<UploadFile> cloudUploadFiles(List<MultipartFile> files) {
         try {
+            log.info("storeFiles 시작..");
             return fileStore.storeFiles(files);
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -34,7 +34,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
-            .requestMatchers("/favicon.ico", "/error", "/auth/kakao")
+            .requestMatchers("/favicon.ico", "/error", "/api/v1/auth/**", "/docs/**")
             .requestMatchers(new AntPathRequestMatcher("/h2-console/**")
             );
     }

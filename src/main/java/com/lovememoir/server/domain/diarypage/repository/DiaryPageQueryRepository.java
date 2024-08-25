@@ -1,5 +1,7 @@
 package com.lovememoir.server.domain.diarypage.repository;
 
+import com.lovememoir.server.domain.diaryanalysis.QDiaryAnalysis;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryAnalysisRseponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import com.querydsl.core.types.Projections;
@@ -43,7 +45,7 @@ public class DiaryPageQueryRepository {
     }
 
     public List<DiaryPagesResponse> findAllByDiaryIdIn(final List<Long> diaryIds) {
-        return queryFactory
+        List<DiaryPagesResponse> responses = queryFactory
             .select(
                 Projections.fields(
                     DiaryPagesResponse.class,
@@ -51,6 +53,7 @@ public class DiaryPageQueryRepository {
                     diaryPage.analysis.analysisStatus,
                     diaryPage.analysis.emotionCode,
                     diaryPage.title,
+                    diaryPage.recordDate,
                     diaryPage.createdDateTime
                 )
             )
@@ -61,6 +64,12 @@ public class DiaryPageQueryRepository {
                 diaryPage.createdDateTime.desc()
             )
             .fetch();
+
+        for (DiaryPagesResponse response : responses) {
+            if (response.getEmotionCode() == null) continue;
+            response.setEmotionString(response.getEmotionCode());
+        }
+        return responses;
     }
 
     public Optional<DiaryPageDto> findById(final long diaryPageId) {
@@ -81,5 +90,38 @@ public class DiaryPageQueryRepository {
             .where(diaryPage.id.eq(diaryPageId))
             .fetchFirst();
         return Optional.ofNullable(content);
+    }
+
+    public int countAllByDiaryId(final long diaryId) {
+        return queryFactory
+            .select(diaryPage.id)
+            .from(diaryPage)
+            .where(
+                diaryPage.isDeleted.isFalse(),
+                diaryPage.diary.id.eq(diaryId)
+            )
+            .fetch()
+            .size();
+    }
+
+    public DiaryAnalysisRseponse findEmotionByDiaryId(Long diaryPageId) {
+        QDiaryAnalysis diaryAnalysis = QDiaryAnalysis.diaryAnalysis;
+
+        DiaryAnalysisRseponse diaryAnalysisRseponse = queryFactory
+            .select(
+                Projections.fields(
+                    DiaryAnalysisRseponse.class,
+                    diaryAnalysis.emotionCode.as("emotionCode"),
+                    diaryAnalysis.weight.as("weight")
+                )
+            )
+            .from(diaryPage)
+            .join(diaryAnalysis).on(diaryAnalysis.diaryPage.eq(diaryPage))
+            .where(diaryPage.id.eq(diaryPageId)
+                .and(diaryAnalysis.emotionCode.eq(diaryPage.analysis.emotionCode)))
+            .fetchOne();
+         diaryAnalysisRseponse.setEmotionName();
+
+         return diaryAnalysisRseponse;
     }
 }

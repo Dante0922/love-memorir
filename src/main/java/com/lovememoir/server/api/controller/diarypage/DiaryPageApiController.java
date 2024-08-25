@@ -11,6 +11,8 @@ import com.lovememoir.server.api.service.diarypage.DiaryPageService;
 import com.lovememoir.server.common.auth.SecurityUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +36,7 @@ public class DiaryPageApiController {
         @PathVariable Long diaryId,
         @Valid @ModelAttribute DiaryPageCreateRequest request
     ) {
+
         String providerId = SecurityUtils.getProviderId();
 
         LocalDate currentDate = LocalDate.now();

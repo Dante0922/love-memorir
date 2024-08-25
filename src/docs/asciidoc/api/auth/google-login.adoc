@@ -1,0 +1,12 @@
+[[google-login]]
+=== 구글 OAuth2 API
+
+==== HTTP Request
+
+include::{snippets}/google-login/http-request.adoc[]
+include::{snippets}/google-login/request-fields.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/google-login/http-response.adoc[]
+include::{snippets}/google-login/response-fields.adoc[]

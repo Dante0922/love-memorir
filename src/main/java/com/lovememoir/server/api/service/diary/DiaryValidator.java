@@ -10,7 +10,8 @@ public abstract class DiaryValidator {
 
     private static final int TITLE_MAXIMUM_LENGTH = 8;
 
-    private static final String TITLE_REGEX = "^[가-핳0-9]*$";
+    private static final String TITLE_REGEX = "^[가-힣ㄱ-ㅎㅏ-ㅣ0-9]*$";
+
 
     public static String validateTitle(String title) {
         title = title.strip();
@@ -20,7 +21,7 @@ public abstract class DiaryValidator {
         }
 
         if (!title.matches(TITLE_REGEX)) {
-            throw new IllegalArgumentException(NOT_MATCHES_PATTERN_DIARY_TITLE);
+            throw new IllegalArgumentException(NOT_MATCHES_PATTERN_DIARY_TITLE + title);
         }
 
         return title;

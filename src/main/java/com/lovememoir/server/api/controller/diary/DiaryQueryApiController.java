@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Diary Query Api Controller
@@ -30,6 +29,17 @@ public class DiaryQueryApiController {
         String providerId = SecurityUtils.getProviderId();
 
         List<DiarySearchResponse> content = diaryQueryService.searchDiaries(providerId);
+
+        ListResponse<DiarySearchResponse> response = ListResponse.of(content);
+
+        return ApiResponse.ok(response);
+    }
+
+    @GetMapping("/store")
+    public ApiResponse<ListResponse<DiarySearchResponse>> searchStoreDiaries() {
+        String providerId = SecurityUtils.getProviderId();
+
+        List<DiarySearchResponse> content = diaryQueryService.searchStoreDiaries(providerId);
 
         ListResponse<DiarySearchResponse> response = ListResponse.of(content);
 

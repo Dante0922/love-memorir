@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 
 import static com.lovememoir.server.common.message.ValidationMessage.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DiaryValidatorTest {
 
@@ -32,7 +33,7 @@ class DiaryValidatorTest {
         //when //then
         assertThatThrownBy(() -> DiaryValidator.validateTitle(title))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(NOT_MATCHES_PATTERN_DIARY_TITLE);
+            .hasMessage(NOT_MATCHES_PATTERN_DIARY_TITLE + title);
     }
 
     @DisplayName("입력 받은 제목의 데이터 유효성 검증을 한다.")

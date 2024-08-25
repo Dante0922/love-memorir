@@ -3,8 +3,6 @@ package com.lovememoir.server.api.service.member;
 
 import com.lovememoir.server.IntegrationTestSupport;
 import com.lovememoir.server.WithAuthUser;
-import com.lovememoir.server.api.controller.auth.response.KakaoUserResponse;
-import com.lovememoir.server.api.controller.member.request.MemberModifyRequest;
 import com.lovememoir.server.api.controller.member.response.MemberCreateResponse;
 import com.lovememoir.server.api.controller.member.response.MemberModifyResponse;
 import com.lovememoir.server.api.controller.member.response.MemberRemoveResponse;
@@ -19,7 +17,6 @@ import com.lovememoir.server.domain.member.enumerate.Gender;
 import com.lovememoir.server.domain.member.enumerate.RoleType;
 import com.lovememoir.server.domain.member.repository.MemberQueryRepository;
 import com.lovememoir.server.domain.member.repository.MemberRepository;
-import groovy.util.logging.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.DisplayName;
@@ -32,10 +29,7 @@ import static com.lovememoir.server.common.message.ExceptionMessage.ALREADY_REGI
 import static com.lovememoir.server.common.message.ExceptionMessage.USER_NOT_FOUND;
 import static com.lovememoir.server.common.message.ValidationMessage.INVALID_NICKNAME_PATTERN;
 import static com.lovememoir.server.common.message.ValidationMessage.MAX_LENGTH_NICKNAME;
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class MemberServiceTest extends IntegrationTestSupport {

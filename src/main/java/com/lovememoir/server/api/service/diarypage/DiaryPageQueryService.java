@@ -1,10 +1,12 @@
 package com.lovememoir.server.api.service.diarypage;
 
 import com.lovememoir.server.api.SliceResponse;
+import com.lovememoir.server.api.service.diarypage.response.DiaryPageCountResponse;
 import com.lovememoir.server.api.service.diarypage.response.DiaryPageResponse;
 import com.lovememoir.server.domain.attachedimage.repository.AttachedImageQueryRepository;
 import com.lovememoir.server.domain.attachedimage.repository.response.AttachedImageResponse;
 import com.lovememoir.server.domain.diarypage.repository.DiaryPageQueryRepository;
+import com.lovememoir.server.domain.diarypage.repository.response.DiaryAnalysisRseponse;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPageDto;
 import com.lovememoir.server.domain.diarypage.repository.response.DiaryPagesResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,14 @@ public class DiaryPageQueryService {
 
     private final DiaryPageQueryRepository diaryPageQueryRepository;
     private final AttachedImageQueryRepository attachedImageQueryRepository;
+
+    public DiaryPageCountResponse countDiaryPage(final long diaryId) {
+        int pageCount = diaryPageQueryRepository.countAllByDiaryId(diaryId);
+
+        return DiaryPageCountResponse.builder()
+            .pageCount(pageCount)
+            .build();
+    }
 
     public SliceResponse<DiaryPagesResponse> searchDiaryPages(long diaryId, Pageable pageable) {
         List<Long> diaryIds = diaryPageQueryRepository.findAllIdByDiaryId(diaryId, pageable);
@@ -52,5 +62,12 @@ public class DiaryPageQueryService {
         List<AttachedImageResponse> images = attachedImageQueryRepository.findAllByDiaryPageId(diaryPageId);
 
         return DiaryPageResponse.of(diaryPage, images);
+    }
+
+    public DiaryAnalysisRseponse searchDiaryPageEmotion(Long diaryPageId) {
+        DiaryAnalysisRseponse rseponse = diaryPageQueryRepository.findEmotionByDiaryId(diaryPageId);
+
+        return null;
+
     }
 }

@@ -1,0 +1,13 @@
+[[search-diary-page-emotion]]
+=== 일기 감정분석 조회 API
+
+==== HTTP Request
+
+include::{snippets}/search-diary-page-emotion/http-request.adoc[]
+include::{snippets}/search-diary-page-emotion/request-headers.adoc[]
+include::{snippets}/search-diary-page-emotion/path-parameters.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/search-diary-page-emotion/http-response.adoc[]
+include::{snippets}/search-diary-page-emotion/response-fields.adoc[]
